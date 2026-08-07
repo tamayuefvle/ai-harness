@@ -1,0 +1,22 @@
+{
+  "name": "portfolio-ai-harness",
+  "version": "11.0.0",
+  "sourceVersion": "10.1.1",
+  "improvementId": "IMP-20260806-02",
+  "lifecycleMode": "full",
+  "initialProjectState": "MIGRATION_PENDING",
+  "taskGateSchemaVersion": "1.1.0",
+  "verification": {
+    "harnessTests": { "passed": 123, "failed": 0 },
+    "jsonSchemaCases": { "passed": 25, "failed": 0 },
+    "generatedContracts": "passed",
+    "securityScans": "passed",
+    "applicationProfileChecks": "not-run-overlay-has-no-application"
+  },
+  "knownConstraints": [
+    "Bundled executable profiles cover the migrated Node.js/npm/React/Next.js stack.",
+    "Other technology stacks require additional approved profiles and CI setup contracts.",
+    "Local human approval records require protected branches and external environment controls for enforcement.",
+    "The production release workflow verifies approval but intentionally performs no deployment."
+  ]
+}

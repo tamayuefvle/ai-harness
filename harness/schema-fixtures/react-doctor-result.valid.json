@@ -1,0 +1,43 @@
+{
+  "schema_version": "1.0.0",
+  "tool": {
+    "name": "react-doctor",
+    "version": "0.7.7",
+    "expected_version": "0.7.7"
+  },
+  "run": {
+    "mode": "changed",
+    "scope": "changed",
+    "blocking": "error",
+    "base": "0123456789abcdef0123456789abcdef01234567",
+    "active_spec": "PF-001-example",
+    "git_head": "89abcdef0123456789abcdef0123456789abcdef",
+    "started_at": "2026-08-05T00:00:00.000Z",
+    "finished_at": "2026-08-05T00:00:01.000Z",
+    "duration_ms": 1000,
+    "command": ["react-doctor", "--json"]
+  },
+  "trigger": {
+    "react_manifests": ["package.json"],
+    "changed_files": ["src/example.tsx"],
+    "relevant_files": ["src/example.tsx"]
+  },
+  "result": {
+    "status": "passed",
+    "exit_code": 0,
+    "signal": null,
+    "reason": null,
+    "counts": { "errors": 0, "warnings": 0 },
+    "raw_contract": {
+      "schema_version": 1,
+      "mode": "diff",
+      "react_detected": true,
+      "baseline_degraded": false,
+      "project_count": 1,
+      "incomplete_project_count": 0
+    },
+    "raw_report_path": null,
+    "stdout_excerpt": "",
+    "stderr_excerpt": ""
+  }
+}

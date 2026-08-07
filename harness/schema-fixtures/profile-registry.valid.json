@@ -1,0 +1,49 @@
+{
+  "schemaVersion": "1.0.0",
+  "profiles": [
+    {
+      "id": "runtime/node",
+      "path": "harness/profiles/runtime-node.json"
+    },
+    {
+      "id": "package-manager/npm",
+      "path": "harness/profiles/package-manager-npm.json"
+    },
+    {
+      "id": "language/typescript",
+      "path": "harness/profiles/language-typescript.json"
+    },
+    {
+      "id": "framework/react",
+      "path": "harness/profiles/framework-react.json"
+    },
+    {
+      "id": "framework/nextjs-app-router",
+      "path": "harness/profiles/framework-nextjs-app-router.json"
+    },
+    {
+      "id": "test/vitest-rtl",
+      "path": "harness/profiles/test-vitest-rtl.json"
+    },
+    {
+      "id": "test/playwright",
+      "path": "harness/profiles/test-playwright.json"
+    },
+    {
+      "id": "quality/react-doctor",
+      "path": "harness/profiles/quality-react-doctor.json"
+    },
+    {
+      "id": "ci/github-actions",
+      "path": "harness/profiles/ci-github-actions.json"
+    },
+    {
+      "id": "deployment/vercel",
+      "path": "harness/profiles/deployment-vercel.json"
+    },
+    {
+      "id": "observability/web-basic",
+      "path": "harness/profiles/observability-web-basic.json"
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "schemaVersion": "1.0.0",
+  "signalId": "SIG-2026-08-06-example",
+  "type": "review",
+  "source": "fixture",
+  "observedAt": "2026-08-06T00:00:00.000Z",
+  "summary": "Example operational signal.",
+  "severity": "low",
+  "evidence": [],
+  "containsSecrets": false
+}

@@ -1,0 +1,28 @@
+---
+description: "Domain logic rules for repositories using src/lib."
+globs: ["**/*.{ts,tsx}"]
+alwaysApply: true
+---
+<!-- GENERATED FILE. DO NOT EDIT DIRECTLY. -->
+<!-- Source: harness/rules/lib.md; run npm run harness:generate -->
+# Domain logic and data boundary role
+
+## Scope
+
+型、schema、formatter、selector、data loader、validation、純粋な業務ロジックを扱います。
+
+## Rules
+
+- UIやbrowser APIへの不要な依存を持たせない。
+- pure functionを優先し、副作用を境界へ隔離する。
+- 外部入力は`unknown`として受け、境界で検証する。
+- exported functionとpublic typeは意図が分かる名前と明示型を持つ。
+- `any`、広域`@ts-ignore`、理由のない非null assertionを使わない。
+- domain model、content model、view modelを分ける。
+- errorを握りつぶさず、callerが処理可能な形にする。
+- 時刻、乱数、networkをtestで決定可能にする。
+- 機密情報または環境変数をclientへ渡さない。
+
+## Verification
+
+pure logicにはunit testを追加し、境界条件、invalid input、empty inputを含めます。

@@ -1,0 +1,28 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "framework/nextjs-app-router",
+  "version": "1.0.0",
+  "kind": "framework",
+  "status": "stable",
+  "requires": [
+    "framework/react",
+    "language/typescript",
+    "package-manager/npm"
+  ],
+  "conflicts": [],
+  "rules": [],
+  "commands": {
+    "build": "npm run build"
+  },
+  "checks": [
+    "build"
+  ],
+  "capabilities": [
+    "server-rendering",
+    "route-handlers"
+  ],
+  "riskControls": [
+    "server-client-boundary",
+    "metadata-and-404"
+  ]
+}

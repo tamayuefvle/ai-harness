@@ -1,0 +1,10 @@
+---
+description: "Technology profile resolution, dependencies, conflicts, checks, and authorization boundaries."
+globs: ["profiles/**/*", "project.json", "generated/profile-resolution.json"]
+alwaysApply: true
+---
+<!-- GENERATED FILE. DO NOT EDIT DIRECTLY. -->
+<!-- Source: harness/rules/profiles.md; run npm run harness:generate -->
+# Technology profile controller
+
+Profiles declare requirements, conflicts, commands, checks, capabilities, and risk controls. A profile is not permission to install dependencies, create external resources, or deploy. Candidate selection, human approval, resolution, bootstrap implementation, and verification are separate steps. Fail closed on unknown IDs, cycles, conflicts, missing commands, or stale registry resolution.

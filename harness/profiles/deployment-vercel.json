@@ -1,0 +1,22 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "deployment/vercel",
+  "version": "1.0.0",
+  "kind": "deployment",
+  "status": "stable",
+  "requires": [
+    "framework/nextjs-app-router"
+  ],
+  "conflicts": [],
+  "rules": [],
+  "commands": {},
+  "checks": [],
+  "capabilities": [
+    "preview-deployment",
+    "production-deployment"
+  ],
+  "riskControls": [
+    "production-human-approval",
+    "rollback-target-required"
+  ]
+}

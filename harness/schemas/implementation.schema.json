@@ -1,0 +1,151 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "task_id": {
+      "type": "string"
+    },
+    "acceptance_id": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "implemented",
+        "partially_implemented",
+        "blocked",
+        "no_change"
+      ]
+    },
+    "summary": {
+      "type": "string"
+    },
+    "files_changed": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string"
+          },
+          "change": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "path",
+          "change"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "commands_run": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "command": {
+            "type": "string"
+          },
+          "result": {
+            "type": "string",
+            "enum": [
+              "pass",
+              "fail",
+              "not_run"
+            ]
+          },
+          "notes": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "command",
+          "result",
+          "notes"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "acceptance_evidence": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "remaining_work": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "risks": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "scope_deviations": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "test_discipline": {
+      "type": "object",
+      "properties": {
+        "applicable": {
+          "type": "boolean"
+        },
+        "red_evidence": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "green_evidence": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "refactor": {
+          "type": "string",
+          "enum": [
+            "performed",
+            "not-needed",
+            "not-applicable"
+          ]
+        },
+        "not_applicable_reason": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "applicable",
+        "red_evidence",
+        "green_evidence",
+        "refactor",
+        "not_applicable_reason"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "task_id",
+    "acceptance_id",
+    "status",
+    "summary",
+    "files_changed",
+    "commands_run",
+    "test_discipline",
+    "acceptance_evidence",
+    "remaining_work",
+    "risks",
+    "scope_deviations"
+  ],
+  "additionalProperties": false
+}

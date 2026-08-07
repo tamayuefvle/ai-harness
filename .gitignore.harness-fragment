@@ -1,0 +1,11 @@
+# AI harness runtime reports, including GitHub context and normalized/raw React Doctor evidence
+.harness/
+.codex-log/
+
+# Never commit real environment files
+.env
+.env.*
+!.env.example
+
+.env.mcp
+config/mcp.env.local

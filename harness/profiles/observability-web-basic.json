@@ -1,0 +1,21 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "observability/web-basic",
+  "version": "1.0.0",
+  "kind": "observability",
+  "status": "stable",
+  "requires": [],
+  "conflicts": [],
+  "rules": [],
+  "commands": {},
+  "checks": [],
+  "capabilities": [
+    "logs",
+    "metrics",
+    "traces-optional"
+  ],
+  "riskControls": [
+    "no-secrets-in-signals",
+    "bounded-retention"
+  ]
+}

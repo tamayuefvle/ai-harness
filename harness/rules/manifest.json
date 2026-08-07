@@ -1,0 +1,489 @@
+[
+  {
+    "id": "root-command-center",
+    "source": "root-command-center.md",
+    "agentsTargets": [
+      "AGENTS.md"
+    ],
+    "cursorTargets": [
+      {
+        "path": ".cursor/rules/00-command-center.mdc",
+        "description": "Repository command center: route work to the correct role, enforce global gates and safety boundaries.",
+        "globs": [],
+        "alwaysApply": true
+      }
+    ]
+  },
+  {
+    "id": "cursor-orchestrator",
+    "source": "cursor-orchestrator.md",
+    "agentsTargets": [],
+    "cursorTargets": [
+      {
+        "path": ".cursor/rules/01-natural-language-orchestrator.mdc",
+        "description": "Translate ordinary Japanese development requests into the correct task, planning, implementation, verification, review, and release workflow.",
+        "globs": [],
+        "alwaysApply": true
+      }
+    ]
+  },
+  {
+    "id": "capabilities",
+    "source": "capabilities.md",
+    "agentsTargets": [
+      "harness/capabilities/AGENTS.md"
+    ],
+    "cursorTargets": [
+      {
+        "path": "harness/capabilities/.cursor/rules/capabilities.mdc",
+        "description": "Capability contracts, provider selection, approval boundaries, and fallback behavior.",
+        "globs": [
+          "**/*.{json,md}"
+        ],
+        "alwaysApply": true
+      }
+    ]
+  },
+  {
+    "id": "docs-router",
+    "source": "docs-router.md",
+    "agentsTargets": [
+      "docs/AGENTS.md"
+    ],
+    "cursorTargets": [
+      {
+        "path": "docs/.cursor/rules/00-docs-router.mdc",
+        "description": "Route documentation work to product, specs, architecture, operations, or workflow responsibilities.",
+        "globs": [
+          "**/*"
+        ],
+        "alwaysApply": true
+      }
+    ]
+  },
+  {
+    "id": "worklog",
+    "source": "worklog.md",
+    "agentsTargets": [
+      "docs/worklog/AGENTS.md"
+    ],
+    "cursorTargets": [
+      {
+        "path": "docs/worklog/.cursor/rules/worklog.mdc",
+        "description": "Chronological cross-session worklog contract and retrieval order.",
+        "globs": [
+          "**/*.md"
+        ],
+        "alwaysApply": true
+      }
+    ]
+  },
+  {
+    "id": "product",
+    "source": "product.md",
+    "agentsTargets": [
+      "docs/product/AGENTS.md"
+    ],
+    "cursorTargets": [
+      {
+        "path": "docs/product/.cursor/rules/product.mdc",
+        "description": "Portfolio product strategy, audience, information architecture, public claims, and scope.",
+        "globs": [
+          "**/*"
+        ],
+        "alwaysApply": true
+      }
+    ]
+  },
+  {
+    "id": "specs",
+    "source": "specs.md",
+    "agentsTargets": [
+      "docs/specs/AGENTS.md"
+    ],
+    "cursorTargets": [
+      {
+        "path": "docs/specs/.cursor/rules/spec-gates.mdc",
+        "description": "Active specification, acceptance criteria, task lifecycle, verification and release gate ownership.",
+        "globs": [
+          "**/*"
+        ],
+        "alwaysApply": true
+      }
+    ]
+  },
+  {
+    "id": "architecture",
+    "source": "architecture.md",
+    "agentsTargets": [
+      "docs/architecture/AGENTS.md"
+    ],
+    "cursorTargets": [
+      {
+        "path": "docs/architecture/.cursor/rules/architecture.mdc",
+        "description": "Architecture decisions, dependencies, boundaries, ADRs, and cross-cutting technical tradeoffs.",
+        "globs": [
+          "**/*"
+        ],
+        "alwaysApply": true
+      }
+    ]
+  },
+  {
+    "id": "operations",
+    "source": "operations.md",
+    "agentsTargets": [
+      "docs/operations/AGENTS.md"
+    ],
+    "cursorTargets": [
+      {
+        "path": "docs/operations/.cursor/rules/operations.mdc",
+        "description": "Preview, production, secrets, smoke tests, rollback, and operational release gates.",
+        "globs": [
+          "**/*"
+        ],
+        "alwaysApply": true
+      }
+    ]
+  },
+  {
+    "id": "frontend-app",
+    "source": "frontend-app.md",
+    "agentsTargets": [
+      "app/AGENTS.md",
+      "src/AGENTS.md"
+    ],
+    "cursorTargets": [
+      {
+        "path": "app/.cursor/rules/application.mdc",
+        "description": "Next.js App Router page, layout, route, metadata, and Server/Client implementation rules.",
+        "globs": [
+          "**/*.{ts,tsx,css,md,mdx}"
+        ],
+        "alwaysApply": true
+      },
+      {
+        "path": "src/.cursor/rules/application.mdc",
+        "description": "Next.js application implementation rules for repositories using a src directory.",
+        "globs": [
+          "**/*.{ts,tsx,css,md,mdx}"
+        ],
+        "alwaysApply": true
+      }
+    ],
+    "requiresProfiles": [
+      "framework/nextjs-app-router"
+    ]
+  },
+  {
+    "id": "components",
+    "source": "components.md",
+    "agentsTargets": [
+      "components/AGENTS.md",
+      "src/components/AGENTS.md"
+    ],
+    "cursorTargets": [
+      {
+        "path": "components/.cursor/rules/components.mdc",
+        "description": "Reusable UI component API, state, interaction, and accessibility rules.",
+        "globs": [
+          "**/*.{ts,tsx,css}"
+        ],
+        "alwaysApply": true
+      },
+      {
+        "path": "src/components/.cursor/rules/components.mdc",
+        "description": "Reusable UI component rules for repositories using src/components.",
+        "globs": [
+          "**/*.{ts,tsx,css}"
+        ],
+        "alwaysApply": true
+      }
+    ],
+    "requiresProfiles": [
+      "framework/react"
+    ]
+  },
+  {
+    "id": "lib",
+    "source": "lib.md",
+    "agentsTargets": [
+      "lib/AGENTS.md",
+      "src/lib/AGENTS.md"
+    ],
+    "cursorTargets": [
+      {
+        "path": "lib/.cursor/rules/domain-lib.mdc",
+        "description": "Domain logic, types, validation, data loaders, and pure function rules.",
+        "globs": [
+          "**/*.{ts,tsx}"
+        ],
+        "alwaysApply": true
+      },
+      {
+        "path": "src/lib/.cursor/rules/domain-lib.mdc",
+        "description": "Domain logic rules for repositories using src/lib.",
+        "globs": [
+          "**/*.{ts,tsx}"
+        ],
+        "alwaysApply": true
+      }
+    ],
+    "requiresProfiles": [
+      "language/typescript"
+    ]
+  },
+  {
+    "id": "content",
+    "source": "content.md",
+    "agentsTargets": [
+      "content/AGENTS.md",
+      "src/content/AGENTS.md"
+    ],
+    "cursorTargets": [
+      {
+        "path": "content/.cursor/rules/content.mdc",
+        "description": "Public portfolio content accuracy, privacy, structure, and human-review rules.",
+        "globs": [
+          "**/*.{ts,tsx,json,md,mdx,yaml,yml}"
+        ],
+        "alwaysApply": true
+      },
+      {
+        "path": "src/content/.cursor/rules/content.mdc",
+        "description": "Public portfolio content rules for repositories using src/content.",
+        "globs": [
+          "**/*.{ts,tsx,json,md,mdx,yaml,yml}"
+        ],
+        "alwaysApply": true
+      }
+    ]
+  },
+  {
+    "id": "styles",
+    "source": "styles.md",
+    "agentsTargets": [
+      "styles/AGENTS.md",
+      "src/styles/AGENTS.md"
+    ],
+    "cursorTargets": [
+      {
+        "path": "styles/.cursor/rules/styles.mdc",
+        "description": "CSS architecture, design tokens, responsive behavior, motion, and styling performance.",
+        "globs": [
+          "**/*.{css,scss,ts,tsx}"
+        ],
+        "alwaysApply": true
+      },
+      {
+        "path": "src/styles/.cursor/rules/styles.mdc",
+        "description": "Styling rules for repositories using src/styles.",
+        "globs": [
+          "**/*.{css,scss,ts,tsx}"
+        ],
+        "alwaysApply": true
+      }
+    ],
+    "requiresProfiles": [
+      "framework/react"
+    ]
+  },
+  {
+    "id": "tests",
+    "source": "tests.md",
+    "agentsTargets": [
+      "tests/AGENTS.md",
+      "src/__tests__/AGENTS.md"
+    ],
+    "cursorTargets": [
+      {
+        "path": "tests/.cursor/rules/tests.mdc",
+        "description": "Unit and component test traceability, isolation, reliability, and evidence rules.",
+        "globs": [
+          "**/*.{test,spec}.{ts,tsx}"
+        ],
+        "alwaysApply": true
+      },
+      {
+        "path": "src/__tests__/.cursor/rules/tests.mdc",
+        "description": "Unit and component testing rules for colocated src tests.",
+        "globs": [
+          "**/*.{test,spec}.{ts,tsx}"
+        ],
+        "alwaysApply": true
+      }
+    ],
+    "requiresProfiles": [
+      "test/vitest-rtl"
+    ]
+  },
+  {
+    "id": "e2e",
+    "source": "e2e.md",
+    "agentsTargets": [
+      "e2e/AGENTS.md"
+    ],
+    "cursorTargets": [
+      {
+        "path": "e2e/.cursor/rules/e2e.mdc",
+        "description": "Playwright critical journeys, CI reliability, artifacts, and Preview smoke rules.",
+        "globs": [
+          "**/*.{ts,tsx}"
+        ],
+        "alwaysApply": true
+      }
+    ],
+    "requiresProfiles": [
+      "test/playwright"
+    ]
+  },
+  {
+    "id": "github-integration",
+    "source": "github-integration.md",
+    "agentsTargets": [
+      "scripts/github/AGENTS.md"
+    ],
+    "cursorTargets": [
+      {
+        "path": "scripts/github/.cursor/rules/github-integration.mdc",
+        "description": "Deterministic GitHub CLI over HTTPS, normalized evidence, and approved push proposals.",
+        "globs": [
+          "**/*.{js,mjs,json,md}"
+        ],
+        "alwaysApply": true
+      }
+    ]
+  },
+  {
+    "id": "scripts",
+    "source": "scripts.md",
+    "agentsTargets": [
+      "scripts/AGENTS.md"
+    ],
+    "cursorTargets": [
+      {
+        "path": "scripts/.cursor/rules/automation.mdc",
+        "description": "Deterministic repository automation, generators, Git hooks, and command maintenance.",
+        "globs": [
+          "**/*.{js,mjs,cjs,ts,py,sh,ps1}"
+        ],
+        "alwaysApply": true
+      }
+    ]
+  },
+  {
+    "id": "harness",
+    "source": "harness.md",
+    "agentsTargets": [
+      "harness/AGENTS.md"
+    ],
+    "cursorTargets": [
+      {
+        "path": "harness/.cursor/rules/harness-maintenance.mdc",
+        "description": "Canonical instruction sources, generated files, hierarchy integrity, and harness maintenance.",
+        "globs": [
+          "**/*"
+        ],
+        "alwaysApply": true
+      }
+    ]
+  },
+  {
+    "id": "github",
+    "source": "github.md",
+    "agentsTargets": [
+      ".github/AGENTS.md"
+    ],
+    "cursorTargets": [
+      {
+        "path": ".github/.cursor/rules/github-ci.mdc",
+        "description": "Pull request, GitHub Actions, permissions, required checks, and branch protection rules.",
+        "globs": [
+          "**/*.{yml,yaml,md}"
+        ],
+        "alwaysApply": true
+      }
+    ]
+  },
+  {
+    "id": "public",
+    "source": "public.md",
+    "agentsTargets": [
+      {
+        "path": "AGENTS.md",
+        "mode": "append"
+      }
+    ],
+    "cursorTargets": [
+      {
+        "path": ".cursor/rules/public-assets.mdc",
+        "description": "Public asset licensing, privacy, naming, optimization, and font rules without publishing harness instructions.",
+        "globs": [
+          "public/**/*"
+        ],
+        "alwaysApply": false
+      }
+    ]
+  },
+  {
+    "id": "mcp",
+    "source": "mcp.md",
+    "agentsTargets": [
+      "scripts/mcp/AGENTS.md"
+    ],
+    "cursorTargets": [
+      {
+        "path": "scripts/mcp/.cursor/rules/mcp.mdc",
+        "description": "Optional browser MCP configuration, secrets, permissions, and diagnostics.",
+        "globs": [
+          "**/*.{json,toml,js,mjs,sh,ps1,md}"
+        ],
+        "alwaysApply": true
+      }
+    ]
+  },
+  {
+    "id": "full-lifecycle",
+    "source": "lifecycle.md",
+    "agentsTargets": [
+      {
+        "path": "AGENTS.md",
+        "mode": "append"
+      },
+      {
+        "path": "harness/AGENTS.md",
+        "mode": "append"
+      }
+    ],
+    "cursorTargets": [
+      {
+        "path": ".cursor/rules/02-full-lifecycle.mdc",
+        "description": "Project, task, release, incident, and improvement lifecycle boundaries.",
+        "globs": [],
+        "alwaysApply": true
+      }
+    ]
+  },
+  {
+    "id": "technology-profiles",
+    "source": "profiles.md",
+    "agentsTargets": [
+      {
+        "path": "harness/AGENTS.md",
+        "mode": "append"
+      }
+    ],
+    "cursorTargets": [
+      {
+        "path": "harness/.cursor/rules/technology-profiles.mdc",
+        "description": "Technology profile resolution, dependencies, conflicts, checks, and authorization boundaries.",
+        "globs": [
+          "profiles/**/*",
+          "project.json",
+          "generated/profile-resolution.json"
+        ],
+        "alwaysApply": true
+      }
+    ]
+  }
+]

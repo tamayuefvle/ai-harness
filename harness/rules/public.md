@@ -1,0 +1,12 @@
+# Public asset role
+
+## Rules
+
+- licenseと利用条件を確認できるassetだけを追加する。
+- 個人情報、内部資料、第三者の機密画像を含めない。
+- filenameは用途が分かる安定した名前にする。
+- source fileと生成物を区別する。
+- 画像は適切なformat、寸法、圧縮を使う。
+- 装飾か情報提供かを実装側へ伝え、alt方針を決める。
+- font追加はlicense、weight、subset、performance impactをADRまたはspecへ記録する。
+- 未使用の大容量assetを残さない。

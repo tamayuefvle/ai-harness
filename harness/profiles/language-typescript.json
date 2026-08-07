@@ -1,0 +1,26 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "language/typescript",
+  "version": "1.0.0",
+  "kind": "language",
+  "status": "stable",
+  "requires": [
+    "runtime/node"
+  ],
+  "conflicts": [],
+  "rules": [],
+  "commands": {
+    "typecheck": "npm run typecheck",
+    "lint": "npm run lint"
+  },
+  "checks": [
+    "lint",
+    "typecheck"
+  ],
+  "capabilities": [
+    "static-analysis"
+  ],
+  "riskControls": [
+    "strict-mode"
+  ]
+}

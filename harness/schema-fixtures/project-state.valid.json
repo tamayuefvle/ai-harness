@@ -1,0 +1,34 @@
+{
+  "schemaVersion": "1.0.0",
+  "projectId": "portfolio-ai-harness",
+  "lifecycleMode": "full",
+  "state": "MIGRATION_PENDING",
+  "pendingApproval": null,
+  "decisionRefs": [
+    "docs/product/vision.md",
+    "docs/product/scope.md",
+    "docs/product/technology-decision.md",
+    "docs/architecture/ADR-0001-stack.md",
+    "docs/architecture/baseline.md"
+  ],
+  "activeProfiles": [],
+  "profileResolutionPath": null,
+  "migration": {
+    "fromVersion": "10.1.1",
+    "proposedProfiles": [
+      "runtime/node",
+      "package-manager/npm",
+      "language/typescript",
+      "framework/react",
+      "framework/nextjs-app-router",
+      "test/vitest-rtl",
+      "test/playwright",
+      "quality/react-doctor",
+      "ci/github-actions",
+      "deployment/vercel",
+      "observability/web-basic"
+    ],
+    "notes": "Review generated product, architecture, security, quality, and operations baselines; resolve profiles; then approve MIGRATION_PENDING -> ACTIVE."
+  },
+  "history": []
+}

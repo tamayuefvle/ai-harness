@@ -1,0 +1,40 @@
+{
+  "schemaVersion": "1.0.0",
+  "releaseId": "REL-2026-08-06-example",
+  "state": "CANDIDATE",
+  "sourceTasks": [
+    "PF-001-example"
+  ],
+  "artifact": {
+    "commitSha": "0000000000000000000000000000000000000000",
+    "digest": "0000000000000000000000000000000000000000000000000000000000000000",
+    "uri": null
+  },
+  "preview": {
+    "status": "pending",
+    "url": null,
+    "evidence": null,
+    "recordedAt": null
+  },
+  "productionApproval": {
+    "status": "pending",
+    "approvedBy": null,
+    "approvedAt": null,
+    "reason": null
+  },
+  "deployment": {
+    "deploymentId": null,
+    "environment": null,
+    "commitSha": null,
+    "recordedBy": null,
+    "recordedAt": null,
+    "rollbackTarget": null
+  },
+  "observation": {
+    "status": "pending",
+    "summary": null,
+    "evidence": [],
+    "recordedAt": null
+  },
+  "history": []
+}

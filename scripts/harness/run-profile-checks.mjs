@@ -1,0 +1,7 @@
+import crypto from "node:crypto"; import fs from "node:fs"; import path from "node:path"; import { spawnSync } from "node:child_process";
+import { canonicalRoot, parseOptions, readJson } from "./full-lifecycle-lib.mjs";
+const options=parseOptions(process.argv.slice(2)); const project=readJson(path.join(canonicalRoot,"harness/project.json")); if(!project.profileResolutionPath) throw new Error("No profile resolution recorded."); const resolution=readJson(path.join(canonicalRoot,project.profileResolutionPath));
+const registryDigest=crypto.createHash("sha256").update(fs.readFileSync(path.join(canonicalRoot,"harness/profiles/registry.json"))).digest("hex"); if(resolution.registrySha256!==registryDigest) throw new Error("Profile resolution is stale; run profile:resolve again.");
+const only=options.only?new Set(options.only.split(",").filter(Boolean)):null; const exclude=options.exclude?new Set(options.exclude.split(",").filter(Boolean)):new Set(); const results=[];
+for(const name of resolution.checks){ if(only&&!only.has(name)) continue; if(exclude.has(name)) continue; const command=resolution.commands[name]; if(!command) throw new Error(`Resolved check has no command: ${name}`); const result=spawnSync(command,{cwd:canonicalRoot,shell:true,stdio:"inherit",env:{...process.env,CI:process.env.CI??"true"}}); results.push({name,command,status:result.status===0?"passed":"failed"}); if(result.status!==0){ console.error(JSON.stringify(results,null,2)); process.exit(result.status??1); }}
+console.log(JSON.stringify({status:"passed",results},null,2));

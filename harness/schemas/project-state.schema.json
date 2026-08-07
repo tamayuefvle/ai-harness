@@ -1,0 +1,165 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://portfolio-harness.local/schemas/project-state.schema.json",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "projectId",
+    "lifecycleMode",
+    "state",
+    "pendingApproval",
+    "decisionRefs",
+    "activeProfiles",
+    "profileResolutionPath",
+    "migration",
+    "history"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "1.0.0"
+    },
+    "projectId": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]{2,63}$"
+    },
+    "lifecycleMode": {
+      "enum": [
+        "delivery-only",
+        "full"
+      ]
+    },
+    "state": {
+      "enum": [
+        "MIGRATION_PENDING",
+        "DISCOVERY",
+        "PRODUCT_APPROVED",
+        "STACK_APPROVED",
+        "ARCHITECTURE_APPROVED",
+        "ACTIVE",
+        "RETIRED"
+      ]
+    },
+    "pendingApproval": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "properties": {
+        "targetState": {
+          "type": "string"
+        },
+        "approvedBy": {
+          "type": "string",
+          "pattern": "^human:.+"
+        },
+        "approvedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 1
+        },
+        "contractHash": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      },
+      "required": [
+        "targetState",
+        "approvedBy",
+        "approvedAt",
+        "reason",
+        "contractHash"
+      ],
+      "additionalProperties": false
+    },
+    "decisionRefs": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "activeProfiles": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z0-9-]+/[a-z0-9-]+$"
+      }
+    },
+    "profileResolutionPath": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "migration": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "properties": {
+        "fromVersion": {
+          "type": "string"
+        },
+        "proposedProfiles": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string"
+          }
+        },
+        "notes": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "fromVersion",
+        "proposedProfiles",
+        "notes"
+      ],
+      "additionalProperties": false
+    },
+    "history": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "from",
+          "to",
+          "actor",
+          "reason",
+          "at",
+          "contractHash"
+        ],
+        "properties": {
+          "from": {
+            "type": "string"
+          },
+          "to": {
+            "type": "string"
+          },
+          "actor": {
+            "type": "string"
+          },
+          "reason": {
+            "type": "string"
+          },
+          "at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "contractHash": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

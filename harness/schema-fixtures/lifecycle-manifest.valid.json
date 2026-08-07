@@ -1,0 +1,248 @@
+{
+  "schemaVersion": "1.0.0",
+  "lifecycles": {
+    "project": {
+      "initialState": "DISCOVERY",
+      "activeStates": [
+        "MIGRATION_PENDING",
+        "DISCOVERY",
+        "PRODUCT_APPROVED",
+        "STACK_APPROVED",
+        "ARCHITECTURE_APPROVED",
+        "ACTIVE"
+      ],
+      "terminalStates": [
+        "RETIRED"
+      ],
+      "transitions": [
+        {
+          "from": "MIGRATION_PENDING",
+          "to": "ACTIVE",
+          "approval": "human",
+          "requiredDocuments": [
+            "docs/product/vision.md",
+            "docs/product/scope.md",
+            "docs/product/technology-decision.md",
+            "docs/architecture/ADR-0001-stack.md",
+            "docs/architecture/baseline.md"
+          ]
+        },
+        {
+          "from": "DISCOVERY",
+          "to": "PRODUCT_APPROVED",
+          "approval": "human",
+          "requiredDocuments": [
+            "docs/product/problem.md",
+            "docs/product/users.md",
+            "docs/product/outcomes.md",
+            "docs/product/requirements.md"
+          ]
+        },
+        {
+          "from": "PRODUCT_APPROVED",
+          "to": "STACK_APPROVED",
+          "approval": "human",
+          "requiredDocuments": [
+            "docs/product/technology-options.md",
+            "docs/product/technology-decision.md"
+          ]
+        },
+        {
+          "from": "STACK_APPROVED",
+          "to": "ARCHITECTURE_APPROVED",
+          "approval": "human",
+          "requiredDocuments": [
+            "docs/architecture/baseline.md",
+            "docs/architecture/security-baseline.md",
+            "docs/architecture/quality-strategy.md"
+          ]
+        },
+        {
+          "from": "ARCHITECTURE_APPROVED",
+          "to": "ACTIVE",
+          "approval": "human",
+          "requiredDocuments": [
+            "harness/generated/profile-resolution.json"
+          ]
+        },
+        {
+          "from": "ACTIVE",
+          "to": "RETIRED",
+          "approval": "human",
+          "requiredDocuments": [
+            "docs/operations/retirement-plan.md"
+          ]
+        }
+      ]
+    },
+    "task": {
+      "initialState": "IDEA",
+      "activeStates": [
+        "IDEA",
+        "SPEC_READY",
+        "PLAN_READY",
+        "IMPLEMENTING",
+        "VERIFYING",
+        "REVIEW_READY",
+        "DEPLOY_READY"
+      ],
+      "terminalStates": [
+        "DONE"
+      ],
+      "transitions": [
+        {
+          "from": "IDEA",
+          "to": "SPEC_READY",
+          "approval": "human",
+          "requiredDocuments": [
+            "docs/specs/{{TASK_ID}}/brief.md",
+            "docs/specs/{{TASK_ID}}/acceptance.md"
+          ]
+        },
+        {
+          "from": "SPEC_READY",
+          "to": "PLAN_READY",
+          "approval": "human",
+          "requiredDocuments": [
+            "docs/specs/{{TASK_ID}}/plan.md",
+            "docs/specs/{{TASK_ID}}/test-plan.md"
+          ]
+        },
+        {
+          "from": "PLAN_READY",
+          "to": "IMPLEMENTING",
+          "approval": "none",
+          "requiredDocuments": []
+        },
+        {
+          "from": "IMPLEMENTING",
+          "to": "VERIFYING",
+          "approval": "none",
+          "requiredDocuments": []
+        },
+        {
+          "from": "VERIFYING",
+          "to": "REVIEW_READY",
+          "approval": "none",
+          "requiredDocuments": []
+        },
+        {
+          "from": "REVIEW_READY",
+          "to": "DEPLOY_READY",
+          "approval": "human",
+          "requiredDocuments": []
+        },
+        {
+          "from": "DEPLOY_READY",
+          "to": "DONE",
+          "approval": "none",
+          "requiredDocuments": []
+        }
+      ]
+    },
+    "release": {
+      "initialState": "CANDIDATE",
+      "activeStates": [
+        "CANDIDATE",
+        "PREVIEW_VERIFIED",
+        "PRODUCTION_APPROVED",
+        "DEPLOYED",
+        "OBSERVING"
+      ],
+      "terminalStates": [
+        "ACCEPTED",
+        "ROLLED_BACK",
+        "CANCELLED"
+      ],
+      "transitions": [
+        {
+          "from": "CANDIDATE",
+          "to": "PREVIEW_VERIFIED",
+          "approval": "none",
+          "requiredDocuments": []
+        },
+        {
+          "from": "PREVIEW_VERIFIED",
+          "to": "PRODUCTION_APPROVED",
+          "approval": "human",
+          "requiredDocuments": []
+        },
+        {
+          "from": "PRODUCTION_APPROVED",
+          "to": "DEPLOYED",
+          "approval": "human",
+          "requiredDocuments": []
+        },
+        {
+          "from": "DEPLOYED",
+          "to": "OBSERVING",
+          "approval": "none",
+          "requiredDocuments": []
+        },
+        {
+          "from": "OBSERVING",
+          "to": "ACCEPTED",
+          "approval": "human",
+          "requiredDocuments": []
+        },
+        {
+          "from": "DEPLOYED",
+          "to": "ROLLED_BACK",
+          "approval": "human",
+          "requiredDocuments": []
+        },
+        {
+          "from": "CANDIDATE",
+          "to": "CANCELLED",
+          "approval": "human",
+          "requiredDocuments": []
+        }
+      ]
+    },
+    "incident": {
+      "initialState": "DETECTED",
+      "activeStates": [
+        "DETECTED",
+        "TRIAGED",
+        "MITIGATION_APPROVED",
+        "RECOVERED",
+        "POSTMORTEM_READY"
+      ],
+      "terminalStates": [
+        "CLOSED"
+      ],
+      "transitions": [
+        {
+          "from": "DETECTED",
+          "to": "TRIAGED",
+          "approval": "none",
+          "requiredDocuments": []
+        },
+        {
+          "from": "TRIAGED",
+          "to": "MITIGATION_APPROVED",
+          "approval": "human",
+          "requiredDocuments": []
+        },
+        {
+          "from": "MITIGATION_APPROVED",
+          "to": "RECOVERED",
+          "approval": "human",
+          "requiredDocuments": []
+        },
+        {
+          "from": "RECOVERED",
+          "to": "POSTMORTEM_READY",
+          "approval": "none",
+          "requiredDocuments": []
+        },
+        {
+          "from": "POSTMORTEM_READY",
+          "to": "CLOSED",
+          "approval": "human",
+          "requiredDocuments": []
+        }
+      ]
+    }
+  }
+}

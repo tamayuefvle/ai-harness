@@ -1,0 +1,72 @@
+name: React Doctor
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+  pull-requests: write
+  issues: write
+  statuses: write
+
+concurrency:
+  group: react-doctor-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  react-doctor:
+    name: react-doctor
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Classify npm CI project state
+        id: project-state
+        shell: bash
+        run: bash scripts/harness/ci-project-state.sh
+
+      - name: Harness bootstrap notice
+        if: ${{ steps.project-state.outputs.state == 'bootstrap' }}
+        run: echo "::notice title=Harness bootstrap::React Doctor is skipped because this root commit contains no Node/React project yet."
+
+      - name: Resolve React Doctor profile
+        id: react-profile
+        if: ${{ steps.project-state.outputs.state == 'ready' }}
+        shell: bash
+        run: |
+          node - <<'NODE'
+          const fs = require('node:fs');
+          const project = JSON.parse(fs.readFileSync('harness/project.json', 'utf8'));
+          const profiles = project.activeProfiles.length ? project.activeProfiles : (project.migration?.proposedProfiles || []);
+          const enabled = profiles.length === 0 || profiles.includes('quality/react-doctor');
+          fs.appendFileSync(process.env.GITHUB_OUTPUT, `enabled=${enabled}\n`);
+          NODE
+
+      - name: Resolve React Doctor scope
+        id: react-doctor-scope
+        if: ${{ steps.project-state.outputs.state == 'ready' && steps.react-profile.outputs.enabled == 'true' }}
+        shell: bash
+        run: |
+          if [[ "${{ steps.project-state.outputs.root_commit }}" == "true" ]]; then
+            echo "scope=full" >> "$GITHUB_OUTPUT"
+          else
+            echo "scope=changed" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: React Doctor advisory review
+        if: ${{ steps.project-state.outputs.state == 'ready' && steps.react-profile.outputs.enabled == 'true' }}
+        uses: millionco/react-doctor@01820bb4fd4d0a4aebcd8df2b2a143a098649cb2 # action v2.2.8
+        env:
+          REACT_DOCTOR_NO_TELEMETRY: "1"
+        with:
+          version: "0.7.7"
+          blocking: none
+          scope: ${{ steps.react-doctor-scope.outputs.scope }}

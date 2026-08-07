@@ -1,0 +1,18 @@
+approval_policy = "on-request"
+sandbox_mode = "workspace-write"
+project_doc_max_bytes = 65536
+
+[sandbox_workspace_write]
+network_access = false
+
+[features]
+hooks = true
+
+# Chrome DevTools MCP uses a cross-platform launcher.
+[mcp_servers.chrome_devtools]
+command = "node"
+args = ["scripts/mcp/start-chrome-devtools.mjs"]
+required = false
+startup_timeout_sec = 30
+tool_timeout_sec = 120
+

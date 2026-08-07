@@ -1,0 +1,29 @@
+{
+  "$schema": "../schemas/github-integration.schema.json",
+  "schemaVersion": "2.0.0",
+  "standard": {
+    "provider": "gh-cli-https",
+    "authentication": "gh-auth-login-and-setup-git",
+    "requiredRemoteProtocol": "https",
+    "includeUntrustedTextByDefault": false,
+    "recentRunLimit": 10,
+    "commandTimeoutMs": 15000,
+    "reportPathTemplate": ".harness/reports/{task}/github-context.json"
+  },
+  "writePolicy": {
+    "enabled": true,
+    "actor": "packager",
+    "requiresHumanApproval": true,
+    "protectedBranches": [
+      "main",
+      "master"
+    ],
+    "allowForcePush": false,
+    "allowMerge": false,
+    "allowSecretMutation": false,
+    "requireCleanWorktree": true,
+    "requireVerificationPass": true,
+    "requireReviewPass": true,
+    "proposalSchema": "harness/schemas/github-push-proposal.schema.json"
+  }
+}

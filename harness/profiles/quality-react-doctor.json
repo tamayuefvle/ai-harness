@@ -1,0 +1,25 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "quality/react-doctor",
+  "version": "1.0.0",
+  "kind": "quality",
+  "status": "stable",
+  "requires": [
+    "framework/react"
+  ],
+  "conflicts": [],
+  "rules": [],
+  "commands": {
+    "reactDoctor": "npm run verify:react"
+  },
+  "checks": [
+    "reactDoctor"
+  ],
+  "capabilities": [
+    "react-diagnostics"
+  ],
+  "riskControls": [
+    "normalized-evidence",
+    "no-remote-instruction-authority"
+  ]
+}

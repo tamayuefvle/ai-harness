@@ -1,0 +1,60 @@
+{
+  "$schema": "../../../harness/schemas/lifecycle-gate.schema.json",
+  "schemaVersion": "1.1.0",
+  "taskId": "SEC-0001-security",
+  "specApproval": {
+    "status": "pending",
+    "approvedBy": null,
+    "approvedAt": null,
+    "reason": null,
+    "contractHash": null
+  },
+  "planApproval": {
+    "status": "pending",
+    "approvedBy": null,
+    "approvedAt": null,
+    "reason": null,
+    "contractHash": null,
+    "baselineSha": null
+  },
+  "implementation": {
+    "status": "pending",
+    "reportPath": null,
+    "reportSha256": null,
+    "changeFingerprint": null,
+    "recordedAt": null
+  },
+  "verification": {
+    "status": "pending",
+    "reportPath": null,
+    "reportSha256": null,
+    "githubContextPath": null,
+    "githubContextSha256": null,
+    "reactDoctorPath": null,
+    "reactDoctorSha256": null,
+    "previewStatus": "pending",
+    "rollbackConfirmed": false,
+    "headSha": null,
+    "recordedAt": null
+  },
+  "review": {
+    "status": "pending",
+    "verdict": null,
+    "reportPath": null,
+    "reportSha256": null,
+    "p0": 0,
+    "p1": 0,
+    "p2": 0,
+    "acceptedP2Evidence": [],
+    "recordedAt": null
+  },
+  "releaseApproval": {
+    "status": "pending",
+    "approvedBy": null,
+    "approvedAt": null,
+    "reason": null,
+    "contractHash": null,
+    "mode": null
+  },
+  "history": []
+}

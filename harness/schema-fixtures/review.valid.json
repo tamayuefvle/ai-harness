@@ -1,0 +1,20 @@
+{
+  "schema_version": "1.0.0",
+  "task_id": "PF-001-example",
+  "head_sha": "0123456789abcdef0123456789abcdef01234567",
+  "verdict": "approved",
+  "summary": "No blocking findings.",
+  "findings": [],
+  "unverified_areas": [],
+  "test_recommendations": [],
+  "diagnostic_evidence": [
+    {
+      "tool": "verification",
+      "report": ".harness/reports/PF-001-example/verification.json",
+      "status": "passed",
+      "reviewed": true,
+      "notes": "Reviewed deterministic verification evidence.",
+      "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    }
+  ]
+}

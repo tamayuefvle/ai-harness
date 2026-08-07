@@ -1,0 +1,199 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "task_id": {
+      "type": "string"
+    },
+    "summary": {
+      "type": "string"
+    },
+    "estimated_scope": {
+      "type": "string",
+      "enum": [
+        "small",
+        "medium",
+        "large"
+      ]
+    },
+    "affected_roles": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "relevant_files": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string"
+          },
+          "reason": {
+            "type": "string"
+          },
+          "change_likelihood": {
+            "type": "string",
+            "enum": [
+              "inspect_only",
+              "likely_change",
+              "new_file_candidate"
+            ]
+          }
+        },
+        "required": [
+          "path",
+          "reason",
+          "change_likelihood"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "reuse_candidates": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string"
+          },
+          "reuse": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "path",
+          "reuse"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "architecture_findings": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "risk_items": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "severity": {
+            "type": "string",
+            "enum": [
+              "high",
+              "medium",
+              "low"
+            ]
+          },
+          "risk": {
+            "type": "string"
+          },
+          "mitigation": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "severity",
+          "risk",
+          "mitigation"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "test_targets": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "acceptance_id": {
+            "type": "string"
+          },
+          "test_level": {
+            "type": "string"
+          },
+          "target": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "acceptance_id",
+          "test_level",
+          "target"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "open_questions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "recommended_implementation_owner": {
+      "type": "string",
+      "enum": [
+        "cursor",
+        "codex",
+        "mixed"
+      ]
+    },
+    "owner_reason": {
+      "type": "string"
+    },
+    "external_evidence": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "tool": {
+            "type": "string"
+          },
+          "report": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "complete",
+              "degraded",
+              "unavailable"
+            ]
+          },
+          "reviewed": {
+            "type": "boolean"
+          },
+          "notes": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "tool",
+          "report",
+          "status",
+          "reviewed",
+          "notes"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": [
+    "task_id",
+    "summary",
+    "estimated_scope",
+    "affected_roles",
+    "relevant_files",
+    "reuse_candidates",
+    "architecture_findings",
+    "risk_items",
+    "test_targets",
+    "open_questions",
+    "recommended_implementation_owner",
+    "owner_reason",
+    "external_evidence"
+  ],
+  "additionalProperties": false
+}

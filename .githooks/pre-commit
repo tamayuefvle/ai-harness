@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+npm run harness:check
+npm run spec:check-staged
+
+if ! npm run react:doctor:staged; then
+  echo "React Doctor staged scan could not complete. Commit remains advisory; inspect the report before pushing." >&2
+fi

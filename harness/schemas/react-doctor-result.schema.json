@@ -1,0 +1,288 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/schemas/react-doctor-result.schema.json",
+  "title": "React Doctor harness result",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": "1.0.0"
+    },
+    "tool": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "const": "react-doctor"
+        },
+        "version": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "expected_version": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "version",
+        "expected_version"
+      ],
+      "additionalProperties": false
+    },
+    "run": {
+      "type": "object",
+      "properties": {
+        "mode": {
+          "type": "string",
+          "enum": [
+            "staged",
+            "changed",
+            "full",
+            "design"
+          ]
+        },
+        "scope": {
+          "type": "string",
+          "enum": [
+            "files",
+            "changed",
+            "full"
+          ]
+        },
+        "blocking": {
+          "type": "string",
+          "enum": [
+            "none",
+            "error",
+            "warning"
+          ]
+        },
+        "base": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "active_spec": {
+          "type": "string"
+        },
+        "git_head": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "started_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "finished_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "duration_ms": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "command": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "mode",
+        "scope",
+        "blocking",
+        "base",
+        "active_spec",
+        "git_head",
+        "started_at",
+        "finished_at",
+        "duration_ms",
+        "command"
+      ],
+      "additionalProperties": false
+    },
+    "trigger": {
+      "type": "object",
+      "properties": {
+        "react_manifests": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "changed_files": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "relevant_files": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "react_manifests",
+        "changed_files",
+        "relevant_files"
+      ],
+      "additionalProperties": false
+    },
+    "result": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": [
+            "passed",
+            "blocked",
+            "failed",
+            "partial",
+            "skipped"
+          ]
+        },
+        "exit_code": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "signal": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "reason": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "counts": {
+          "type": "object",
+          "properties": {
+            "errors": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "minimum": 0
+            },
+            "warnings": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "minimum": 0
+            }
+          },
+          "required": [
+            "errors",
+            "warnings"
+          ],
+          "additionalProperties": false
+        },
+        "raw_contract": {
+          "type": "object",
+          "properties": {
+            "schema_version": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "minimum": 1
+            },
+            "mode": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "enum": [
+                "full",
+                "diff",
+                "staged",
+                "baseline",
+                null
+              ]
+            },
+            "react_detected": {
+              "type": [
+                "boolean",
+                "null"
+              ]
+            },
+            "baseline_degraded": {
+              "type": [
+                "boolean",
+                "null"
+              ]
+            },
+            "project_count": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "minimum": 0
+            },
+            "incomplete_project_count": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "minimum": 0
+            }
+          },
+          "required": [
+            "schema_version",
+            "mode",
+            "react_detected",
+            "baseline_degraded",
+            "project_count",
+            "incomplete_project_count"
+          ],
+          "additionalProperties": false
+        },
+        "raw_report_path": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "stdout_excerpt": {
+          "type": "string"
+        },
+        "stderr_excerpt": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "status",
+        "exit_code",
+        "signal",
+        "reason",
+        "counts",
+        "raw_contract",
+        "raw_report_path",
+        "stdout_excerpt",
+        "stderr_excerpt"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "schema_version",
+    "tool",
+    "run",
+    "trigger",
+    "result"
+  ],
+  "additionalProperties": false
+}

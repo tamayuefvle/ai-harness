@@ -1,0 +1,76 @@
+name: Quality Gate
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+  pull-requests: read
+  actions: read
+  checks: read
+
+concurrency:
+  group: quality-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  quality:
+    name: quality
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Classify npm CI project state
+        id: project-state
+        shell: bash
+        run: bash scripts/harness/ci-project-state.sh
+
+      - name: Harness bootstrap notice
+        if: ${{ steps.project-state.outputs.state == 'bootstrap' }}
+        run: echo "::notice title=Harness bootstrap::Quality checks are skipped only for this harness-only root commit. Add package.json and one npm lockfile in the next commit."
+
+      - name: Setup Node
+        if: ${{ steps.project-state.outputs.state == 'ready' }}
+        uses: actions/setup-node@v6
+        with:
+          node-version: lts/*
+          cache: npm
+          cache-dependency-path: ${{ steps.project-state.outputs.lockfile }}
+
+      - name: Clean install
+        if: ${{ steps.project-state.outputs.state == 'ready' }}
+        run: npm ci
+
+      - name: GitHub context snapshot
+        if: ${{ steps.project-state.outputs.state == 'ready' }}
+        run: npm run github:context -- --task ci --output .harness/reports/ci/github-context.json
+        env:
+          GH_TOKEN: ${{ github.token }}
+
+      - name: Canonical quality verification
+        if: ${{ steps.project-state.outputs.state == 'ready' }}
+        run: npm run verify:ci
+        env:
+          CI: true
+          GH_TOKEN: ${{ github.token }}
+          REACT_DOCTOR_BASE: ${{ github.event.pull_request.base.sha || github.event.before }}
+          GITHUB_EVENT_BEFORE: ${{ github.event.before }}
+
+      - name: Upload harness evidence
+        if: ${{ always() && steps.project-state.outputs.state == 'ready' }}
+        uses: actions/upload-artifact@v5
+        with:
+          name: harness-evidence-${{ github.run_id }}
+          path: |
+            .harness/reports/**/github-context.json
+            .harness/reports/**/react-doctor-*.json
+          if-no-files-found: warn
+          retention-days: 14

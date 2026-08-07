@@ -1,0 +1,22 @@
+{
+  "schemaVersion": "1.0.0",
+  "incidentId": "INC-2000-01-01-template",
+  "state": "DETECTED",
+  "severity": "SEV3",
+  "detectedAt": "2026-08-06T00:00:00.000Z",
+  "summary": "Example incident",
+  "impact": "No production impact in fixture.",
+  "mitigationApproval": {
+    "status": "pending",
+    "approvedBy": null,
+    "approvedAt": null,
+    "reason": null
+  },
+  "recovery": {
+    "status": "pending",
+    "evidence": null,
+    "recordedAt": null
+  },
+  "postmortemPath": null,
+  "history": []
+}

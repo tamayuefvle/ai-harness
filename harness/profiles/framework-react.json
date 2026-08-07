@@ -1,0 +1,21 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "framework/react",
+  "version": "1.0.0",
+  "kind": "framework",
+  "status": "stable",
+  "requires": [
+    "runtime/node"
+  ],
+  "conflicts": [],
+  "rules": [],
+  "commands": {},
+  "checks": [],
+  "capabilities": [
+    "browser-ui"
+  ],
+  "riskControls": [
+    "accessible-interactions",
+    "client-boundary-review"
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "task_id": "PF-001-example",
+  "summary": "Repository and primary sources were inspected.",
+  "estimated_scope": "small",
+  "affected_roles": ["src"],
+  "relevant_files": [],
+  "reuse_candidates": [],
+  "architecture_findings": [],
+  "risk_items": [],
+  "test_targets": [],
+  "open_questions": [],
+  "recommended_implementation_owner": "cursor",
+  "owner_reason": "The change is localized.",
+  "external_evidence": []
+}

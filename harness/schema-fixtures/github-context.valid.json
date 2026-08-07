@@ -1,0 +1,48 @@
+{
+  "schemaVersion": "1.0.0",
+  "generatedAt": "2026-08-05T00:00:00.000Z",
+  "taskId": "PF-001-example",
+  "status": "complete",
+  "source": {
+    "provider": "gh-cli",
+    "repoRoot": "/workspace/repository",
+    "branch": "feat/example",
+    "headSha": "0123456789abcdef0123456789abcdef01234567",
+    "commands": []
+  },
+  "repository": {
+    "nameWithOwner": "owner/repository",
+    "defaultBranch": "main",
+    "isPrivate": true,
+    "url": "https://github.com/owner/repository"
+  },
+  "pullRequest": {
+    "number": 1,
+    "state": "OPEN",
+    "isDraft": false,
+    "mergeable": "MERGEABLE",
+    "mergeStateStatus": "CLEAN",
+    "reviewDecision": "APPROVED",
+    "headRefName": "feat/example",
+    "baseRefName": "main",
+    "headRefOid": "0123456789abcdef0123456789abcdef01234567",
+    "baseRefOid": "fedcba9876543210fedcba9876543210fedcba98",
+    "updatedAt": "2026-08-05T00:00:00.000Z",
+    "url": "https://github.com/owner/repository/pull/1"
+  },
+  "requiredChecks": [
+    {
+      "name": "quality",
+      "bucket": "pass",
+      "state": "SUCCESS",
+      "workflow": "Quality Gate",
+      "link": "https://github.com/owner/repository/actions/runs/1",
+      "startedAt": "2026-08-05T00:00:00.000Z",
+      "completedAt": "2026-08-05T00:01:00.000Z"
+    }
+  ],
+  "recentRuns": [],
+  "untrustedContentIncluded": false,
+  "warnings": [],
+  "errors": []
+}

@@ -1,0 +1,12 @@
+{
+  "schemaVersion": "1.0.0",
+  "taskId": "PF-001-example",
+  "status": "passed",
+  "summary": "All deterministic verification checks passed.",
+  "checks": [
+    { "name": "unit", "status": "passed", "evidence": "npm run test:unit" }
+  ],
+  "preview": { "status": "passed", "reason": null },
+  "rollback": { "confirmed": true, "evidence": "Rollback procedure reviewed." },
+  "headSha": "0123456789abcdef0123456789abcdef01234567"
+}

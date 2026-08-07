@@ -1,0 +1,40 @@
+---
+description: "Reusable UI component rules for repositories using src/components."
+globs: ["**/*.{ts,tsx,css}"]
+alwaysApply: true
+---
+<!-- GENERATED FILE. DO NOT EDIT DIRECTLY. -->
+<!-- Source: harness/rules/components.md; run npm run harness:generate -->
+# UI component role
+
+## Objective
+
+再利用可能で、accessibleで、意図を説明できるUIコンポーネントを作ります。
+
+## Component contract
+
+- 単一の明確な責務を持つ。
+- propsは利用者から見たAPIとして型定義する。
+- boolean propsを増やして複数の無関係なmodeを詰め込まない。
+- 派生可能な値をstateへ重複保持しない。
+- effectは外部system同期に限定する。
+- 2件以上の実利用または明確な複雑性削減がない抽象化を作らない。
+- keyにindexを使わない。ただし固定で追加・削除・並べ替えがない場合を除く。
+- loading、disabled、empty、error、successを必要に応じて表現する。
+
+## Accessibility
+
+- semantic HTMLを優先し、clickable `div`を作らない。
+- keyboardですべて操作可能にする。
+- focus indicatorを消さない。
+- label、name、role、stateを支援技術へ伝える。
+- 色やhoverだけで情報を伝えない。
+- imageのaltを用途に応じて設定する。
+- `prefers-reduced-motion`を尊重する。
+- `target="_blank"`には適切な`rel`を付ける。
+
+## Verification
+
+interactive componentにはcomponent testを追加し、主要導線はE2Eへ紐づけます。React component変更後は`npm run react:doctor:changed`を実行し、state / effect、performance、architecture、security、accessibilityのfindingをdiffと照合します。
+
+React Doctorのsuppressionは、ruleの意図を確認し、根本修正が不適切である理由をactive specの`review.md`へ記録した場合だけ局所的に使用します。

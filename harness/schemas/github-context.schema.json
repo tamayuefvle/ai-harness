@@ -1,0 +1,111 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://portfolio-harness.local/schemas/github-context.schema.json",
+  "type": "object",
+  "required": ["schemaVersion", "generatedAt", "taskId", "status", "source", "repository", "pullRequest", "requiredChecks", "recentRuns", "untrustedContentIncluded", "warnings", "errors"],
+  "properties": {
+    "schemaVersion": { "const": "1.0.0" },
+    "generatedAt": { "type": "string", "format": "date-time" },
+    "taskId": { "type": "string", "minLength": 1 },
+    "status": { "type": "string", "enum": ["complete", "degraded", "unavailable"] },
+    "source": {
+      "type": "object",
+      "required": ["provider", "repoRoot", "branch", "headSha", "commands"],
+      "properties": {
+        "provider": { "const": "gh-cli" },
+        "repoRoot": { "type": "string" },
+        "branch": { "type": ["string", "null"] },
+        "headSha": { "type": ["string", "null"] },
+        "commands": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["id", "command", "args", "exitCode", "durationMs"],
+            "properties": {
+              "id": { "type": "string" },
+              "command": { "type": "string", "enum": ["git", "gh"] },
+              "args": { "type": "array", "items": { "type": "string" } },
+              "exitCode": { "type": "integer" },
+              "durationMs": { "type": "integer", "minimum": 0 }
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "repository": {
+      "type": ["object", "null"],
+      "properties": {
+        "nameWithOwner": { "type": "string" },
+        "defaultBranch": { "type": ["string", "null"] },
+        "isPrivate": { "type": "boolean" },
+        "url": { "type": "string" }
+      },
+      "required": ["nameWithOwner", "defaultBranch", "isPrivate", "url"],
+      "additionalProperties": false
+    },
+    "pullRequest": {
+      "type": ["object", "null"],
+      "properties": {
+        "number": { "type": "integer" },
+        "state": { "type": "string" },
+        "isDraft": { "type": "boolean" },
+        "mergeable": { "type": "string" },
+        "mergeStateStatus": { "type": "string" },
+        "reviewDecision": { "type": ["string", "null"] },
+        "headRefName": { "type": "string" },
+        "baseRefName": { "type": "string" },
+        "headRefOid": { "type": "string" },
+        "baseRefOid": { "type": "string" },
+        "updatedAt": { "type": "string" },
+        "url": { "type": "string" },
+        "title": { "type": "string", "maxLength": 200 }
+      },
+      "required": ["number", "state", "isDraft", "mergeable", "mergeStateStatus", "reviewDecision", "headRefName", "baseRefName", "headRefOid", "baseRefOid", "updatedAt", "url"],
+      "additionalProperties": false
+    },
+    "requiredChecks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name", "bucket", "state", "workflow", "link", "startedAt", "completedAt"],
+        "properties": {
+          "name": { "type": "string" },
+          "bucket": { "type": "string", "enum": ["pass", "fail", "pending", "skipping", "cancel"] },
+          "state": { "type": "string" },
+          "workflow": { "type": ["string", "null"] },
+          "link": { "type": ["string", "null"] },
+          "startedAt": { "type": ["string", "null"] },
+          "completedAt": { "type": ["string", "null"] }
+        },
+        "additionalProperties": false
+      }
+    },
+    "recentRuns": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["databaseId", "workflowName", "displayTitle", "event", "status", "conclusion", "headBranch", "headSha", "createdAt", "updatedAt", "url"],
+        "properties": {
+          "databaseId": { "type": "integer" },
+          "workflowName": { "type": ["string", "null"] },
+          "displayTitle": { "type": ["string", "null"], "maxLength": 200 },
+          "event": { "type": "string" },
+          "status": { "type": "string" },
+          "conclusion": { "type": ["string", "null"] },
+          "headBranch": { "type": ["string", "null"] },
+          "headSha": { "type": "string" },
+          "createdAt": { "type": "string" },
+          "updatedAt": { "type": "string" },
+          "url": { "type": "string" }
+        },
+        "additionalProperties": false
+      }
+    },
+    "untrustedContentIncluded": { "type": "boolean" },
+    "warnings": { "type": "array", "items": { "type": "string" } },
+    "errors": { "type": "array", "items": { "type": "string" } }
+  },
+  "additionalProperties": false
+}

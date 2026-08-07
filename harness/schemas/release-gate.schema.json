@@ -1,0 +1,277 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://portfolio-harness.local/schemas/release-gate.schema.json",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "releaseId",
+    "state",
+    "sourceTasks",
+    "artifact",
+    "preview",
+    "productionApproval",
+    "deployment",
+    "observation",
+    "history"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "1.0.0"
+    },
+    "releaseId": {
+      "type": "string",
+      "pattern": "^REL-[0-9]{4}-[0-9]{2}-[0-9]{2}-[a-z0-9-]+$"
+    },
+    "state": {
+      "enum": [
+        "CANDIDATE",
+        "PREVIEW_VERIFIED",
+        "PRODUCTION_APPROVED",
+        "DEPLOYED",
+        "OBSERVING",
+        "ACCEPTED",
+        "ROLLED_BACK",
+        "CANCELLED"
+      ]
+    },
+    "sourceTasks": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string"
+      }
+    },
+    "artifact": {
+      "type": "object",
+      "required": [
+        "commitSha",
+        "digest",
+        "uri"
+      ],
+      "properties": {
+        "commitSha": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}$"
+        },
+        "digest": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "uri": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "preview": {
+      "type": "object",
+      "required": [
+        "status",
+        "url",
+        "evidence",
+        "recordedAt"
+      ],
+      "properties": {
+        "status": {
+          "enum": [
+            "pending",
+            "passed",
+            "failed",
+            "skipped"
+          ]
+        },
+        "url": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "evidence": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "recordedAt": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        }
+      },
+      "additionalProperties": false
+    },
+    "productionApproval": {
+      "type": "object",
+      "required": [
+        "status",
+        "approvedBy",
+        "approvedAt",
+        "reason"
+      ],
+      "properties": {
+        "status": {
+          "enum": [
+            "pending",
+            "approved",
+            "rejected"
+          ]
+        },
+        "approvedBy": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "approvedAt": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        },
+        "reason": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "deployment": {
+      "type": "object",
+      "required": [
+        "deploymentId",
+        "environment",
+        "commitSha",
+        "recordedBy",
+        "recordedAt",
+        "rollbackTarget"
+      ],
+      "properties": {
+        "deploymentId": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "environment": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "commitSha": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[0-9a-f]{40}$"
+        },
+        "recordedBy": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "recordedAt": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        },
+        "rollbackTarget": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "observation": {
+      "type": "object",
+      "required": [
+        "status",
+        "summary",
+        "evidence",
+        "recordedAt"
+      ],
+      "properties": {
+        "status": {
+          "enum": [
+            "pending",
+            "healthy",
+            "degraded",
+            "failed"
+          ]
+        },
+        "summary": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "evidence": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "recordedAt": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        }
+      },
+      "additionalProperties": false
+    },
+    "history": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/history"
+      }
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "history": {
+      "type": "object",
+      "required": [
+        "from",
+        "to",
+        "actor",
+        "reason",
+        "at"
+      ],
+      "properties": {
+        "from": {
+          "type": "string"
+        },
+        "to": {
+          "type": "string"
+        },
+        "actor": {
+          "type": "string"
+        },
+        "reason": {
+          "type": "string"
+        },
+        "at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

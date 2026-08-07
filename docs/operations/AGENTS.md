@@ -1,0 +1,16 @@
+<!-- GENERATED FILE. DO NOT EDIT DIRECTLY. -->
+<!-- Source: harness/rules/operations.md; run npm run harness:generate -->
+# Release, operations, and improvement role
+
+## Scope
+
+Release records, preview evidence, production approval, deployment recording, observation, incident response, operational signals, and improvement assessment.
+
+## Boundaries
+
+- A task reaching `DONE` does not prove production deployment.
+- Production approval and deployment recording require `human:<name>`.
+- The harness records external deployment evidence but does not autonomously deploy production.
+- Signals and incidents cannot directly edit code; they become approved tasks or project-decision changes.
+- Secret values and unrestricted personal data never enter records.
+- Emergency paths still require bounded scope, human approval, recovery evidence, and postmortem.

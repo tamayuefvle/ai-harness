@@ -1,0 +1,13 @@
+{
+  "schemaVersion": "1.0.0",
+  "proposalId": "IMP-2026-08-06-example",
+  "sourceSignals": [
+    "SIG-2026-08-06-example"
+  ],
+  "status": "proposed",
+  "summary": "Example improvement proposal.",
+  "recommendedAction": "monitor",
+  "projectDecisionChange": false,
+  "approvedBy": null,
+  "approvedAt": null
+}

@@ -1,0 +1,417 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://portfolio-harness.local/schemas/lifecycle-gate.schema.json",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "taskId",
+    "specApproval",
+    "planApproval",
+    "implementation",
+    "verification",
+    "review",
+    "releaseApproval",
+    "history"
+  ],
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "schemaVersion": {
+      "const": "1.1.0"
+    },
+    "taskId": {
+      "type": "string",
+      "pattern": "^[A-Z][A-Z0-9]*-[0-9]{3,}(?:-[a-z0-9][a-z0-9-]*)?$",
+      "$comment": "taskId.pattern is generated from harness/contracts/task-id.json; run npm run harness:generate"
+    },
+    "specApproval": {
+      "$ref": "#/$defs/approval"
+    },
+    "planApproval": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/approval"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "baselineSha": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "pattern": "^[0-9a-f]{40}$"
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "approved"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "baselineSha": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{40}$"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "implementation": {
+      "type": "object",
+      "required": [
+        "status",
+        "reportPath",
+        "reportSha256",
+        "changeFingerprint",
+        "recordedAt"
+      ],
+      "properties": {
+        "status": {
+          "enum": [
+            "pending",
+            "passed",
+            "failed"
+          ]
+        },
+        "reportPath": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "reportSha256": {
+          "$ref": "#/$defs/nullableDigest"
+        },
+        "changeFingerprint": {
+          "$ref": "#/$defs/nullableDigest"
+        },
+        "recordedAt": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        }
+      },
+      "additionalProperties": false
+    },
+    "verification": {
+      "type": "object",
+      "required": [
+        "status",
+        "reportPath",
+        "reportSha256",
+        "githubContextPath",
+        "githubContextSha256",
+        "reactDoctorPath",
+        "reactDoctorSha256",
+        "previewStatus",
+        "rollbackConfirmed",
+        "headSha",
+        "recordedAt"
+      ],
+      "properties": {
+        "status": {
+          "enum": [
+            "pending",
+            "passed",
+            "failed"
+          ]
+        },
+        "reportPath": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "reportSha256": {
+          "$ref": "#/$defs/nullableDigest"
+        },
+        "githubContextPath": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "githubContextSha256": {
+          "$ref": "#/$defs/nullableDigest"
+        },
+        "reactDoctorPath": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "reactDoctorSha256": {
+          "$ref": "#/$defs/nullableDigest"
+        },
+        "previewStatus": {
+          "enum": [
+            "pending",
+            "passed",
+            "skipped"
+          ]
+        },
+        "rollbackConfirmed": {
+          "type": "boolean"
+        },
+        "headSha": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[0-9a-f]{40}$"
+        },
+        "recordedAt": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        }
+      },
+      "additionalProperties": false
+    },
+    "review": {
+      "type": "object",
+      "required": [
+        "status",
+        "verdict",
+        "reportPath",
+        "reportSha256",
+        "p0",
+        "p1",
+        "p2",
+        "acceptedP2Evidence",
+        "recordedAt"
+      ],
+      "properties": {
+        "status": {
+          "enum": [
+            "pending",
+            "completed"
+          ]
+        },
+        "verdict": {
+          "enum": [
+            null,
+            "approved",
+            "changes_requested"
+          ]
+        },
+        "reportPath": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "reportSha256": {
+          "$ref": "#/$defs/nullableDigest"
+        },
+        "p0": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "p1": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "p2": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "acceptedP2Evidence": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "path",
+              "sha256"
+            ],
+            "properties": {
+              "path": {
+                "type": "string",
+                "minLength": 1
+              },
+              "sha256": {
+                "$ref": "#/$defs/digest"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "recordedAt": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        }
+      },
+      "additionalProperties": false
+    },
+    "releaseApproval": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/approval"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "mode": {
+              "enum": [
+                null,
+                "preview",
+                "production"
+              ]
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "approved"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "mode": {
+                "enum": [
+                  "preview",
+                  "production"
+                ]
+              }
+            }
+          }
+        }
+      ]
+    },
+    "history": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "action",
+          "actor",
+          "at",
+          "reason"
+        ],
+        "properties": {
+          "action": {
+            "type": "string",
+            "minLength": 1
+          },
+          "actor": {
+            "type": "string",
+            "minLength": 1
+          },
+          "at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "reason": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "additionalProperties": true
+      }
+    }
+  },
+  "$defs": {
+    "digest": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "nullableDigest": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "approval": {
+      "type": "object",
+      "required": [
+        "status",
+        "approvedBy",
+        "approvedAt",
+        "reason",
+        "contractHash"
+      ],
+      "properties": {
+        "status": {
+          "enum": [
+            "pending",
+            "approved",
+            "revoked"
+          ]
+        },
+        "approvedBy": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "approvedAt": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        },
+        "reason": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "contractHash": {
+          "$ref": "#/$defs/nullableDigest"
+        }
+      },
+      "additionalProperties": true,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "approved"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "approvedBy": {
+                "type": "string",
+                "minLength": 1
+              },
+              "approvedAt": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "reason": {
+                "type": "string",
+                "minLength": 1
+              },
+              "contractHash": {
+                "$ref": "#/$defs/digest"
+              }
+            }
+          }
+        }
+      ]
+    }
+  },
+  "additionalProperties": false
+}

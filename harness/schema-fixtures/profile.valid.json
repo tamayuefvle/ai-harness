@@ -1,0 +1,22 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "runtime/node",
+  "version": "1.0.0",
+  "kind": "runtime",
+  "status": "stable",
+  "requires": [],
+  "conflicts": [],
+  "rules": [],
+  "commands": {
+    "runtimeVersion": "node --version"
+  },
+  "checks": [
+    "runtimeVersion"
+  ],
+  "capabilities": [
+    "process-execution"
+  ],
+  "riskControls": [
+    "node-lts-required"
+  ]
+}

@@ -1,0 +1,130 @@
+{
+  "schemaVersion": "1.0.0",
+  "cases": [
+    {
+      "id": "schema-validation-manifest",
+      "schema": "harness/schemas/schema-validation-manifest.schema.json",
+      "instance": "harness/schemas/validation-manifest.json"
+    },
+    {
+      "id": "capability-manifest",
+      "schema": "harness/capabilities/schema.json",
+      "instance": "harness/capabilities/manifest.json"
+    },
+    {
+      "id": "github-integration",
+      "schema": "harness/schemas/github-integration.schema.json",
+      "instance": "harness/integrations/github.json"
+    },
+    {
+      "id": "verification-output",
+      "schema": "harness/schemas/verification.schema.json",
+      "instance": "harness/schema-fixtures/verification.valid.json"
+    },
+    {
+      "id": "github-context",
+      "schema": "harness/schemas/github-context.schema.json",
+      "instance": "harness/schema-fixtures/github-context.valid.json"
+    },
+    {
+      "id": "github-push-proposal",
+      "schema": "harness/schemas/github-push-proposal.schema.json",
+      "instance": "harness/schema-fixtures/github-push-proposal.valid.json"
+    },
+    {
+      "id": "react-doctor-result",
+      "schema": "harness/schemas/react-doctor-result.schema.json",
+      "instance": "harness/schema-fixtures/react-doctor-result.valid.json"
+    },
+    {
+      "id": "research-output",
+      "schema": "harness/schemas/research.schema.json",
+      "instance": "harness/schema-fixtures/research.valid.json"
+    },
+    {
+      "id": "implementation-output",
+      "schema": "harness/schemas/implementation.schema.json",
+      "instance": "harness/schema-fixtures/implementation.valid.json"
+    },
+    {
+      "id": "review-output",
+      "schema": "harness/schemas/review.schema.json",
+      "instance": "harness/schema-fixtures/review.valid.json"
+    },
+    {
+      "id": "lifecycle-gate-template",
+      "schema": "harness/schemas/lifecycle-gate.schema.json",
+      "instance": "docs/specs/TEMPLATE/gate.json"
+    },
+    {
+      "id": "lifecycle-gate-non-pf",
+      "schema": "harness/schemas/lifecycle-gate.schema.json",
+      "instance": "harness/schema-fixtures/lifecycle-gate-non-pf.valid.json"
+    },
+    {
+      "id": "lifecycle-manifest",
+      "schema": "harness/schemas/lifecycle-manifest.schema.json",
+      "instance": "harness/schema-fixtures/lifecycle-manifest.valid.json"
+    },
+    {
+      "id": "project-state",
+      "schema": "harness/schemas/project-state.schema.json",
+      "instance": "harness/schema-fixtures/project-state.valid.json"
+    },
+    {
+      "id": "profile",
+      "schema": "harness/schemas/profile.schema.json",
+      "instance": "harness/schema-fixtures/profile.valid.json"
+    },
+    {
+      "id": "profile-registry",
+      "schema": "harness/schemas/profile-registry.schema.json",
+      "instance": "harness/schema-fixtures/profile-registry.valid.json"
+    },
+    {
+      "id": "release-gate",
+      "schema": "harness/schemas/release-gate.schema.json",
+      "instance": "harness/schema-fixtures/release-gate.valid.json"
+    },
+    {
+      "id": "incident-gate",
+      "schema": "harness/schemas/incident-gate.schema.json",
+      "instance": "harness/schema-fixtures/incident-gate.valid.json"
+    },
+    {
+      "id": "operational-signal",
+      "schema": "harness/schemas/operational-signal.schema.json",
+      "instance": "harness/schema-fixtures/operational-signal.valid.json"
+    },
+    {
+      "id": "improvement-proposal",
+      "schema": "harness/schemas/improvement-proposal.schema.json",
+      "instance": "harness/schema-fixtures/improvement-proposal.valid.json"
+    },
+    {
+      "id": "profile-resolution",
+      "schema": "harness/schemas/profile-resolution.schema.json",
+      "instance": "harness/schema-fixtures/profile-resolution.valid.json"
+    },
+    {
+      "id": "project-state-current",
+      "schema": "harness/schemas/project-state.schema.json",
+      "instance": "harness/project.json"
+    },
+    {
+      "id": "profile-resolution-current",
+      "schema": "harness/schemas/profile-resolution.schema.json",
+      "instance": "harness/generated/profile-resolution.json"
+    },
+    {
+      "id": "release-gate-template-v11",
+      "schema": "harness/schemas/release-gate.schema.json",
+      "instance": "docs/operations/releases/TEMPLATE/gate.json"
+    },
+    {
+      "id": "incident-gate-template-v11",
+      "schema": "harness/schemas/incident-gate.schema.json",
+      "instance": "docs/operations/incidents/TEMPLATE/gate.json"
+    }
+  ]
+}

@@ -1,0 +1,67 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://portfolio-harness.local/schemas/operational-signal.schema.json",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "signalId",
+    "type",
+    "source",
+    "observedAt",
+    "summary",
+    "severity",
+    "evidence",
+    "containsSecrets"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "1.0.0"
+    },
+    "signalId": {
+      "type": "string",
+      "pattern": "^SIG-[0-9]{4}-[0-9]{2}-[0-9]{2}-[a-z0-9-]+$"
+    },
+    "type": {
+      "enum": [
+        "telemetry",
+        "user-feedback",
+        "incident",
+        "review",
+        "security",
+        "cost"
+      ]
+    },
+    "source": {
+      "type": "string",
+      "minLength": 1
+    },
+    "observedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "summary": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 2000
+    },
+    "severity": {
+      "enum": [
+        "info",
+        "low",
+        "medium",
+        "high",
+        "critical"
+      ]
+    },
+    "evidence": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "containsSecrets": {
+      "const": false
+    }
+  },
+  "additionalProperties": false
+}

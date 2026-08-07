@@ -1,0 +1,40 @@
+{
+  "schemaVersion": "1.0.0",
+  "releaseId": "REL-2000-01-01-template",
+  "state": "CANDIDATE",
+  "sourceTasks": [
+    "PF-000-template"
+  ],
+  "artifact": {
+    "commitSha": "0000000000000000000000000000000000000000",
+    "digest": "0000000000000000000000000000000000000000000000000000000000000000",
+    "uri": null
+  },
+  "preview": {
+    "status": "pending",
+    "url": null,
+    "evidence": null,
+    "recordedAt": null
+  },
+  "productionApproval": {
+    "status": "pending",
+    "approvedBy": null,
+    "approvedAt": null,
+    "reason": null
+  },
+  "deployment": {
+    "deploymentId": null,
+    "environment": null,
+    "commitSha": null,
+    "recordedBy": null,
+    "recordedAt": null,
+    "rollbackTarget": null
+  },
+  "observation": {
+    "status": "pending",
+    "summary": null,
+    "evidence": [],
+    "recordedAt": null
+  },
+  "history": []
+}

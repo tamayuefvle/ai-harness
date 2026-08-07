@@ -1,0 +1,17 @@
+{
+  "schemaVersion": "1.1.0",
+  "operation": "push-and-create-pr",
+  "repository": "owner/repository",
+  "remote": "https://github.com/owner/repository.git",
+  "branch": "feat/example",
+  "baseBranch": "main",
+  "localHead": "0123456789abcdef0123456789abcdef01234567",
+  "files": { "included": ["src/example.ts"], "unexpected": [] },
+  "evidence": {
+    "implementation": { "status": "passed", "report": ".harness/reports/PF-001/implementation.json" },
+    "verification": { "status": "pending", "report": null },
+    "review": { "status": "pending", "report": null }
+  },
+  "commands": ["git push --set-upstream origin feat/example", "gh pr create --base main --head feat/example --body-file approved.md"],
+  "requiresHumanApproval": true
+}

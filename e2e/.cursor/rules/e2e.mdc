@@ -1,0 +1,32 @@
+---
+description: "Playwright critical journeys, CI reliability, artifacts, and Preview smoke rules."
+globs: ["**/*.{ts,tsx}"]
+alwaysApply: true
+---
+<!-- GENERATED FILE. DO NOT EDIT DIRECTLY. -->
+<!-- Source: harness/rules/e2e.md; run npm run harness:generate -->
+# Playwright and visitor-journey role
+
+## Critical journeys
+
+最低限、次を検証します。
+
+- トップから自己紹介、経歴、作品、連絡導線へ到達できる。
+- 作品一覧から詳細へ移動し、戻れる。
+- navigationがkeyboardとmobile viewportで使える。
+- 不正または存在しないrouteが安全に404になる。
+- 外部linkのhrefと安全属性が正しい。
+- production build相当でconsole errorがない。
+
+## Reliability
+
+- locatorはrole、label、textなどuser-visible contractを優先する。
+- fixed timeoutで安定化しない。
+- CIでは原則workers=1。
+- flaky testをretryだけで隠さない。
+- failure時にtrace、screenshot、reportを保存する。
+- test dataは独立し、実行順に依存させない。
+
+## Preview smoke
+
+Preview URLを対象に同じ主要導線を確認し、URL、browser、viewport、結果をPRへ記録します。

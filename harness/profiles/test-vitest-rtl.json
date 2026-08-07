@@ -1,0 +1,26 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "test/vitest-rtl",
+  "version": "1.0.0",
+  "kind": "test",
+  "status": "stable",
+  "requires": [
+    "framework/react",
+    "language/typescript"
+  ],
+  "conflicts": [],
+  "rules": [],
+  "commands": {
+    "unit": "npm run test:unit"
+  },
+  "checks": [
+    "unit"
+  ],
+  "capabilities": [
+    "unit-test",
+    "component-test"
+  ],
+  "riskControls": [
+    "deterministic-tests"
+  ]
+}

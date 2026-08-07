@@ -1,0 +1,7 @@
+{
+  "devDependencies": {
+    "ajv": "^8.17.1",
+    "react-doctor": "0.7.7",
+    "ajv-formats": "^3.0.1"
+  }
+}

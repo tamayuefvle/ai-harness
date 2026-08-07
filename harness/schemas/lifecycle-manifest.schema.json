@@ -1,0 +1,114 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://portfolio-harness.local/schemas/lifecycle-manifest.schema.json",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "lifecycles"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "1.0.0"
+    },
+    "lifecycles": {
+      "type": "object",
+      "required": [
+        "project",
+        "task",
+        "release",
+        "incident"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "project": {
+          "$ref": "#/$defs/lifecycle"
+        },
+        "task": {
+          "$ref": "#/$defs/lifecycle"
+        },
+        "release": {
+          "$ref": "#/$defs/lifecycle"
+        },
+        "incident": {
+          "$ref": "#/$defs/lifecycle"
+        }
+      }
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "transition": {
+      "type": "object",
+      "required": [
+        "from",
+        "to",
+        "approval",
+        "requiredDocuments"
+      ],
+      "properties": {
+        "from": {
+          "type": "string",
+          "minLength": 1
+        },
+        "to": {
+          "type": "string",
+          "minLength": 1
+        },
+        "approval": {
+          "enum": [
+            "none",
+            "human"
+          ]
+        },
+        "requiredDocuments": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        }
+      },
+      "additionalProperties": false
+    },
+    "lifecycle": {
+      "type": "object",
+      "required": [
+        "initialState",
+        "activeStates",
+        "terminalStates",
+        "transitions"
+      ],
+      "properties": {
+        "initialState": {
+          "type": "string",
+          "minLength": 1
+        },
+        "activeStates": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "terminalStates": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "transitions": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/transition"
+          }
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

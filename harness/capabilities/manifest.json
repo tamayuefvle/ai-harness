@@ -1,0 +1,222 @@
+{
+  "$schema": "./schema.json",
+  "schemaVersion": "1.1.0",
+  "capabilities": [
+    {
+      "id": "repository",
+      "purpose": "Inspect and modify the local repository within approved boundaries.",
+      "risk": "local-write",
+      "providers": [
+        {
+          "id": "workspace-tools",
+          "priority": 10,
+          "required": true,
+          "operations": [
+            "read",
+            "search",
+            "write-approved-paths"
+          ],
+          "approval": "none",
+          "enabledByDefault": true
+        }
+      ]
+    },
+    {
+      "id": "git",
+      "purpose": "Inspect local history and prepare reviewed commits without destructive operations.",
+      "risk": "local-write",
+      "providers": [
+        {
+          "id": "git-cli",
+          "priority": 10,
+          "required": true,
+          "operations": [
+            "status",
+            "diff",
+            "log",
+            "fetch",
+            "selective-stage",
+            "commit-after-approval"
+          ],
+          "approval": "per-operation",
+          "enabledByDefault": true
+        }
+      ]
+    },
+    {
+      "id": "github",
+      "purpose": "Read GitHub evidence and perform approved branch/PR writes over HTTPS.",
+      "risk": "external-write",
+      "providers": [
+        {
+          "id": "gh-cli-https",
+          "priority": 10,
+          "required": true,
+          "operations": [
+            "repo-read",
+            "pr-read",
+            "checks-read",
+            "runs-read",
+            "push-approved-branch",
+            "pr-create-approved"
+          ],
+          "approval": "per-operation",
+          "enabledByDefault": true
+        }
+      ]
+    },
+    {
+      "id": "documentation",
+      "purpose": "Resolve documentation applicable to the installed dependency version.",
+      "risk": "external-read",
+      "providers": [
+        {
+          "id": "local-package",
+          "priority": 10,
+          "required": true,
+          "operations": [
+            "package-metadata",
+            "types",
+            "local-readme"
+          ],
+          "approval": "none",
+          "enabledByDefault": true,
+          "confidenceScore": 95,
+          "stopWhenSufficient": true
+        },
+        {
+          "id": "official-web",
+          "priority": 20,
+          "required": false,
+          "operations": [
+            "official-docs",
+            "official-repository",
+            "release-notes"
+          ],
+          "approval": "none",
+          "enabledByDefault": true,
+          "confidenceScore": 80,
+          "stopWhenSufficient": true
+        },
+        {
+          "id": "context7-cli",
+          "priority": 30,
+          "required": false,
+          "operations": [
+            "library-search",
+            "documentation-query"
+          ],
+          "approval": "none",
+          "enabledByDefault": false,
+          "confidenceScore": 60,
+          "trigger": "documentation.resolutionStrategy.context7Trigger"
+        }
+      ],
+      "resolutionStrategy": {
+        "classification": [
+          "repository-specific",
+          "library-specific",
+          "cli-specific",
+          "general-knowledge"
+        ],
+        "stopWhenSufficient": true,
+        "evidenceOrder": [
+          "repository",
+          "installed-package",
+          "local-types",
+          "official-documentation",
+          "official-repository",
+          "context7-cli"
+        ],
+        "materialDecisionRequiresPrimarySource": true,
+        "context7Trigger": {
+          "mode": "all",
+          "conditions": [
+            "library-specific-question",
+            "installed-version-identified",
+            "local-evidence-insufficient",
+            "official-primary-source-insufficient-or-unavailable",
+            "external-read-allowed-for-role",
+            "context7-cli-available"
+          ],
+          "default": "disabled",
+          "onUnavailable": "degrade-without-blocking"
+        },
+        "requiredEvidenceFields": [
+          "provider",
+          "query",
+          "installedVersion",
+          "retrievedAt",
+          "applicability",
+          "officialSourceVerified"
+        ]
+      }
+    },
+    {
+      "id": "browser",
+      "purpose": "Collect bounded browser evidence for local or approved preview URLs.",
+      "risk": "external-read",
+      "providers": [
+        {
+          "id": "chrome-devtools-mcp",
+          "priority": 10,
+          "required": false,
+          "operations": [
+            "dom",
+            "console",
+            "network",
+            "screenshot",
+            "performance"
+          ],
+          "approval": "none",
+          "enabledByDefault": false
+        },
+        {
+          "id": "playwright-cli",
+          "priority": 20,
+          "required": false,
+          "operations": [
+            "journey",
+            "screenshot",
+            "trace"
+          ],
+          "approval": "none",
+          "enabledByDefault": true
+        }
+      ]
+    },
+    {
+      "id": "test",
+      "purpose": "Run deterministic quality checks and normalized React diagnostics.",
+      "risk": "local-read",
+      "providers": [
+        {
+          "id": "npm-scripts",
+          "priority": 10,
+          "required": true,
+          "operations": [
+            "lint",
+            "typecheck",
+            "unit",
+            "build",
+            "e2e"
+          ],
+          "approval": "none",
+          "enabledByDefault": true
+        },
+        {
+          "id": "react-doctor",
+          "priority": 20,
+          "required": false,
+          "operations": [
+            "changed-scan",
+            "full-scan",
+            "normalized-report"
+          ],
+          "approval": "none",
+          "enabledByDefault": true
+        }
+      ]
+    }
+  ]
+}

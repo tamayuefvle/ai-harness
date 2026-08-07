@@ -1,0 +1,32 @@
+{
+  "task_id": "PF-001-example",
+  "acceptance_id": "AC-001",
+  "status": "implemented",
+  "summary": "Implemented the accepted slice.",
+  "files_changed": [
+    {
+      "path": "src/example.ts",
+      "change": "Added behavior"
+    }
+  ],
+  "commands_run": [
+    {
+      "command": "npm test",
+      "result": "pass",
+      "notes": "All tests passed"
+    }
+  ],
+  "test_discipline": {
+    "applicable": true,
+    "red_evidence": "tests/example.test.ts failed before the implementation change.",
+    "green_evidence": "npm test passed after the implementation change.",
+    "refactor": "not-needed",
+    "not_applicable_reason": null
+  },
+  "acceptance_evidence": [
+    "tests/example.test.ts"
+  ],
+  "remaining_work": [],
+  "risks": [],
+  "scope_deviations": []
+}

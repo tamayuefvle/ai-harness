@@ -1,0 +1,23 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "package-manager/npm",
+  "version": "1.0.0",
+  "kind": "package-manager",
+  "status": "stable",
+  "requires": [
+    "runtime/node"
+  ],
+  "conflicts": [],
+  "rules": [],
+  "commands": {
+    "install": "npm ci"
+  },
+  "checks": [],
+  "capabilities": [
+    "dependency-install"
+  ],
+  "riskControls": [
+    "single-npm-lockfile",
+    "install-requires-approved-foundation-task"
+  ]
+}

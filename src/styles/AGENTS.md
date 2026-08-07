@@ -1,0 +1,27 @@
+<!-- GENERATED FILE. DO NOT EDIT DIRECTLY. -->
+<!-- Source: harness/rules/styles.md; run npm run harness:generate -->
+# Styling and responsive design role
+
+## System
+
+- design tokenはCSS custom propertiesへ集約する。
+- 色、spacing、font、radius、shadow、z-indexを場当たり的に増やさない。
+- CSS Modulesを既定とし、方式変更はADRを要求する。
+- component固有styleとglobal foundationを分離する。
+- specificity競争、`!important`、巨大なglobal selectorを避ける。
+
+## Responsive requirements
+
+- 320pxで意図しない横scrollがない。
+- 768px前後でnavigationとgridが破綻しない。
+- 1280px以上で本文行長が過度に伸びない。
+- 200% zoomでも主要操作を利用できる。
+- hoverにだけ情報を依存しない。
+- touch targetとfocus visibilityを確保する。
+- motionはreduced-motionで抑制できる。
+
+## Performance
+
+- layout shiftを避ける。
+- font、background image、animationのcostを意識する。
+- 画像寸法とcontainerのaspect ratioを一致させる。

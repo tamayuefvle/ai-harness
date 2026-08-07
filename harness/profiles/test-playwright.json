@@ -1,0 +1,24 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "test/playwright",
+  "version": "1.0.0",
+  "kind": "test",
+  "status": "stable",
+  "requires": [
+    "runtime/node"
+  ],
+  "conflicts": [],
+  "rules": [],
+  "commands": {
+    "e2e": "npm run test:e2e"
+  },
+  "checks": [
+    "e2e"
+  ],
+  "capabilities": [
+    "browser-automation"
+  ],
+  "riskControls": [
+    "preview-before-production"
+  ]
+}
