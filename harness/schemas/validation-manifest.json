@@ -107,6 +107,11 @@
       "instance": "harness/schema-fixtures/profile-resolution.valid.json"
     },
     {
+      "id": "profile-resolution-unresolved",
+      "schema": "harness/schemas/profile-resolution.schema.json",
+      "instance": "harness/schema-fixtures/profile-resolution.unresolved.json"
+    },
+    {
       "id": "project-state-current",
       "schema": "harness/schemas/project-state.schema.json",
       "instance": "harness/project.json"

@@ -1,4 +1,8 @@
-# Harness maintainer role
+# User project harness maintenance
+
+## Scope
+
+`harness/` は **このプロジェクト** の規約・lifecycle・profiles・schemas・生成物を保守する領域です。配布パッケージ（ai-harness）自体の major 公開、メンテナ制御面、自己改善オーケストレーションはここでは扱いません。
 
 ## Source of truth
 
@@ -11,23 +15,21 @@
 
 変更手順:
 
-1. role sourceを更新する。
-2. manifestのtarget / routingを更新する。
+1. role source を更新する。
+2. manifest の target / routing / `requiresProfiles` を更新する。
 3. `npm run harness:generate`
 4. `npm run harness:check`
-5. `npm run harness:route -- <representative path>`でinstruction chainを確認する。
-6. Git hookとCIを実行する。
+5. `npm run harness:route -- <representative path>` で instruction chain を確認する。
+6. Git hook と CI を実行する。
 
 ## Design principles
 
-- ルートは司令塔に限定し、詳細規約を置かない。
-- 子roleは目的、入力、許可範囲、禁止、verificationを持つ。
-- 同一内容を複数sourceへ複製しない。
-- 1つのrole sourceから、必要な複数pathの`AGENTS.md`とCursor Rulesを生成できるようにする。
-- 下位roleは上位の安全境界を弱めない。
-- 新しいディレクトリ責務を追加したらrouting mapとroute testを追加する。
-- instruction chain全体が`project_doc_max_bytes`を超えないようにする。
+- ルートは薄い policy に限定し、詳細規約は domain role へ置く。
+- 子 role は目的、入力、許可範囲、禁止、verification を持つ。
+- 同一内容を複数 source へ複製しない。
+- stack 固有 rule は profile 選択後のみ生成する（`requiresProfiles`）。
+- 下位 role は上位の安全境界を弱めない。
 
 ## Harness change gate
 
-ハーネス変更は通常のプロダクト機能と分けます。生成同期、JSON/TOML/Python/Node syntax、代表route、Git hook、CI YAMLの整合を確認します。
+ハーネス変更は通常のプロダクト機能と分けます。生成同期、JSON schema、代表 route、Git hook、CI YAML の整合を確認します。未使用の optional scaffold は削除してよいが、profile 未選択時に stack rule が誤生成されないことを確認します。

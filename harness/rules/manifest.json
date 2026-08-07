@@ -1,27 +1,27 @@
 [
   {
-    "id": "root-command-center",
-    "source": "root-command-center.md",
+    "id": "user-root-policy",
+    "source": "user-root-policy.md",
     "agentsTargets": [
       "AGENTS.md"
     ],
     "cursorTargets": [
       {
-        "path": ".cursor/rules/00-command-center.mdc",
-        "description": "Repository command center: route work to the correct role, enforce global gates and safety boundaries.",
+        "path": ".cursor/rules/00-user-root-policy.mdc",
+        "description": "User root policy: authority order, instruction chain, stop conditions, and verification honesty.",
         "globs": [],
         "alwaysApply": true
       }
     ]
   },
   {
-    "id": "cursor-orchestrator",
-    "source": "cursor-orchestrator.md",
+    "id": "user-task-dispatcher",
+    "source": "user-task-dispatcher.md",
     "agentsTargets": [],
     "cursorTargets": [
       {
-        "path": ".cursor/rules/01-natural-language-orchestrator.mdc",
-        "description": "Translate ordinary Japanese development requests into the correct task, planning, implementation, verification, review, and release workflow.",
+        "path": ".cursor/rules/01-user-task-dispatcher.mdc",
+        "description": "Classify natural-language requests into product, spec, design, implementation, verification, review, and release workflows.",
         "globs": [],
         "alwaysApply": true
       }
@@ -257,6 +257,9 @@
         ],
         "alwaysApply": true
       }
+    ],
+    "requiresProfiles": [
+      "framework/react"
     ]
   },
   {

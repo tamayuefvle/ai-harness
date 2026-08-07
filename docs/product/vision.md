@@ -1,16 +1,11 @@
 # Product vision
 
+<!-- Template: replace with your product vision. -->
+
 ## Product
 
-たまの24年のIT経験、業務システム開発・保守、改善志向、現在の React / Next.js 学習を、
-採用担当者や案件担当者が短時間で理解できるポートフォリオ。
+_Describe what you are building and for whom._
 
 ## Primary outcome
 
-訪問者が次を判断できること。
-
-1. 何ができる人か
-2. どのような経験を持つか
-3. どのように課題を分析・設計・実装・検証するか
-4. React / Next.js を使った成果物を自分の言葉で説明できるか
-5. 連絡または次の会話へ進む理由があるか
+_List the outcomes visitors or users should achieve._

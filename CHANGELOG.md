@@ -1,5 +1,15 @@
 # Changelog
 
+## v12.0.0 - 2026-08-07
+
+- Redesigned package metadata (`PACKAGE_MANIFEST.json` schemaVersion 2.0.0) with core / optionalProfiles / generated categories; removed maintainer-only fields.
+- Replaced maintainer-style root rules with user `user-root-policy` and `user-task-dispatcher` (generated as `00-user-root-policy.mdc` / `01-user-task-dispatcher.mdc`).
+- Separated bootstrap template (`harness/templates/project.bootstrap.json`) from live `harness/project.json`; default `projectId` is `change-me` with empty `proposedProfiles`.
+- Shipped unresolved `profile-resolution.json` stub until profiles are chosen and resolved.
+- Added `optionalPaths` / `optionalRuleSources` to stack profiles; stack rules generate only when matching profiles are active or proposed.
+- Soft-templated product docs and architecture baseline; dropped completed PF specs and internal improvement records from the distribution bundle.
+- Renamed Cursor command `portfolio` → `develop` for generic project development entry.
+
 ## v11.0.0 - 2026-08-06
 
 - Added canonical project, task, release, and incident lifecycle manifest.

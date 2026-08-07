@@ -20,5 +20,11 @@
   ],
   "riskControls": [
     "preview-before-production"
+  ],
+  "optionalPaths": [
+    "e2e/"
+  ],
+  "optionalRuleSources": [
+    "e2e"
   ]
 }

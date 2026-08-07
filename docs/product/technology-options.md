@@ -1,3 +1,20 @@
 # Technology options
 
-Compare viable options against approved requirements. For each option record fit, evidence, delivery and operating cost, security, vendor dependency, migration path, validation strategy, and rejection reasons. A trend or model preference is not evidence.
+<!-- Template: compare stack candidates before committing. -->
+
+## Candidates
+
+| Option | Pros | Cons | Fit |
+|---|---|---|---|
+| _Stack A_ | | | |
+
+## Evaluation criteria
+
+- Team familiarity
+- Operational cost
+- Time to first release
+- Test and observability fit
+
+## Recommendation
+
+_Summarize the recommended direction (non-binding until recorded in technology-decision.md)._

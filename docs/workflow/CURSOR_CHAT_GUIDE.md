@@ -52,7 +52,7 @@ Codex実装だった場合も、Cursor側でもう一度結果を確認して。
 ## Optional entrypoint
 
 ```text
-/portfolio <日本語の依頼>
+/develop <日本語の依頼>
 ```
 
 通常チャットでも同じルールが適用されます。

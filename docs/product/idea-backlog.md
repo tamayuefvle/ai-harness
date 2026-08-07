@@ -1,3 +1,7 @@
 # Idea backlog
 
-Record candidate ideas without authorizing implementation. Each entry must include the observed problem, intended user, expected outcome, evidence, assumptions, and rejection criteria.
+<!-- Template: capture ideas before formal product work. -->
+
+| ID | Idea | Status | Notes |
+|---|---|---|---|
+| IDEA-001 | _Short title_ | draft | _Context_ |

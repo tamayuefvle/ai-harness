@@ -21,5 +21,10 @@
   "riskControls": [
     "normalized-evidence",
     "no-remote-instruction-authority"
-  ]
+  ],
+  "optionalPaths": [
+    "doctor.config.json",
+    ".github/workflows/react-doctor.yml"
+  ],
+  "optionalRuleSources": []
 }

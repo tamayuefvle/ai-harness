@@ -1,20 +1,27 @@
-# Migration from v10.1.1 to v11.0.0
+# Migration from v11.0.0 to v12.0.0
 
 1. Back up the repository and record the current commit. Do not use destructive Git commands.
-2. Overlay the v11 package while preserving application files and existing task evidence.
-3. Merge `package.scripts.fragment.json`, `package.devDependencies.fragment.json`, and `.gitignore.harness-fragment` using the existing bootstrap procedure.
-4. Run the rule and schema generators.
-5. Run `npm run project:migrate-full` when upgrading an existing v10.1.1 installation.
-6. Review `docs/product/technology-decision.md`, architecture/security/quality baselines, and the proposed profile set.
+2. Overlay the v12 package while preserving application files and existing task evidence.
+3. Merge `package.scripts.fragment.json`, `package.devDependencies.fragment.json`, and `.gitignore.harness-fragment` using your existing bootstrap procedure.
+4. Run `npm run harness:generate` and `npm run harness:check`.
+5. Set `harness/project.json` → `projectId` to your project identifier (replace `change-me`).
+6. Choose `migration.proposedProfiles` (see `harness/profiles/` and `docs/product/technology-decision.md`). Web/React/Next bundles are optional scaffold examples, not pre-selected.
 7. Run `npm run profile:resolve`.
-8. Record explicit approval: `npm run project:gate -- --to ACTIVE --actor human:<name> --reason "..."`.
-9. Advance: `npm run project:advance -- --to ACTIVE`.
-10. Run harness verification and application profile checks. Configure the GitHub `production` Environment before using the release gate workflow.
+8. Review soft-templated `docs/product/*` and `docs/architecture/baseline.md`; fill or replace with your project content.
+9. Record explicit approval: `npm run project:gate -- --to ACTIVE --actor human:<name> --reason "..."`.
+10. Advance: `npm run project:advance -- --to ACTIVE` (only after human approval).
+11. Run harness verification and application profile checks.
+
+## State behavior
+
+- v12 does **not** auto-advance `MIGRATION_PENDING` → `ACTIVE`. Existing v11 clones keep their live state until you explicitly migrate.
+- Bundled `profile-resolution.json` is `unresolved` until you resolve profiles.
+- Unused optional scaffold paths (e.g. `app/`, `e2e/`) may be deleted if you did not select matching profiles.
 
 ## Compatibility
 
-The task lifecycle and gate schema 1.1.0 are retained. Existing completed specs and `.harness/reports` remain valid. `delivery-only` mode exists only as a temporary controlled compatibility option; new installations should use `full`.
+Task lifecycle and gate schema 1.1.0 are retained. Existing `.harness/reports` remain valid. Cursor slash command is now `/develop` (formerly `/portfolio`).
 
 ## Rollback
 
-Restore the backed-up v10.1.1 harness files, regenerate rules, restore prior required-check settings, and remove v11-only GitHub Environment/workflow configuration. Application source and existing task evidence should not be deleted.
+Restore backed-up v11 harness files, regenerate rules, and restore prior `harness/project.json` / `profile-resolution.json` if needed. Application source and task evidence should not be deleted.

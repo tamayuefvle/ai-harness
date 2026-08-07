@@ -22,5 +22,12 @@
   ],
   "riskControls": [
     "strict-mode"
+  ],
+  "optionalPaths": [
+    "lib/",
+    "src/lib/"
+  ],
+  "optionalRuleSources": [
+    "lib"
   ]
 }

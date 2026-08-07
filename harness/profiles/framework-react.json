@@ -17,5 +17,12 @@
   "riskControls": [
     "accessible-interactions",
     "client-boundary-review"
+  ],
+  "optionalPaths": [
+    "components/",
+    "src/components/"
+  ],
+  "optionalRuleSources": [
+    "components"
   ]
 }

@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.0.0",
-  "projectId": "portfolio-ai-harness",
+  "projectId": "example-project",
   "lifecycleMode": "full",
   "state": "MIGRATION_PENDING",
   "pendingApproval": null,

@@ -1,9 +1,19 @@
-# Product and non-functional requirements
+# Requirements backlog
 
-## Functional requirements
+<!-- Template: capture requirements before they become specs. -->
 
-- To be approved during product discovery.
+## Must
 
-## Non-functional requirements
+- _Requirement_
 
-Cover security, privacy, accessibility, reliability, performance, maintainability, portability, observability, cost, and regulatory constraints before technology selection.
+## Should
+
+- _Requirement_
+
+## Could
+
+- _Requirement_
+
+## Won't (this cycle)
+
+- _Requirement_

@@ -1,18 +1,21 @@
 # Technology decision
 
-## Status
+<!-- Template: record the chosen stack after evaluation. -->
 
-Migration candidate from v10.1.1; human approval is required.
+## Decision
 
-## Current candidate
+_Status: pending — fill after `docs/product/technology-options.md` review._
 
-Node.js LTS, npm, TypeScript, React, Next.js App Router, Vitest/React Testing Library, Playwright, React Doctor, GitHub Actions, Vercel, and basic web observability.
+## Selected profiles
+
+_List profile IDs from `harness/profiles/` (example: `runtime/node`, `framework/react`)._
 
 ## Rationale
 
-This preserves the existing v10.1.1 portfolio baseline. It is not a universal default. New projects must compare alternatives from their requirements before activating profiles.
+_Why this stack fits the product constraints._
 
-## References
+## Rejected options
 
-- `docs/architecture/ADR-0001-stack.md` retains the historical v10 decision.
-- `harness/project.json` records migration state and proposed profiles.
+| Option | Reason rejected |
+|---|---|
+| _Option_ | _Reason_ |

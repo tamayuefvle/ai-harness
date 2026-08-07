@@ -24,5 +24,12 @@
   "riskControls": [
     "server-client-boundary",
     "metadata-and-404"
+  ],
+  "optionalPaths": [
+    "app/",
+    "src/"
+  ],
+  "optionalRuleSources": [
+    "frontend-app"
   ]
 }

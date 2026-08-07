@@ -1,5 +1,23 @@
 # Architecture baseline
 
-The project baseline is approved separately from feature tasks. It defines system boundaries, dependency direction, data and trust boundaries, deployment topology, quality attributes, failure handling, and rollback.
+<!-- Template: approve separately from feature tasks. -->
 
-For this migrated package, `ADR-0001-stack.md` remains historical evidence. Approval of this baseline and a resolved profile set is required before project state `ACTIVE`.
+The project baseline defines system boundaries, dependency direction, data and trust boundaries, deployment topology, quality attributes, failure handling, and rollback.
+
+Fill this document after product discovery and technology selection. Approval of this baseline and a resolved profile set is required before project state `ACTIVE`.
+
+## System context
+
+_Describe external actors and major components._
+
+## Boundaries
+
+_Define what this system owns vs. defers to external services._
+
+## Quality attributes
+
+_Prioritize performance, security, operability, etc._
+
+## Rollback
+
+_How you revert a bad release._

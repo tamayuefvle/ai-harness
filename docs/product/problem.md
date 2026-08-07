@@ -1,13 +1,15 @@
 # Problem statement
 
+<!-- Template: describe the problem your product solves. -->
+
+## Context
+
+_Who has the problem and in what situation?_
+
 ## Problem
 
-Describe the user problem in observable terms. Do not prescribe a framework or implementation.
+_What pain or gap exists today?_
 
-## Evidence
+## Why now
 
-- Pending product discovery.
-
-## Non-problems
-
-- Pending.
+_Why is solving this worthwhile?_

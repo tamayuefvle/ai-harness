@@ -1,22 +1,96 @@
 {
-  "name": "portfolio-ai-harness",
-  "version": "11.0.0",
-  "sourceVersion": "10.1.1",
-  "improvementId": "IMP-20260806-02",
-  "lifecycleMode": "full",
-  "initialProjectState": "MIGRATION_PENDING",
-  "taskGateSchemaVersion": "1.1.0",
+  "schemaVersion": "2.0.0",
+  "name": "ai-harness",
+  "version": "12.0.0",
+  "sourceVersion": "11.0.0",
+  "lifecycleModeDefault": "full",
+  "bootstrap": {
+    "projectStateTemplate": "harness/templates/project.bootstrap.json",
+    "initialProjectState": "MIGRATION_PENDING"
+  },
+  "categories": {
+    "core": [
+      "harness/lifecycle",
+      "harness/schemas",
+      "harness/schema-fixtures",
+      "harness/contracts",
+      "harness/capabilities",
+      "harness/integrations",
+      "harness/profiles",
+      "harness/prompts",
+      "harness/rules",
+      "harness/templates",
+      "scripts/harness",
+      "scripts/github",
+      "scripts/mcp",
+      "docs/workflow",
+      "docs/operations",
+      "docs/architecture",
+      "docs/specs/TEMPLATE",
+      "docs/improvements/TEMPLATE.md",
+      "docs/worklog",
+      ".githooks",
+      ".codex",
+      ".cursor/mcp.json",
+      ".github/pull_request_template.md",
+      ".github/workflows/quality.yml",
+      ".github/workflows/release-gate.yml",
+      "SECURITY.md",
+      "MIGRATION.md",
+      "CHANGELOG.md",
+      "README_HARNESS.md",
+      "package.scripts.fragment.json",
+      "package.devDependencies.fragment.json",
+      ".gitignore.harness-fragment"
+    ],
+    "optionalProfiles": {
+      "framework/react": [
+        "components/",
+        "src/components/",
+        "styles/",
+        "src/styles/",
+        "content/",
+        "src/content/"
+      ],
+      "framework/nextjs-app-router": [
+        "app/",
+        "src/"
+      ],
+      "test/vitest-rtl": [
+        "tests/",
+        "src/__tests__/"
+      ],
+      "test/playwright": [
+        "e2e/",
+        ".github/workflows/e2e.yml"
+      ],
+      "quality/react-doctor": [
+        "doctor.config.json",
+        ".github/workflows/react-doctor.yml"
+      ],
+      "language/typescript": [
+        "lib/",
+        "src/lib/"
+      ]
+    },
+    "generated": [
+      "AGENTS.md",
+      "**/.cursor/rules/*.mdc",
+      "docs/workflow/LIFECYCLE_REFERENCE.generated.md",
+      "harness/generated/profile-resolution.json"
+    ]
+  },
   "verification": {
-    "harnessTests": { "passed": 123, "failed": 0 },
-    "jsonSchemaCases": { "passed": 25, "failed": 0 },
-    "generatedContracts": "passed",
-    "securityScans": "passed",
-    "applicationProfileChecks": "not-run-overlay-has-no-application"
+    "harnessGenerate": "npm run harness:generate",
+    "harnessCheck": "npm run harness:check",
+    "schemaValidation": "npm run schemas:check",
+    "profileResolve": "npm run profile:resolve (after proposedProfiles set)",
+    "note": "Bundled profile-resolution.json ships unresolved until profiles are chosen and resolved."
   },
   "knownConstraints": [
-    "Bundled executable profiles cover the migrated Node.js/npm/React/Next.js stack.",
-    "Other technology stacks require additional approved profiles and CI setup contracts.",
-    "Local human approval records require protected branches and external environment controls for enforcement.",
-    "The production release workflow verifies approval but intentionally performs no deployment."
+    "Bundled web/React/Next scaffold and workflows are optional; remove unused paths if not selected.",
+    "Stack-specific rules generate only when matching profiles are active or proposed.",
+    "Local human approval records require protected branches and external environment controls.",
+    "Production release workflow verifies approval but does not deploy by itself."
   ]
 }

@@ -1,3 +1,13 @@
-# Intended users
+# Users and stakeholders
 
-Define primary and secondary users, their context, constraints, and accessibility needs. Do not invent user research.
+<!-- Template: identify primary users and stakeholders. -->
+
+## Primary users
+
+| Segment | Goals | Constraints |
+|---|---|---|
+| _Example segment_ | _What they need_ | _Limits or context_ |
+
+## Stakeholders
+
+- _Role_: _interest in the project_

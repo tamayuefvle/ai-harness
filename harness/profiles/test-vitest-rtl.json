@@ -22,5 +22,12 @@
   ],
   "riskControls": [
     "deterministic-tests"
+  ],
+  "optionalPaths": [
+    "tests/",
+    "src/__tests__/"
+  ],
+  "optionalRuleSources": [
+    "tests"
   ]
 }
