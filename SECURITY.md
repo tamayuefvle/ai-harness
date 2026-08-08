@@ -20,4 +20,8 @@ The canonical contract is `harness/integrations/github.json#productionEnvironmen
 
 ## New repository bootstrap
 
-If the Git root has no `package.json`, follow `NEW_REPOSITORY_SETUP.md`. The bootstrap is local-only, refuses overwrite and ambiguous lockfiles, and does not install dependencies, choose a product stack, configure trust, or contact remote services.
+If the Git root has no `package.json`, follow `NEW_REPOSITORY_SETUP.md`.
+
+- Creating the minimum `package.json` via the check-then-write bootstrap script is local-only: it refuses overwrite and ambiguous lockfiles, chooses no product stack, configures no Codex trust, and does not create remotes, secrets, or cloud resources.
+- **Harness-substrate exception:** after that manifest exists, the runbook’s `npm install` may contact the configured npm registry solely to establish the fragment-listed harness `devDependencies` and a single npm lockfile. This does **not** authorize product-framework installs, `--force` / peer-deps bypasses, registry reconfiguration, or other dependency work.
+- Default deny still applies to product dependencies, external resource creation, trust writes into user Codex config, and any network use outside that substrate install.
