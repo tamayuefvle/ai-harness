@@ -77,6 +77,8 @@ npm run harness:install
 
 4. `harness/project.json` の `projectId` と `proposedProfiles` を設定し、`npm run profile:resolve` を実行する。
 
+Git root に `package.json` がない新規配置では、先に `NEW_REPOSITORY_SETUP.md` を使います。bootstrap はハーネス実行用の最小 npm manifest だけを作り、製品 stack の選択や lifecycle 承認は行いません。
+
 ## Recommended profile bundle (example)
 
 Web/React/Next 向けの推奨例（bootstrap には含めません）:
@@ -96,6 +98,10 @@ Web/React/Next 向けの推奨例（bootstrap には含めません）:
 1. `researcher`: conditional read-only research before design
 2. `implementer`: conditional one-AC workspace-write implementation
 3. `reviewer`: independent read-only review after verification
+
+各 `ai:*` launcher は最初に `codex:preflight` を実行します。project trust は診断のみで自動設定せず、repo-local MCP transport は完全定義のまま Chrome DevTools を disabled-by-default にします。
+
+GitHub の production Environment は `harness/integrations/github.json` が正本です。`npm run github:production-environment-check` で API-visible な設定を read-only 検査し、administrator bypass は UI で確認します。release gate 自体は deploy しません。
 
 ## Canonical verification pipeline
 

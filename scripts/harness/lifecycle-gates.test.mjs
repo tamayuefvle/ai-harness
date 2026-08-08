@@ -190,7 +190,8 @@ function lifecycleFixture() {
     headSha: head,
   });
   writeJson(path.join(reportDir, "github-context.json"), {
-    schemaVersion: "1.0.0",
+    schemaVersion: "1.1.0",
+    reasonCode: null,
     generatedAt: "2026-08-05T00:00:00.000Z",
     taskId,
     status: "complete",

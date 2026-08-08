@@ -1,6 +1,6 @@
 {
   "$schema": "../schemas/github-integration.schema.json",
-  "schemaVersion": "2.0.0",
+  "schemaVersion": "2.1.0",
   "standard": {
     "provider": "gh-cli-https",
     "authentication": "gh-auth-login-and-setup-git",
@@ -25,5 +25,19 @@
     "requireVerificationPass": true,
     "requireReviewPass": true,
     "proposalSchema": "harness/schemas/github-push-proposal.schema.json"
+  },
+  "productionEnvironment": {
+    "name": "production",
+    "workflow": ".github/workflows/release-gate.yml",
+    "requiredReviewers": {
+      "minimum": 1,
+      "preventSelfReview": true
+    },
+    "deploymentBranchPolicy": "protected-branches-only",
+    "requiredProtectedBranches": [
+      "main"
+    ],
+    "allowAdminBypass": false,
+    "providerDeploymentIncluded": false
   }
 }

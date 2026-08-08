@@ -4,6 +4,8 @@ set -euo pipefail
 REPO_ROOT="$(git rev-parse --show-toplevel)"
 cd "$REPO_ROOT"
 
+node scripts/harness/codex-preflight.mjs
+
 ACCEPTANCE_ID="${1:-}"
 if [[ ! "$ACCEPTANCE_ID" =~ ^AC-[0-9]{3,}$ ]]; then
   echo "Usage: npm run ai:implement -- AC-001" >&2
@@ -67,7 +69,6 @@ Implement only $ACCEPTANCE_ID and return the structured report required by
 harness/schemas/implementation.schema.json."
 
 codex exec \
-  -c mcp_servers.chrome_devtools.enabled=false \
   --ephemeral \
   --sandbox workspace-write \
   --output-schema harness/schemas/implementation.schema.json \

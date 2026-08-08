@@ -2,12 +2,13 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://portfolio-harness.local/schemas/github-context.schema.json",
   "type": "object",
-  "required": ["schemaVersion", "generatedAt", "taskId", "status", "source", "repository", "pullRequest", "requiredChecks", "recentRuns", "untrustedContentIncluded", "warnings", "errors"],
+  "required": ["schemaVersion", "generatedAt", "taskId", "status", "reasonCode", "source", "repository", "pullRequest", "requiredChecks", "recentRuns", "untrustedContentIncluded", "warnings", "errors"],
   "properties": {
-    "schemaVersion": { "const": "1.0.0" },
+    "schemaVersion": { "const": "1.1.0" },
     "generatedAt": { "type": "string", "format": "date-time" },
     "taskId": { "type": "string", "minLength": 1 },
     "status": { "type": "string", "enum": ["complete", "degraded", "unavailable"] },
+    "reasonCode": { "type": ["string", "null"], "enum": [null, "origin_missing", "origin_not_https", "gh_cli_missing", "authentication_unavailable", "repository_unreachable"] },
     "source": {
       "type": "object",
       "required": ["provider", "repoRoot", "branch", "headSha", "commands"],

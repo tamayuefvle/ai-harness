@@ -54,6 +54,10 @@ npm run worklog:context
 
 Codex は次の3つの役割に限定します。同一セッションを複数の役割へ流用しません。
 
+Codex を発火する前に必ず `npm run codex:preflight` を通します。launcher で
+`-c mcp_servers.*` の一部分だけを上書きしてはなりません。project trust は
+ユーザー判断であり、ハーネスや agent が user config へ自動書込みしません。
+
 1. `researcher`: 設計前の read-only 横断調査
 2. `implementer`: 条件を満たす横断実装（対象 AC・scope が明示された場合のみ）
 3. `reviewer`: 実装後の独立 read-only レビュー

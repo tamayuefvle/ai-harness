@@ -19,6 +19,18 @@ The origin remote must be `https://github.com/<owner>/<repository>.git`. WSL and
 
 Use `npm run github:context` and `npm run github:verify`. The fixed gateway excludes bodies, comments and logs by default. Degraded or unavailable reports are not passing evidence.
 
+Unavailable reports use one bounded `reasonCode`: `origin_missing`, `origin_not_https`, `gh_cli_missing`, `authentication_unavailable`, or `repository_unreachable`. Reports never retain command stderr or credentials.
+
+## Production Environment
+
+Configure the Environment described by `harness/integrations/github.json#productionEnvironment`, then run:
+
+```bash
+npm run github:production-environment-check
+```
+
+This read-only check validates the API-visible reviewer, self-review, protected-branch-only, and required branch-protection subset. Confirm administrator bypass separately in the GitHub UI. The release-gate workflow authorizes a release; provider deployment remains a separate approved operation.
+
 ## Push and PR proposal
 
 Remote required checks need a pushed feature branch and usually a pull request. To avoid a lifecycle cycle, the packager may prepare an initial transport proposal after the approved implementation snapshot is recorded, before final verification and review.

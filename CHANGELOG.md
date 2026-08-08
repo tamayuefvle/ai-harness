@@ -9,6 +9,11 @@
 - Added `optionalPaths` / `optionalRuleSources` to stack profiles; stack rules generate only when matching profiles are active or proposed.
 - Soft-templated product docs and architecture baseline; dropped completed PF specs and internal improvement records from the distribution bundle.
 - Renamed Cursor command `portfolio` → `develop` for generic project development entry.
+- Added fail-closed `codex:preflight` and `harness:doctor`; Chrome DevTools MCP is a complete disabled-by-default config entry, and role launchers no longer use partial `-c mcp_servers.*` overrides. Project trust is diagnosed only and never auto-written.
+- Added inventory-scoped `security:check` (FILE_INVENTORY only) and wired it into `verify:harness`.
+- Added GitHub `productionEnvironment` contract (integration schema 2.1.0), read-only `github:production-environment-check`, and bounded GitHub context `reasonCode` values.
+- Added package-less onboarding via `NEW_REPOSITORY_SETUP.md` and dependency-free `bootstrap-new-repository.mjs` (check/write; does not advance lifecycle, projectId, or profiles).
+- Updated GitHub-owned Actions (`checkout`, `setup-node`, `upload-artifact`) to major v7.
 
 ## v11.0.0 - 2026-08-06
 

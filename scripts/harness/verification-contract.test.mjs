@@ -12,7 +12,7 @@ const reactDoctorWorkflow = fs.readFileSync(path.join(repoRoot, ".github/workflo
 const reviewScript = fs.readFileSync(path.join(repoRoot, "scripts/harness/codex-review.sh"), "utf8");
 
 test("verify:ci composes canonical verification groups", () => {
-  assert.equal(scripts["verify:harness"], "npm run harness:check && npm run capabilities:check && npm run schemas:check && npm run test:harness");
+  assert.equal(scripts["verify:harness"], "npm run harness:check && npm run capabilities:check && npm run schemas:check && npm run security:check && npm run test:harness");
   assert.equal(scripts["verify:static"], "npm run lint && npm run typecheck");
   assert.equal(scripts["verify:application"], "npm run test:unit && npm run build");
   assert.equal(scripts["verify:react"], "node scripts/harness/react-doctor-ci.mjs");

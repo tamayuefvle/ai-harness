@@ -12,6 +12,8 @@
 10. Advance: `npm run project:advance -- --to ACTIVE` (only after human approval).
 11. Run harness verification and application profile checks.
 
+If `package.json` is absent, use `NEW_REPOSITORY_SETUP.md` and the check-first bootstrap instead of inventing a manifest. This establishes only the harness substrate. Keep `MIGRATION_PENDING`, `projectId: change-me`, and unresolved profiles unchanged until product-stack selection and explicit approval are complete; run `profile:resolve` only after that selection.
+
 ## State behavior
 
 - v12 does **not** auto-advance `MIGRATION_PENDING` → `ACTIVE`. Existing v11 clones keep their live state until you explicitly migrate.

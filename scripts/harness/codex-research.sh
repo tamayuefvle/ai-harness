@@ -4,6 +4,8 @@ set -euo pipefail
 REPO_ROOT="$(git rev-parse --show-toplevel)"
 cd "$REPO_ROOT"
 
+node scripts/harness/codex-preflight.mjs
+
 ACTIVE_SPEC="$(sed -n 's/^active_spec:[[:space:]]*//p' docs/specs/_active.md | head -n1)"
 STATUS="$(sed -n 's/^status:[[:space:]]*//p' docs/specs/_active.md | head -n1)"
 
@@ -32,7 +34,6 @@ GitHub context report: $REPORT_DIR/github-context.json
 Return the structured report required by harness/schemas/research.schema.json."
 
 codex exec \
-  -c mcp_servers.chrome_devtools.enabled=false \
   --ephemeral \
   --sandbox read-only \
   --output-schema harness/schemas/research.schema.json \

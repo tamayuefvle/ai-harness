@@ -39,6 +39,7 @@
       "MIGRATION.md",
       "CHANGELOG.md",
       "README_HARNESS.md",
+      "NEW_REPOSITORY_SETUP.md",
       "package.scripts.fragment.json",
       "package.devDependencies.fragment.json",
       ".gitignore.harness-fragment"
@@ -91,6 +92,9 @@
     "Bundled web/React/Next scaffold and workflows are optional; remove unused paths if not selected.",
     "Stack-specific rules generate only when matching profiles are active or proposed.",
     "Local human approval records require protected branches and external environment controls.",
-    "Production release workflow verifies approval but does not deploy by itself."
+    "Production release workflow verifies approval but does not deploy by itself.",
+    "New-repository bootstrap creates only the harness npm substrate and does not approve a product stack or lifecycle transition.",
+    "Codex project trust is user-scoped and is never auto-written; codex:preflight must pass before delegated ai:* commands.",
+    "GitHub context requires an intended HTTPS origin and reports bounded unavailability reason codes without stderr or tokens."
   ]
 }

@@ -22,6 +22,7 @@ AGENTS.md
 CHANGELOG.md
 FILE_INVENTORY.txt
 MIGRATION.md
+NEW_REPOSITORY_SETUP.md
 PACKAGE_MANIFEST.json
 README_HARNESS.md
 SECURITY.md
@@ -200,8 +201,12 @@ scripts/github/context.mjs
 scripts/github/context.test.mjs
 scripts/github/doctor.mjs
 scripts/github/prepare-push.mjs
+scripts/github/production-environment.mjs
+scripts/github/production-environment.test.mjs
 scripts/harness/advance-task.mjs
 scripts/harness/artifact-validator.mjs
+scripts/harness/bootstrap-new-repository.mjs
+scripts/harness/bootstrap-new-repository.test.mjs
 scripts/harness/check-active-spec.mjs
 scripts/harness/check-capabilities.mjs
 scripts/harness/check-capabilities.test.mjs
@@ -210,6 +215,8 @@ scripts/harness/ci-project-state.sh
 scripts/harness/ci-project-state.test.mjs
 scripts/harness/codex-decision.mjs
 scripts/harness/codex-implement.sh
+scripts/harness/codex-preflight.mjs
+scripts/harness/codex-preflight.test.mjs
 scripts/harness/codex-research.sh
 scripts/harness/codex-review.sh
 scripts/harness/complete-task.mjs
@@ -250,7 +257,11 @@ scripts/harness/rule-lib.mjs
 scripts/harness/rule-lib.test.mjs
 scripts/harness/run-harness-tests.mjs
 scripts/harness/run-profile-checks.mjs
+scripts/harness/runtime-doctor.mjs
+scripts/harness/runtime-doctor.test.mjs
 scripts/harness/schema-validation.test.mjs
+scripts/harness/security-check.mjs
+scripts/harness/security-check.test.mjs
 scripts/harness/show-instruction-route.mjs
 scripts/harness/signal-record.mjs
 scripts/harness/start-task.mjs

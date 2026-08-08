@@ -15,6 +15,10 @@
 - Preview 検証成功
 - 人間による production 承認
 - rollback 対象の直前正常 deployment を確認
+- `npm run github:production-environment-check` 成功
+- GitHub UI で production Environment の administrator bypass 無効を確認
+
+release-gate workflow は承認境界のみを検証し、provider deployment は実行しない。実際の deployment は別の明示承認済み手順として扱う。
 
 ## Production smoke test
 

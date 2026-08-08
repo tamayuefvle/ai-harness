@@ -5,14 +5,13 @@ import { fileURLToPath } from "node:url";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 export const defaultRepoRoot = path.resolve(here, "../..");
-const schemaVersion = "1.0.0";
+const schemaVersion = "1.1.0";
 
 export function loadGitHubConfig(repoRoot = defaultRepoRoot) {
   return JSON.parse(
     fs.readFileSync(path.join(repoRoot, "harness/integrations/github.json"), "utf8"),
   );
 }
-
 export function defaultRunner(command, args, options = {}) {
   const started = Date.now();
   const result = spawnSync(command, args, {
@@ -98,6 +97,7 @@ export function collectGitHubContext(options = {}) {
     generatedAt: now().toISOString(),
     taskId: safeTaskId(options.taskId ?? activeTask(repoRoot)),
     status: "complete",
+    reasonCode: null,
     source: {
       provider: "gh-cli",
       repoRoot: ".",
@@ -122,13 +122,45 @@ export function collectGitHubContext(options = {}) {
   if (shaResult.exitCode === 0) report.source.headSha = trimText(shaResult.stdout, 80);
   else report.warnings.push("Current Git commit could not be resolved.");
 
+  const originResult = runRecorded(report, runner, config, "git-origin", "git", ["remote", "get-url", "origin"], repoRoot);
+  if (originResult.exitCode !== 0 || !trimText(originResult.stdout, 500)) {
+    report.status = "unavailable";
+    report.reasonCode = "origin_missing";
+    report.errors.push("GitHub repository context is unavailable because the origin remote is missing. Add the intended HTTPS GitHub origin before relying on GitHub context.");
+    return report;
+  }
+  const originUrl = trimText(originResult.stdout, 500);
+  if (!/^https:\/\/github\.com\/[^/]+\/[^/]+(?:\.git)?$/i.test(originUrl)) {
+    report.status = "unavailable";
+    report.reasonCode = "origin_not_https";
+    report.errors.push("GitHub repository context requires an HTTPS github.com origin. Align the remote with the harness gh-cli-https contract; do not fall back to SSH unless the contract is explicitly changed.");
+    return report;
+  }
+
+  const ghVersion = runRecorded(report, runner, config, "gh-version", "gh", ["--version"], repoRoot);
+  if (ghVersion.exitCode !== 0) {
+    report.status = "unavailable";
+    report.reasonCode = "gh_cli_missing";
+    report.errors.push("GitHub repository context requires GitHub CLI (`gh`) on PATH.");
+    return report;
+  }
+
+  const authResult = runRecorded(report, runner, config, "gh-auth", "gh", ["auth", "status", "--active", "--hostname", "github.com"], repoRoot);
+  if (authResult.exitCode !== 0) {
+    report.status = "unavailable";
+    report.reasonCode = "authentication_unavailable";
+    report.errors.push("GitHub CLI authentication for github.com is unavailable. Run `gh auth status` and repair authentication without exposing tokens.");
+    return report;
+  }
+
   const repoResult = runRecorded(report, runner, config, "gh-repository", "gh", [
     "repo", "view", "--json", "nameWithOwner,defaultBranchRef,isPrivate,url",
   ], repoRoot);
   const repoJson = parseJson(repoResult);
   if (!repoJson || !repoJson.nameWithOwner) {
     report.status = "unavailable";
-    report.errors.push("GitHub repository context is unavailable. Run `gh auth status` and verify the origin remote.");
+    report.reasonCode = "repository_unreachable";
+    report.errors.push("GitHub CLI is authenticated and origin is configured, but the repository could not be resolved. Verify repository existence/access and that origin points at the intended repository.");
     return report;
   }
   report.repository = {

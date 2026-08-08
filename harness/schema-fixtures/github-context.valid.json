@@ -1,5 +1,5 @@
 {
-  "schemaVersion": "1.0.0",
+  "schemaVersion": "1.1.0",
   "generatedAt": "2026-08-05T00:00:00.000Z",
   "taskId": "PF-001-example",
   "status": "complete",
@@ -44,5 +44,6 @@
   "recentRuns": [],
   "untrustedContentIncluded": false,
   "warnings": [],
-  "errors": []
+  "errors": [],
+  "reasonCode": null
 }

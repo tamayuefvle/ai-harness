@@ -4,6 +4,8 @@ set -euo pipefail
 REPO_ROOT="$(git rev-parse --show-toplevel)"
 cd "$REPO_ROOT"
 
+node scripts/harness/codex-preflight.mjs
+
 BASE_REF="${1:-origin/main}"
 ACTIVE_SPEC="$(sed -n 's/^active_spec:[[:space:]]*//p' docs/specs/_active.md | head -n1)"
 VERIFIED_HEAD="$(git rev-parse HEAD)"
@@ -28,11 +30,6 @@ node scripts/github/context.mjs \
   --task "$ACTIVE_SPEC" \
   --output "$REVIEW_GITHUB_CONTEXT"
 
-CHROME_CONFIG=(-c mcp_servers.chrome_devtools.enabled=false)
-if [[ -n "${MCP_CHROME_BROWSER_URL:-}" ]]; then
-  CHROME_CONFIG=()
-fi
-
 PROMPT="$(cat harness/prompts/review.md)
 
 Active task: $ACTIVE_SPEC
@@ -45,7 +42,6 @@ The git diff is provided on stdin."
 
 git diff --no-ext-diff --unified=80 "${BASE_REF}...HEAD" \
   | codex exec \
-      "${CHROME_CONFIG[@]}" \
       --ephemeral \
       --sandbox read-only \
       --output-schema harness/schemas/review.schema.json \
