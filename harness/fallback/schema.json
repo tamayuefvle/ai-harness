@@ -1,0 +1,175 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://portfolio-harness.local/schemas/fallback-manifest.schema.json",
+  "type": "object",
+  "required": [
+    "$schema",
+    "schemaVersion",
+    "owner",
+    "primaryExecutor",
+    "secondaryExecutor",
+    "terminalFallback",
+    "diagnostic",
+    "secondaryImplementation",
+    "review",
+    "loopPolicy",
+    "humanHandoff"
+  ],
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "schemaVersion": {
+      "const": "1.0.0"
+    },
+    "owner": {
+      "const": "execution-safety-kernel"
+    },
+    "primaryExecutor": {
+      "const": "cursor"
+    },
+    "secondaryExecutor": {
+      "const": "codex-cli"
+    },
+    "terminalFallback": {
+      "const": "human"
+    },
+    "diagnostic": {
+      "type": "object",
+      "required": [
+        "executor",
+        "freshSession",
+        "sandbox",
+        "implementationBeforeDecision",
+        "decisions"
+      ],
+      "properties": {
+        "executor": {
+          "const": "codex-cli"
+        },
+        "freshSession": {
+          "const": true
+        },
+        "sandbox": {
+          "const": "read-only"
+        },
+        "implementationBeforeDecision": {
+          "const": false
+        },
+        "decisions": {
+          "const": [
+            "alternative_strategy",
+            "human_decision",
+            "human_action",
+            "blocked"
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "secondaryImplementation": {
+      "type": "object",
+      "required": [
+        "executor",
+        "reuseRole",
+        "freshSession",
+        "sandbox",
+        "maxBoundedStrategies",
+        "requireMateriallyDifferentStrategy"
+      ],
+      "properties": {
+        "executor": {
+          "const": "codex-cli"
+        },
+        "reuseRole": {
+          "const": "implementer"
+        },
+        "freshSession": {
+          "const": true
+        },
+        "sandbox": {
+          "const": "workspace-write"
+        },
+        "maxBoundedStrategies": {
+          "const": 1
+        },
+        "requireMateriallyDifferentStrategy": {
+          "const": true
+        }
+      },
+      "additionalProperties": false
+    },
+    "review": {
+      "type": "object",
+      "required": [
+        "executor",
+        "reuseRole",
+        "freshSession",
+        "sandbox",
+        "mustNotReuseImplementationContext"
+      ],
+      "properties": {
+        "executor": {
+          "const": "codex-cli"
+        },
+        "reuseRole": {
+          "const": "reviewer"
+        },
+        "freshSession": {
+          "const": true
+        },
+        "sandbox": {
+          "const": "read-only"
+        },
+        "mustNotReuseImplementationContext": {
+          "const": true
+        }
+      },
+      "additionalProperties": false
+    },
+    "loopPolicy": {
+      "type": "object",
+      "required": [
+        "cursorToCodexToCursorAutomaticLoop",
+        "codexRetryWithNewSessionAutomaticLoop",
+        "humanMayStartNewRun"
+      ],
+      "properties": {
+        "cursorToCodexToCursorAutomaticLoop": {
+          "const": false
+        },
+        "codexRetryWithNewSessionAutomaticLoop": {
+          "const": false
+        },
+        "humanMayStartNewRun": {
+          "const": true
+        }
+      },
+      "additionalProperties": false
+    },
+    "humanHandoff": {
+      "type": "object",
+      "required": [
+        "decisionTypes",
+        "agentVerificationRequiredBeforeResume",
+        "secretsMustNotBeRequested"
+      ],
+      "properties": {
+        "decisionTypes": {
+          "const": [
+            "human_decision",
+            "human_action"
+          ]
+        },
+        "agentVerificationRequiredBeforeResume": {
+          "const": true
+        },
+        "secretsMustNotBeRequested": {
+          "const": true
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

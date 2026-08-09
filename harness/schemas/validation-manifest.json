@@ -130,6 +130,56 @@
       "id": "incident-gate-template-v11",
       "schema": "harness/schemas/incident-gate.schema.json",
       "instance": "docs/operations/incidents/TEMPLATE/gate.json"
+    },
+    {
+      "id": "invariant-manifest",
+      "schema": "harness/invariants/schema.json",
+      "instance": "harness/invariants/manifest.json"
+    },
+    {
+      "id": "execution-manifest",
+      "schema": "harness/execution/schema.json",
+      "instance": "harness/execution/manifest.json"
+    },
+    {
+      "id": "authorization-manifest",
+      "schema": "harness/authorization/schema.json",
+      "instance": "harness/authorization/manifest.json"
+    },
+    {
+      "id": "fallback-manifest",
+      "schema": "harness/fallback/schema.json",
+      "instance": "harness/fallback/manifest.json"
+    },
+    {
+      "id": "execution-run",
+      "schema": "harness/schemas/execution-run.schema.json",
+      "instance": "harness/schema-fixtures/execution-run.valid.json"
+    },
+    {
+      "id": "operation-approval",
+      "schema": "harness/schemas/operation-approval.schema.json",
+      "instance": "harness/schema-fixtures/operation-approval.valid.json"
+    },
+    {
+      "id": "diagnostic-evidence",
+      "schema": "harness/schemas/diagnostic-evidence.schema.json",
+      "instance": "harness/schema-fixtures/diagnostic-evidence.valid.json"
+    },
+    {
+      "id": "fallback-handoff",
+      "schema": "harness/schemas/fallback-handoff.schema.json",
+      "instance": "harness/schema-fixtures/fallback-handoff.valid.json"
+    },
+    {
+      "id": "fallback-decision",
+      "schema": "harness/schemas/fallback-decision.schema.json",
+      "instance": "harness/schema-fixtures/fallback-decision.valid.json"
+    },
+    {
+      "id": "runtime-event",
+      "schema": "harness/schemas/runtime-event.schema.json",
+      "instance": "harness/schema-fixtures/runtime-event.valid.json"
     }
   ]
 }

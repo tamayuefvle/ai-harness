@@ -1,0 +1,28 @@
+{
+  "$schema": "../schemas/execution-run.schema.json",
+  "schemaVersion": "1.0.0",
+  "runId": "RUN-20260809T060000Z-deadbeef",
+  "lifecycleRef": {
+    "kind": "task",
+    "id": "DEV-001-example",
+    "state": "IMPLEMENTING"
+  },
+  "state": "PAUSED",
+  "approvedPlanDigest": "0000000000000000000000000000000000000000000000000000000000000000",
+  "invariantManifestDigest": "1111111111111111111111111111111111111111111111111111111111111111",
+  "pendingOperation": null,
+  "completedOperationIds": [],
+  "artifactRefs": [
+    "docs/specs/DEV-001-example/plan.md"
+  ],
+  "evidenceRefs": [],
+  "approvalRefs": [],
+  "resumeCursor": "implement:AC-001",
+  "idempotencyKey": null,
+  "stateVersion": 2,
+  "integrityHash": "2222222222222222222222222222222222222222222222222222222222222222",
+  "stopReason": "STOP-INPUT",
+  "createdAt": "2026-08-09T06:00:00Z",
+  "updatedAt": "2026-08-09T06:01:00Z",
+  "actorRole": "implementer"
+}

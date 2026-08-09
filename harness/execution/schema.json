@@ -1,0 +1,337 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://portfolio-harness.local/schemas/execution-safety-manifest.schema.json",
+  "type": "object",
+  "required": [
+    "$schema",
+    "schemaVersion",
+    "lifecycleOwnership",
+    "runStates",
+    "stopReasons",
+    "checkpoint",
+    "resume",
+    "retry",
+    "failureClasses",
+    "executorFallback"
+  ],
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "schemaVersion": {
+      "const": "1.0.0"
+    },
+    "lifecycleOwnership": {
+      "type": "object",
+      "required": [
+        "canonicalLifecycleManifest",
+        "bindings",
+        "ownsLifecycleTransitions"
+      ],
+      "properties": {
+        "canonicalLifecycleManifest": {
+          "const": "harness/lifecycle/manifest.json"
+        },
+        "bindings": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "project",
+              "task",
+              "release",
+              "incident"
+            ]
+          }
+        },
+        "ownsLifecycleTransitions": {
+          "const": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "runStates": {
+      "type": "object",
+      "required": [
+        "initial",
+        "active",
+        "terminal"
+      ],
+      "properties": {
+        "initial": {
+          "const": "RUNNING"
+        },
+        "active": {
+          "type": "array",
+          "minItems": 3,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "RUNNING",
+              "PAUSED",
+              "AWAITING_APPROVAL",
+              "RECOVERING"
+            ]
+          }
+        },
+        "terminal": {
+          "type": "array",
+          "minItems": 3,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "SUCCEEDED",
+              "FAILED",
+              "ABORTED"
+            ]
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "stopReasons": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "checkpointRequired",
+          "resumable",
+          "targetState"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^STOP-[A-Z-]+$"
+          },
+          "checkpointRequired": {
+            "const": true
+          },
+          "resumable": {
+            "type": "boolean"
+          },
+          "targetState": {
+            "enum": [
+              "PAUSED",
+              "AWAITING_APPROVAL",
+              "RECOVERING"
+            ]
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "checkpoint": {
+      "type": "object",
+      "required": [
+        "store",
+        "requiredFields",
+        "chatMemoryAuthoritative"
+      ],
+      "properties": {
+        "store": {
+          "const": ".harness/runs"
+        },
+        "requiredFields": {
+          "type": "array",
+          "minItems": 10,
+          "uniqueItems": true,
+          "items": {
+            "type": "string"
+          }
+        },
+        "chatMemoryAuthoritative": {
+          "const": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "resume": {
+      "type": "object",
+      "required": [
+        "preconditions",
+        "automaticApprovalOnTimeout",
+        "invariantStopRequiresNewRun"
+      ],
+      "properties": {
+        "preconditions": {
+          "type": "array",
+          "minItems": 5,
+          "uniqueItems": true,
+          "items": {
+            "type": "string"
+          }
+        },
+        "automaticApprovalOnTimeout": {
+          "const": false
+        },
+        "invariantStopRequiresNewRun": {
+          "const": true
+        }
+      },
+      "additionalProperties": false
+    },
+    "retry": {
+      "type": "object",
+      "required": [
+        "readOnly",
+        "idempotentWrite",
+        "nonIdempotentWrite",
+        "ambiguousExternalWrite"
+      ],
+      "properties": {
+        "readOnly": {
+          "type": "object",
+          "required": [
+            "bounded",
+            "maxAttempts"
+          ],
+          "properties": {
+            "bounded": {
+              "const": true
+            },
+            "maxAttempts": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 5
+            }
+          },
+          "additionalProperties": false
+        },
+        "idempotentWrite": {
+          "type": "object",
+          "required": [
+            "sameKeyRequired",
+            "maxAttempts"
+          ],
+          "properties": {
+            "sameKeyRequired": {
+              "const": true
+            },
+            "maxAttempts": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 3
+            }
+          },
+          "additionalProperties": false
+        },
+        "nonIdempotentWrite": {
+          "type": "object",
+          "required": [
+            "blindRetry",
+            "maxAttempts"
+          ],
+          "properties": {
+            "blindRetry": {
+              "const": false
+            },
+            "maxAttempts": {
+              "const": 1
+            }
+          },
+          "additionalProperties": false
+        },
+        "ambiguousExternalWrite": {
+          "type": "object",
+          "required": [
+            "blindRetry",
+            "requiredAction"
+          ],
+          "properties": {
+            "blindRetry": {
+              "const": false
+            },
+            "requiredAction": {
+              "const": "reconcile-before-retry"
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "failureClasses": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "localRecovery",
+          "incidentEscalation"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]*$"
+          },
+          "localRecovery": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "string"
+            }
+          },
+          "incidentEscalation": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "executorFallback": {
+      "type": "object",
+      "required": [
+        "defaultOrder",
+        "maxBoundedStrategiesPerExecutor",
+        "requireFailureEvidenceBeforeFallback",
+        "requireIndependentDiagnosisOnSecondary",
+        "repeatFailedStrategy",
+        "automaticReturnToPreviousExecutor",
+        "humanFirstReasons"
+      ],
+      "properties": {
+        "defaultOrder": {
+          "const": [
+            "cursor",
+            "codex-cli",
+            "human"
+          ]
+        },
+        "maxBoundedStrategiesPerExecutor": {
+          "const": 1
+        },
+        "requireFailureEvidenceBeforeFallback": {
+          "const": true
+        },
+        "requireIndependentDiagnosisOnSecondary": {
+          "const": true
+        },
+        "repeatFailedStrategy": {
+          "const": "deny"
+        },
+        "automaticReturnToPreviousExecutor": {
+          "const": false
+        },
+        "humanFirstReasons": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^[A-Z0-9_-]+$"
+          }
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

@@ -1,0 +1,14 @@
+{
+  "$schema": "../schemas/runtime-event.schema.json",
+  "schemaVersion": "1.0.0",
+  "eventId": "EVT-20260809T060000Z-feedface",
+  "runId": "RUN-20260809T060000Z-deadbeef",
+  "sequence": 1,
+  "type": "run-started",
+  "timestamp": "2026-08-09T06:00:00Z",
+  "actorRole": "orchestrator",
+  "operationRef": null,
+  "artifactRef": "docs/specs/DEV-001-example/plan.md",
+  "digest": "4444444444444444444444444444444444444444444444444444444444444444",
+  "operationId": null
+}

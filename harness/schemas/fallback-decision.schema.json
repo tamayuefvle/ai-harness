@@ -1,0 +1,134 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://portfolio-harness.local/schemas/fallback-decision.schema.json",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "handoffId",
+    "handoffDigest",
+    "decision",
+    "cursorFailureAssessment",
+    "failureClass",
+    "repeatStrategy",
+    "reasoningSummary",
+    "materialDifference",
+    "alternativeStrategy",
+    "humanRequest",
+    "resumeCondition"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "1.0.0"
+    },
+    "handoffId": {
+      "type": "string"
+    },
+    "decision": {
+      "enum": [
+        "alternative_strategy",
+        "human_decision",
+        "human_action",
+        "blocked"
+      ]
+    },
+    "cursorFailureAssessment": {
+      "type": "string",
+      "minLength": 1
+    },
+    "failureClass": {
+      "type": "string",
+      "minLength": 1
+    },
+    "repeatStrategy": {
+      "const": false
+    },
+    "reasoningSummary": {
+      "type": "string",
+      "minLength": 1
+    },
+    "materialDifference": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "alternativeStrategy": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "humanRequest": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "resumeCondition": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "handoffDigest": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "decision": {
+            "const": "alternative_strategy"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "materialDifference": {
+            "type": "string",
+            "minLength": 1
+          },
+          "alternativeStrategy": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "materialDifference",
+          "alternativeStrategy"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "decision": {
+            "enum": [
+              "human_decision",
+              "human_action"
+            ]
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "humanRequest": {
+            "type": "string",
+            "minLength": 1
+          },
+          "resumeCondition": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "humanRequest",
+          "resumeCondition"
+        ]
+      }
+    }
+  ],
+  "additionalProperties": false
+}

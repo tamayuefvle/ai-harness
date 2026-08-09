@@ -1,0 +1,14 @@
+{
+  "schemaVersion": "1.0.0",
+  "handoffId": "FBH-DEV-001-example-AC-001-demo",
+  "decision": "alternative_strategy",
+  "cursorFailureAssessment": "Cursor evidence supports a toolchain-specific failure.",
+  "failureClass": "toolchain",
+  "repeatStrategy": false,
+  "reasoningSummary": "A different build-path diagnosis exists.",
+  "materialDifference": "Use platform binary resolution diagnostics instead of repeating dependency installation.",
+  "alternativeStrategy": "Inspect package platform resolution and apply one bounded configuration fix.",
+  "humanRequest": null,
+  "resumeCondition": null,
+  "handoffDigest": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
+}

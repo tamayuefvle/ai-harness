@@ -1,0 +1,645 @@
+{
+  "$schema": "./schema.json",
+  "schemaVersion": "1.0.0",
+  "defaultEffect": "deny",
+  "capabilityManifest": "harness/capabilities/manifest.json",
+  "roles": [
+    "orchestrator",
+    "researcher",
+    "planner",
+    "architect",
+    "implementer",
+    "verifier",
+    "reviewer",
+    "system-adapter",
+    "packager"
+  ],
+  "conditionDefinitions": {
+    "work-scope-match": {
+      "evidenceSource": "current canonical lifecycle binding and approved run/spec scope",
+      "selfAssertable": false
+    },
+    "approved-path-match": {
+      "evidenceSource": "approved plan/foundation path contract plus repository command policy",
+      "selfAssertable": false
+    },
+    "operation-approval-required": {
+      "evidenceSource": "operation-approval artifact bound to the pending run operation",
+      "selfAssertable": false
+    },
+    "approved-digest-match": {
+      "evidenceSource": "operation-approval argumentDigest equals pending operation argumentDigest",
+      "selfAssertable": false
+    },
+    "idempotency-key-required": {
+      "evidenceSource": "persisted pending operation idempotencyKey",
+      "selfAssertable": false
+    },
+    "read-only": {
+      "evidenceSource": "provider adapter operation semantics and command policy",
+      "selfAssertable": false
+    },
+    "evidence-append-only": {
+      "evidenceSource": "evidence adapter append-only enforcement",
+      "selfAssertable": false
+    },
+    "provider-enabled": {
+      "evidenceSource": "capability manifest plus effective provider/MCP runtime configuration",
+      "selfAssertable": false
+    }
+  },
+  "policies": [
+    {
+      "id": "AUTH-001",
+      "role": "orchestrator",
+      "effect": "allow",
+      "capabilityId": "repository",
+      "providerId": "workspace-tools",
+      "operations": [
+        "read",
+        "search"
+      ],
+      "conditions": [
+        "work-scope-match",
+        "read-only"
+      ]
+    },
+    {
+      "id": "AUTH-002",
+      "role": "researcher",
+      "effect": "allow",
+      "capabilityId": "repository",
+      "providerId": "workspace-tools",
+      "operations": [
+        "read",
+        "search"
+      ],
+      "conditions": [
+        "work-scope-match",
+        "read-only"
+      ]
+    },
+    {
+      "id": "AUTH-003",
+      "role": "researcher",
+      "effect": "allow",
+      "capabilityId": "documentation",
+      "providerId": "local-package",
+      "operations": [
+        "package-metadata",
+        "types",
+        "local-readme"
+      ],
+      "conditions": [
+        "read-only"
+      ]
+    },
+    {
+      "id": "AUTH-004",
+      "role": "researcher",
+      "effect": "allow",
+      "capabilityId": "documentation",
+      "providerId": "official-web",
+      "operations": [
+        "official-docs",
+        "official-repository",
+        "release-notes"
+      ],
+      "conditions": [
+        "read-only"
+      ]
+    },
+    {
+      "id": "AUTH-005",
+      "role": "researcher",
+      "effect": "allow",
+      "capabilityId": "documentation",
+      "providerId": "context7-cli",
+      "operations": [
+        "library-search",
+        "documentation-query"
+      ],
+      "conditions": [
+        "read-only",
+        "provider-enabled"
+      ]
+    },
+    {
+      "id": "AUTH-006",
+      "role": "planner",
+      "effect": "allow",
+      "capabilityId": "repository",
+      "providerId": "workspace-tools",
+      "operations": [
+        "read",
+        "search",
+        "write-approved-paths"
+      ],
+      "conditions": [
+        "work-scope-match",
+        "approved-path-match"
+      ]
+    },
+    {
+      "id": "AUTH-007",
+      "role": "architect",
+      "effect": "allow",
+      "capabilityId": "repository",
+      "providerId": "workspace-tools",
+      "operations": [
+        "read",
+        "search",
+        "write-approved-paths"
+      ],
+      "conditions": [
+        "work-scope-match",
+        "approved-path-match"
+      ]
+    },
+    {
+      "id": "AUTH-008",
+      "role": "implementer",
+      "effect": "allow",
+      "capabilityId": "repository",
+      "providerId": "workspace-tools",
+      "operations": [
+        "read",
+        "search",
+        "write-approved-paths"
+      ],
+      "conditions": [
+        "work-scope-match",
+        "approved-path-match"
+      ]
+    },
+    {
+      "id": "AUTH-009",
+      "role": "verifier",
+      "effect": "allow",
+      "capabilityId": "repository",
+      "providerId": "workspace-tools",
+      "operations": [
+        "read",
+        "search"
+      ],
+      "conditions": [
+        "work-scope-match",
+        "read-only"
+      ]
+    },
+    {
+      "id": "AUTH-010",
+      "role": "reviewer",
+      "effect": "allow",
+      "capabilityId": "repository",
+      "providerId": "workspace-tools",
+      "operations": [
+        "read",
+        "search"
+      ],
+      "conditions": [
+        "work-scope-match",
+        "read-only"
+      ]
+    },
+    {
+      "id": "AUTH-011",
+      "role": "packager",
+      "effect": "allow",
+      "capabilityId": "repository",
+      "providerId": "workspace-tools",
+      "operations": [
+        "read",
+        "search",
+        "write-approved-paths"
+      ],
+      "conditions": [
+        "work-scope-match",
+        "approved-path-match"
+      ]
+    },
+    {
+      "id": "AUTH-012",
+      "role": "implementer",
+      "effect": "allow",
+      "capabilityId": "test",
+      "providerId": "npm-scripts",
+      "operations": [
+        "lint",
+        "typecheck",
+        "unit",
+        "build",
+        "e2e"
+      ],
+      "conditions": [
+        "work-scope-match"
+      ]
+    },
+    {
+      "id": "AUTH-013",
+      "role": "verifier",
+      "effect": "allow",
+      "capabilityId": "test",
+      "providerId": "npm-scripts",
+      "operations": [
+        "lint",
+        "typecheck",
+        "unit",
+        "build",
+        "e2e"
+      ],
+      "conditions": [
+        "work-scope-match"
+      ]
+    },
+    {
+      "id": "AUTH-014",
+      "role": "reviewer",
+      "effect": "allow",
+      "capabilityId": "test",
+      "providerId": "npm-scripts",
+      "operations": [
+        "lint",
+        "typecheck",
+        "unit",
+        "build",
+        "e2e"
+      ],
+      "conditions": [
+        "work-scope-match",
+        "read-only"
+      ]
+    },
+    {
+      "id": "AUTH-037",
+      "role": "implementer",
+      "effect": "allow",
+      "capabilityId": "test",
+      "providerId": "react-doctor",
+      "operations": ["changed-scan", "full-scan", "normalized-report"],
+      "conditions": ["work-scope-match"]
+    },
+    {
+      "id": "AUTH-038",
+      "role": "verifier",
+      "effect": "allow",
+      "capabilityId": "test",
+      "providerId": "react-doctor",
+      "operations": ["changed-scan", "full-scan", "normalized-report"],
+      "conditions": ["work-scope-match"]
+    },
+    {
+      "id": "AUTH-039",
+      "role": "reviewer",
+      "effect": "allow",
+      "capabilityId": "test",
+      "providerId": "react-doctor",
+      "operations": ["changed-scan", "full-scan", "normalized-report"],
+      "conditions": ["work-scope-match", "read-only"]
+    },
+    {
+      "id": "AUTH-015",
+      "role": "orchestrator",
+      "effect": "allow",
+      "capabilityId": "github",
+      "providerId": "gh-cli-https",
+      "operations": [
+        "repo-read",
+        "pr-read",
+        "checks-read",
+        "runs-read"
+      ],
+      "conditions": [
+        "work-scope-match",
+        "read-only"
+      ]
+    },
+    {
+      "id": "AUTH-016",
+      "role": "researcher",
+      "effect": "allow",
+      "capabilityId": "github",
+      "providerId": "gh-cli-https",
+      "operations": [
+        "repo-read",
+        "pr-read",
+        "checks-read",
+        "runs-read"
+      ],
+      "conditions": [
+        "work-scope-match",
+        "read-only"
+      ]
+    },
+    {
+      "id": "AUTH-017",
+      "role": "verifier",
+      "effect": "allow",
+      "capabilityId": "github",
+      "providerId": "gh-cli-https",
+      "operations": [
+        "repo-read",
+        "pr-read",
+        "checks-read",
+        "runs-read"
+      ],
+      "conditions": [
+        "work-scope-match",
+        "read-only"
+      ]
+    },
+    {
+      "id": "AUTH-018",
+      "role": "reviewer",
+      "effect": "allow",
+      "capabilityId": "github",
+      "providerId": "gh-cli-https",
+      "operations": [
+        "repo-read",
+        "pr-read",
+        "checks-read",
+        "runs-read"
+      ],
+      "conditions": [
+        "work-scope-match",
+        "read-only"
+      ]
+    },
+    {
+      "id": "AUTH-019",
+      "role": "system-adapter",
+      "effect": "allow",
+      "capabilityId": "github",
+      "providerId": "gh-cli-https",
+      "operations": [
+        "repo-read",
+        "pr-read",
+        "checks-read",
+        "runs-read"
+      ],
+      "conditions": [
+        "work-scope-match",
+        "read-only"
+      ]
+    },
+    {
+      "id": "AUTH-020",
+      "role": "system-adapter",
+      "effect": "allow",
+      "capabilityId": "github",
+      "providerId": "gh-cli-https",
+      "operations": [
+        "push-approved-branch",
+        "pr-create-approved"
+      ],
+      "conditions": [
+        "work-scope-match",
+        "operation-approval-required",
+        "approved-digest-match",
+        "idempotency-key-required"
+      ]
+    },
+    {
+      "id": "AUTH-021",
+      "role": "implementer",
+      "effect": "deny",
+      "capabilityId": "github",
+      "providerId": "gh-cli-https",
+      "operations": [
+        "push-approved-branch",
+        "pr-create-approved"
+      ],
+      "conditions": []
+    },
+    {
+      "id": "AUTH-022",
+      "role": "verifier",
+      "effect": "deny",
+      "capabilityId": "repository",
+      "providerId": "workspace-tools",
+      "operations": [
+        "write-approved-paths"
+      ],
+      "conditions": []
+    },
+    {
+      "id": "AUTH-023",
+      "role": "reviewer",
+      "effect": "deny",
+      "capabilityId": "repository",
+      "providerId": "workspace-tools",
+      "operations": [
+        "write-approved-paths"
+      ],
+      "conditions": []
+    },
+    {
+      "id": "AUTH-024",
+      "role": "orchestrator",
+      "effect": "allow",
+      "capabilityId": "git",
+      "providerId": "git-cli",
+      "operations": [
+        "status",
+        "diff",
+        "log"
+      ],
+      "conditions": [
+        "work-scope-match",
+        "read-only"
+      ]
+    },
+    {
+      "id": "AUTH-025",
+      "role": "researcher",
+      "effect": "allow",
+      "capabilityId": "git",
+      "providerId": "git-cli",
+      "operations": [
+        "status",
+        "diff",
+        "log"
+      ],
+      "conditions": [
+        "work-scope-match",
+        "read-only"
+      ]
+    },
+    {
+      "id": "AUTH-026",
+      "role": "implementer",
+      "effect": "allow",
+      "capabilityId": "git",
+      "providerId": "git-cli",
+      "operations": [
+        "status",
+        "diff",
+        "log"
+      ],
+      "conditions": [
+        "work-scope-match",
+        "read-only"
+      ]
+    },
+    {
+      "id": "AUTH-027",
+      "role": "verifier",
+      "effect": "allow",
+      "capabilityId": "git",
+      "providerId": "git-cli",
+      "operations": [
+        "status",
+        "diff",
+        "log"
+      ],
+      "conditions": [
+        "work-scope-match",
+        "read-only"
+      ]
+    },
+    {
+      "id": "AUTH-028",
+      "role": "reviewer",
+      "effect": "allow",
+      "capabilityId": "git",
+      "providerId": "git-cli",
+      "operations": [
+        "status",
+        "diff",
+        "log"
+      ],
+      "conditions": [
+        "work-scope-match",
+        "read-only"
+      ]
+    },
+    {
+      "id": "AUTH-029",
+      "role": "implementer",
+      "effect": "allow",
+      "capabilityId": "git",
+      "providerId": "git-cli",
+      "operations": [
+        "selective-stage"
+      ],
+      "conditions": [
+        "work-scope-match",
+        "approved-path-match"
+      ]
+    },
+    {
+      "id": "AUTH-030",
+      "role": "system-adapter",
+      "effect": "allow",
+      "capabilityId": "git",
+      "providerId": "git-cli",
+      "operations": [
+        "fetch"
+      ],
+      "conditions": [
+        "work-scope-match"
+      ]
+    },
+    {
+      "id": "AUTH-031",
+      "role": "system-adapter",
+      "effect": "allow",
+      "capabilityId": "git",
+      "providerId": "git-cli",
+      "operations": [
+        "commit-after-approval"
+      ],
+      "conditions": [
+        "work-scope-match",
+        "operation-approval-required",
+        "approved-digest-match"
+      ]
+    },
+    {
+      "id": "AUTH-032",
+      "role": "implementer",
+      "effect": "deny",
+      "capabilityId": "git",
+      "providerId": "git-cli",
+      "operations": [
+        "commit-after-approval"
+      ],
+      "conditions": []
+    },
+    {
+      "id": "AUTH-033",
+      "role": "researcher",
+      "effect": "allow",
+      "capabilityId": "browser",
+      "providerId": "playwright-cli",
+      "operations": [
+        "journey",
+        "screenshot",
+        "trace"
+      ],
+      "conditions": [
+        "work-scope-match",
+        "read-only"
+      ]
+    },
+    {
+      "id": "AUTH-034",
+      "role": "verifier",
+      "effect": "allow",
+      "capabilityId": "browser",
+      "providerId": "playwright-cli",
+      "operations": [
+        "journey",
+        "screenshot",
+        "trace"
+      ],
+      "conditions": [
+        "work-scope-match",
+        "read-only"
+      ]
+    },
+    {
+      "id": "AUTH-035",
+      "role": "researcher",
+      "effect": "allow",
+      "capabilityId": "browser",
+      "providerId": "chrome-devtools-mcp",
+      "operations": [
+        "dom",
+        "console",
+        "network",
+        "screenshot",
+        "performance"
+      ],
+      "conditions": [
+        "work-scope-match",
+        "read-only",
+        "provider-enabled"
+      ]
+    },
+    {
+      "id": "AUTH-036",
+      "role": "verifier",
+      "effect": "allow",
+      "capabilityId": "browser",
+      "providerId": "chrome-devtools-mcp",
+      "operations": [
+        "dom",
+        "console",
+        "network",
+        "screenshot",
+        "performance"
+      ],
+      "conditions": [
+        "work-scope-match",
+        "read-only",
+        "provider-enabled"
+      ]
+    }
+  ],
+  "decisionOrder": [
+    "explicit-deny",
+    "matching-allow-all-conditions",
+    "default-deny"
+  ]
+}

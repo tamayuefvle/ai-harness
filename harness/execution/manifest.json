@@ -1,0 +1,228 @@
+{
+  "$schema": "./schema.json",
+  "schemaVersion": "1.0.0",
+  "lifecycleOwnership": {
+    "canonicalLifecycleManifest": "harness/lifecycle/manifest.json",
+    "bindings": [
+      "task"
+    ],
+    "ownsLifecycleTransitions": false
+  },
+  "runStates": {
+    "initial": "RUNNING",
+    "active": [
+      "RUNNING",
+      "PAUSED",
+      "AWAITING_APPROVAL",
+      "RECOVERING"
+    ],
+    "terminal": [
+      "SUCCEEDED",
+      "FAILED",
+      "ABORTED"
+    ]
+  },
+  "stopReasons": [
+    {
+      "id": "STOP-APPROVAL",
+      "checkpointRequired": true,
+      "resumable": true,
+      "targetState": "AWAITING_APPROVAL"
+    },
+    {
+      "id": "STOP-AUTHORIZATION",
+      "checkpointRequired": true,
+      "resumable": true,
+      "targetState": "PAUSED"
+    },
+    {
+      "id": "STOP-BUDGET",
+      "checkpointRequired": true,
+      "resumable": true,
+      "targetState": "PAUSED"
+    },
+    {
+      "id": "STOP-INPUT",
+      "checkpointRequired": true,
+      "resumable": true,
+      "targetState": "PAUSED"
+    },
+    {
+      "id": "STOP-CONNECTION",
+      "checkpointRequired": true,
+      "resumable": true,
+      "targetState": "RECOVERING"
+    },
+    {
+      "id": "STOP-EVALUATION",
+      "checkpointRequired": true,
+      "resumable": true,
+      "targetState": "PAUSED"
+    },
+    {
+      "id": "STOP-INVARIANT",
+      "checkpointRequired": true,
+      "resumable": false,
+      "targetState": "PAUSED"
+    },
+    {
+      "id": "STOP-HUMAN-ACTION",
+      "checkpointRequired": true,
+      "resumable": true,
+      "targetState": "PAUSED"
+    },
+    {
+      "id": "STOP-HUMAN-DECISION",
+      "checkpointRequired": true,
+      "resumable": true,
+      "targetState": "PAUSED"
+    },
+    {
+      "id": "STOP-RETRY-BUDGET",
+      "checkpointRequired": true,
+      "resumable": true,
+      "targetState": "PAUSED"
+    }
+  ],
+  "checkpoint": {
+    "store": ".harness/runs",
+    "requiredFields": [
+      "runId",
+      "lifecycleRef",
+      "state",
+      "approvedPlanDigest",
+      "invariantManifestDigest",
+      "pendingOperation",
+      "completedOperationIds",
+      "artifactRefs",
+      "evidenceRefs",
+      "approvalRefs",
+      "resumeCursor",
+      "idempotencyKey",
+      "stateVersion",
+      "integrityHash"
+    ],
+    "chatMemoryAuthoritative": false
+  },
+  "resume": {
+    "preconditions": [
+      "checkpoint-integrity-valid",
+      "lifecycle-state-compatible",
+      "approved-plan-digest-current",
+      "invariant-manifest-digest-current",
+      "required-operation-approval-valid",
+      "ambiguous-external-write-reconciled"
+    ],
+    "automaticApprovalOnTimeout": false,
+    "invariantStopRequiresNewRun": true
+  },
+  "retry": {
+    "readOnly": {
+      "bounded": true,
+      "maxAttempts": 3
+    },
+    "idempotentWrite": {
+      "sameKeyRequired": true,
+      "maxAttempts": 2
+    },
+    "nonIdempotentWrite": {
+      "blindRetry": false,
+      "maxAttempts": 1
+    },
+    "ambiguousExternalWrite": {
+      "blindRetry": false,
+      "requiredAction": "reconcile-before-retry"
+    }
+  },
+  "failureClasses": [
+    {
+      "id": "connection-unavailable",
+      "localRecovery": [
+        "checkpoint",
+        "bounded-read-retry",
+        "revalidate-provider"
+      ],
+      "incidentEscalation": [
+        "customer-impact",
+        "production-impact",
+        "repeated-recovery-exhausted"
+      ]
+    },
+    {
+      "id": "permission-denied",
+      "localRecovery": [
+        "stop-operation",
+        "record-decision",
+        "request-bounded-authority"
+      ],
+      "incidentEscalation": [
+        "unexpected-production-access",
+        "security-boundary-breach"
+      ]
+    },
+    {
+      "id": "external-commit-ambiguous",
+      "localRecovery": [
+        "checkpoint",
+        "block-new-write",
+        "query-by-idempotency-key",
+        "reconcile-external-state"
+      ],
+      "incidentEscalation": [
+        "production-state-unknown",
+        "data-integrity-risk"
+      ]
+    },
+    {
+      "id": "evidence-incomplete",
+      "localRecovery": [
+        "return-to-verification",
+        "regenerate-deterministic-evidence"
+      ],
+      "incidentEscalation": [
+        "released-with-invalid-evidence"
+      ]
+    },
+    {
+      "id": "checkpoint-invalid",
+      "localRecovery": [
+        "stop-run",
+        "start-new-run-from-canonical-state"
+      ],
+      "incidentEscalation": [
+        "state-integrity-corruption"
+      ]
+    },
+    {
+      "id": "evaluation-conflict",
+      "localRecovery": [
+        "stop-run",
+        "independent-review"
+      ],
+      "incidentEscalation": [
+        "production-release-evaluation-conflict"
+      ]
+    }
+  ],
+  "executorFallback": {
+    "defaultOrder": [
+      "cursor",
+      "codex-cli",
+      "human"
+    ],
+    "maxBoundedStrategiesPerExecutor": 1,
+    "requireFailureEvidenceBeforeFallback": true,
+    "requireIndependentDiagnosisOnSecondary": true,
+    "repeatFailedStrategy": "deny",
+    "automaticReturnToPreviousExecutor": false,
+    "humanFirstReasons": [
+      "MFA_REQUIRED",
+      "CAPTCHA_REQUIRED",
+      "INTERACTIVE_AUTH_REQUIRED",
+      "SECRET_CREATION_REQUIRED",
+      "PAYMENT_OR_CONTRACT",
+      "LEGAL_ACCEPTANCE",
+      "PHYSICAL_ACTION_REQUIRED"
+    ]
+  }
+}

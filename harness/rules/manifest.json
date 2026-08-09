@@ -468,6 +468,28 @@
     ]
   },
   {
+    "id": "execution-safety",
+    "source": "execution-safety.md",
+    "agentsTargets": [
+      {
+        "path": "AGENTS.md",
+        "mode": "append"
+      },
+      {
+        "path": "harness/AGENTS.md",
+        "mode": "append"
+      }
+    ],
+    "cursorTargets": [
+      {
+        "path": ".cursor/rules/03-execution-safety.mdc",
+        "description": "Task-bound Execution Runs, authorization, recovery, and bounded Cursor-to-Codex-to-Human fallback.",
+        "globs": [],
+        "alwaysApply": true
+      }
+    ]
+  },
+  {
     "id": "technology-profiles",
     "source": "profiles.md",
     "agentsTargets": [

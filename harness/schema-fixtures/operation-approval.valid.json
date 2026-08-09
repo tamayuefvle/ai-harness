@@ -1,0 +1,19 @@
+{
+  "$schema": "../schemas/operation-approval.schema.json",
+  "schemaVersion": "1.0.0",
+  "approvalId": "OPA-20260809T060200Z-cafebabe",
+  "runId": "RUN-20260809T060000Z-deadbeef",
+  "operationId": "OP-GITHUB-PUSH",
+  "operationRef": {
+    "capabilityId": "github",
+    "providerId": "gh-cli-https",
+    "operation": "push-approved-branch"
+  },
+  "target": "github:owner/repo:branch/example",
+  "argumentDigest": "3333333333333333333333333333333333333333333333333333333333333333",
+  "risk": "external-write",
+  "decision": "approved",
+  "actor": "human:reviewer",
+  "reason": "Reviewed exact branch push proposal.",
+  "decidedAt": "2026-08-09T06:02:00Z"
+}

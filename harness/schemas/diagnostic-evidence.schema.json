@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-harness.local/schemas/diagnostic-evidence.schema.json",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "id",
+    "provider",
+    "path",
+    "sha256",
+    "status"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "1.0.0"
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9-]+/[a-z0-9-]+$"
+    },
+    "provider": {
+      "type": "string",
+      "pattern": "^[a-z0-9-]+$"
+    },
+    "path": {
+      "type": "string",
+      "minLength": 1
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "status": {
+      "enum": [
+        "passed",
+        "failed",
+        "skipped",
+        "partial",
+        "blocked",
+        "unavailable"
+      ]
+    }
+  },
+  "additionalProperties": false
+}

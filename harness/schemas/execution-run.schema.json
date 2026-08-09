@@ -1,0 +1,240 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://portfolio-harness.local/schemas/execution-run.schema.json",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "runId",
+    "lifecycleRef",
+    "state",
+    "actorRole",
+    "approvedPlanDigest",
+    "invariantManifestDigest",
+    "pendingOperation",
+    "completedOperationIds",
+    "artifactRefs",
+    "evidenceRefs",
+    "approvalRefs",
+    "resumeCursor",
+    "idempotencyKey",
+    "stateVersion",
+    "integrityHash",
+    "stopReason",
+    "createdAt",
+    "updatedAt"
+  ],
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "schemaVersion": {
+      "const": "1.0.0"
+    },
+    "runId": {
+      "type": "string",
+      "pattern": "^RUN-[0-9]{8}T[0-9]{6}Z-[a-f0-9]{8}$"
+    },
+    "lifecycleRef": {
+      "type": "object",
+      "required": [
+        "kind",
+        "id",
+        "state"
+      ],
+      "properties": {
+        "kind": {
+          "const": "task"
+        },
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[A-Z][A-Z0-9]*-[0-9]{3,}(?:-[a-z0-9][a-z0-9-]*)?$",
+          "$comment": "id.pattern is generated from harness/contracts/task-id.json; run npm run harness:generate"
+        },
+        "state": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "additionalProperties": false
+    },
+    "state": {
+      "enum": [
+        "RUNNING",
+        "PAUSED",
+        "AWAITING_APPROVAL",
+        "RECOVERING",
+        "SUCCEEDED",
+        "FAILED",
+        "ABORTED"
+      ]
+    },
+    "approvedPlanDigest": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "invariantManifestDigest": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "pendingOperation": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "properties": {
+        "operationId": {
+          "type": "string",
+          "pattern": "^OP-[A-Z0-9-]+$"
+        },
+        "operationRef": {
+          "type": "object",
+          "required": [
+            "capabilityId",
+            "providerId",
+            "operation"
+          ],
+          "properties": {
+            "capabilityId": {
+              "type": "string",
+              "pattern": "^[a-z][a-z0-9-]*$"
+            },
+            "providerId": {
+              "type": "string",
+              "minLength": 1
+            },
+            "operation": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "additionalProperties": false
+        },
+        "target": {
+          "type": "string",
+          "minLength": 1
+        },
+        "argumentDigest": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "risk": {
+          "enum": [
+            "local-read",
+            "local-write",
+            "external-read",
+            "external-write",
+            "production"
+          ]
+        },
+        "idempotencyKey": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1
+        },
+        "commitState": {
+          "enum": [
+            "not-started",
+            "in-flight",
+            "ambiguous",
+            "confirmed"
+          ]
+        }
+      },
+      "required": [
+        "operationId",
+        "operationRef",
+        "target",
+        "argumentDigest",
+        "risk",
+        "idempotencyKey",
+        "commitState"
+      ],
+      "additionalProperties": false
+    },
+    "completedOperationIds": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string"
+      }
+    },
+    "artifactRefs": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string"
+      }
+    },
+    "evidenceRefs": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string"
+      }
+    },
+    "approvalRefs": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string"
+      }
+    },
+    "resumeCursor": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "idempotencyKey": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "stateVersion": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "integrityHash": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "stopReason": {
+      "enum": [
+        null,
+        "STOP-APPROVAL",
+        "STOP-AUTHORIZATION",
+        "STOP-BUDGET",
+        "STOP-INPUT",
+        "STOP-CONNECTION",
+        "STOP-EVALUATION",
+        "STOP-INVARIANT"
+      ]
+    },
+    "createdAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "updatedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "actorRole": {
+      "enum": [
+        "orchestrator",
+        "researcher",
+        "planner",
+        "architect",
+        "implementer",
+        "verifier",
+        "reviewer",
+        "system-adapter",
+        "packager"
+      ]
+    }
+  },
+  "additionalProperties": false
+}

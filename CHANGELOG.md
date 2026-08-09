@@ -1,5 +1,13 @@
 # Changelog
 
+## v13.1.0 - 2026-08-09
+
+- Added the Execution Safety Kernel as Task-bound Run, invariant, authorization, approval, retry, recovery, and evidence contracts without changing Project, Task, Release, or Incident lifecycle states.
+- Adapted authorization to capability schema 1.1.0 and the current `test/npm-scripts` and `test/react-doctor` operations; unknown operations fail cross-contract validation.
+- Added a generated Cursor executor-fallback Skill and a bounded Cursor → fresh read-only Codex diagnosis → one materially different Codex implementation → Human flow with no automatic loop.
+- Added `execution:check` to `verify:harness`, execution/fallback schemas and fixtures, and deterministic regression tests.
+- Migration is additive: historical Tasks do not receive fabricated Execution Runs.
+
 ## v12.0.0 - 2026-08-07
 
 - Redesigned package metadata (`PACKAGE_MANIFEST.json` schemaVersion 2.0.0) with core / optionalProfiles / generated categories; removed maintainer-only fields.

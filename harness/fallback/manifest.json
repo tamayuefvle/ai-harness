@@ -1,0 +1,48 @@
+{
+  "$schema": "./schema.json",
+  "schemaVersion": "1.0.0",
+  "owner": "execution-safety-kernel",
+  "primaryExecutor": "cursor",
+  "secondaryExecutor": "codex-cli",
+  "terminalFallback": "human",
+  "diagnostic": {
+    "executor": "codex-cli",
+    "freshSession": true,
+    "sandbox": "read-only",
+    "implementationBeforeDecision": false,
+    "decisions": [
+      "alternative_strategy",
+      "human_decision",
+      "human_action",
+      "blocked"
+    ]
+  },
+  "secondaryImplementation": {
+    "executor": "codex-cli",
+    "reuseRole": "implementer",
+    "freshSession": true,
+    "sandbox": "workspace-write",
+    "maxBoundedStrategies": 1,
+    "requireMateriallyDifferentStrategy": true
+  },
+  "review": {
+    "executor": "codex-cli",
+    "reuseRole": "reviewer",
+    "freshSession": true,
+    "sandbox": "read-only",
+    "mustNotReuseImplementationContext": true
+  },
+  "loopPolicy": {
+    "cursorToCodexToCursorAutomaticLoop": false,
+    "codexRetryWithNewSessionAutomaticLoop": false,
+    "humanMayStartNewRun": true
+  },
+  "humanHandoff": {
+    "decisionTypes": [
+      "human_decision",
+      "human_action"
+    ],
+    "agentVerificationRequiredBeforeResume": true,
+    "secretsMustNotBeRequested": true
+  }
+}

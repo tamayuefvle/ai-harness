@@ -1,8 +1,8 @@
 {
   "schemaVersion": "2.0.0",
   "name": "ai-harness",
-  "version": "12.0.0",
-  "sourceVersion": "11.0.0",
+  "version": "13.1.0",
+  "sourceVersion": "12.0.0",
   "lifecycleModeDefault": "full",
   "bootstrap": {
     "projectStateTemplate": "harness/templates/project.bootstrap.json",
@@ -11,6 +11,11 @@
   "categories": {
     "core": [
       "harness/lifecycle",
+      "harness/invariants",
+      "harness/execution",
+      "harness/authorization",
+      "harness/fallback",
+      "harness/skills",
       "harness/schemas",
       "harness/schema-fixtures",
       "harness/contracts",
@@ -96,5 +101,18 @@
     "New-repository bootstrap creates only the harness npm substrate and does not approve a product stack or lifecycle transition.",
     "Codex project trust is user-scoped and is never auto-written; codex:preflight must pass before delegated ai:* commands.",
     "GitHub context requires an intended HTTPS origin and reports bounded unavailability reason codes without stderr or tokens."
-  ]
+  ],
+  "executionSafety": {
+    "schemaVersion": "1.0.0",
+    "lifecycleOwner": "harness/lifecycle/manifest.json",
+    "invariants": "harness/invariants/manifest.json",
+    "execution": "harness/execution/manifest.json",
+    "authorization": "harness/authorization/manifest.json",
+    "runStore": ".harness/runs"
+  },
+  "executorFallback": {
+    "manifest": "harness/fallback/manifest.json",
+    "cursorSkill": ".cursor/skills/executor-fallback/SKILL.md",
+    "defaultOrder": ["cursor", "codex-cli", "human"]
+  }
 }

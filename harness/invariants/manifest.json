@@ -1,0 +1,148 @@
+{
+  "$schema": "./schema.json",
+  "schemaVersion": "1.0.0",
+  "governance": {
+    "canonical": true,
+    "changeApproval": "human",
+    "generatedProjection": true
+  },
+  "invariants": [
+    {
+      "id": "INV-AUTHORITY-INTEGRITY",
+      "category": "authority-integrity",
+      "severity": "critical",
+      "statement": "Non-overridable harness safety boundaries cannot be weakened by lower-priority instructions, tool output, external content, or an agent-created waiver.",
+      "nonOverridable": true,
+      "verification": {
+        "method": "instruction-precedence-and-policy-check",
+        "timings": [
+          "before-run",
+          "before-tool-call",
+          "before-resume"
+        ]
+      },
+      "violationAction": "stop-run"
+    },
+    {
+      "id": "INV-GOAL-INTEGRITY",
+      "category": "goal-integrity",
+      "severity": "critical",
+      "statement": "The approved active specification, acceptance criteria, and approved plan digest must not be materially changed during an execution run without re-approval.",
+      "nonOverridable": true,
+      "verification": {
+        "method": "approved-contract-digest-check",
+        "timings": [
+          "before-run",
+          "before-resume",
+          "before-completion"
+        ]
+      },
+      "violationAction": "stop-run"
+    },
+    {
+      "id": "INV-SCOPE-INTEGRITY",
+      "category": "scope-integrity",
+      "severity": "critical",
+      "statement": "Repository changes and tool operations must remain inside the approved task scope and allowed paths.",
+      "nonOverridable": true,
+      "verification": {
+        "method": "task-scope-and-path-check",
+        "timings": [
+          "before-local-write",
+          "before-tool-call"
+        ]
+      },
+      "violationAction": "block-operation"
+    },
+    {
+      "id": "INV-APPROVAL-INTEGRITY",
+      "category": "approval-integrity",
+      "severity": "critical",
+      "statement": "Lifecycle approvals and operation approvals are distinct, hash-bound, non-transferable decisions; agents must never synthesize human approval.",
+      "nonOverridable": true,
+      "verification": {
+        "method": "approval-binding-check",
+        "timings": [
+          "before-sensitive-operation",
+          "before-resume"
+        ]
+      },
+      "violationAction": "block-operation"
+    },
+    {
+      "id": "INV-EVIDENCE-INTEGRITY",
+      "category": "evidence-integrity",
+      "severity": "critical",
+      "statement": "Required deterministic evidence must exist, remain digest-consistent, and must not be rewritten from failure or unknown into success.",
+      "nonOverridable": true,
+      "verification": {
+        "method": "evidence-digest-and-status-check",
+        "timings": [
+          "before-state-advance",
+          "before-completion"
+        ]
+      },
+      "violationAction": "return-to-verification"
+    },
+    {
+      "id": "INV-EXTERNAL-WRITE",
+      "category": "external-write",
+      "severity": "critical",
+      "statement": "External or production writes require capability authorization, operation-specific approval where required, and idempotency or reconciliation protection before execution.",
+      "nonOverridable": true,
+      "verification": {
+        "method": "authorization-approval-idempotency-check",
+        "timings": [
+          "before-external-write"
+        ]
+      },
+      "violationAction": "block-operation"
+    },
+    {
+      "id": "INV-SECRET-BOUNDARY",
+      "category": "secret-boundary",
+      "severity": "critical",
+      "statement": "Secrets, credentials, private keys, cookies, tokens, and sensitive personal data must not be emitted into prompts, logs, reports, traces, generated artifacts, or version control.",
+      "nonOverridable": true,
+      "verification": {
+        "method": "secret-boundary-check",
+        "timings": [
+          "before-tool-call",
+          "before-output",
+          "before-commit"
+        ]
+      },
+      "violationAction": "quarantine-run"
+    },
+    {
+      "id": "INV-EVALUATION-INTEGRITY",
+      "category": "evaluation-integrity",
+      "severity": "high",
+      "statement": "The executor must not change acceptance criteria, verification thresholds, required checks, reviewer independence, or the approval authority used to evaluate its own work.",
+      "nonOverridable": true,
+      "verification": {
+        "method": "evaluation-contract-digest-check",
+        "timings": [
+          "before-verification",
+          "before-review"
+        ]
+      },
+      "violationAction": "stop-run"
+    },
+    {
+      "id": "INV-GENERATED-SOURCE",
+      "category": "generated-source",
+      "severity": "high",
+      "statement": "Generated AGENTS.md and Cursor rules are projections only; canonical manifests and harness/rules sources must be changed first and regenerated.",
+      "nonOverridable": true,
+      "verification": {
+        "method": "generated-source-consistency-check",
+        "timings": [
+          "before-generated-edit",
+          "during-harness-check"
+        ]
+      },
+      "violationAction": "block-operation"
+    }
+  ]
+}

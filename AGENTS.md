@@ -96,3 +96,37 @@ npm run harness:route -- path/to/target
 # Full lifecycle controller
 
 `harness/lifecycle/manifest.json` is the canonical state-transition source. Project, task, release, and incident lifecycles are separate and coordinated. Do not duplicate state lists in prompts or documentation when they can be generated or referenced. Full lifecycle mode blocks new delivery tasks until project state `ACTIVE`; delivery-only mode exists solely for controlled migration compatibility.
+
+<!-- GENERATED FILE. DO NOT EDIT DIRECTLY. -->
+<!-- Source: harness/rules/execution-safety.md; run npm run harness:generate -->
+# Execution safety kernel
+
+## Ownership boundary
+
+`harness/lifecycle/manifest.json` is the only SDLC lifecycle state machine. Project, task, release, and incident states must never be redefined by the execution kernel. v13 Execution Runs bind only to approved Task work. They are subordinate runtime state used to pause, resume, authorize, reconcile, and trace one bounded unit of already-approved work; Project, Release, and Incident are never mirrored into Run state.
+
+`harness/invariants/manifest.json`, `harness/execution/manifest.json`, and `harness/authorization/manifest.json` are canonical. Generated AGENTS/Cursor projections are not canonical.
+
+## Runtime rules
+
+- Start execution only from canonical persisted task/project state and an approved contract digest; chat history is context, never resume authority.
+- A paused run does not advance or rewrite Project/Task/Release/Incident lifecycle state.
+- Lifecycle approval and operation approval are distinct. Plan approval does not authorize an external write. Operation approval is bound to capability/provider/operation, target, and argument digest.
+- Authorization is deny-by-default. Capabilities define what a provider can do; authorization defines which role may invoke which existing capability operation under which conditions. Authorization must not invent capability operations.
+- Researcher and reviewer remain read-only. Verifier may run deterministic checks and append evidence but may not modify implementation or perform external writes. Implementer may modify approved repository paths but may not directly perform external writes.
+- External-write/production retries require idempotency protection. Never blindly retry a non-idempotent write. An ambiguous external commit enters runtime recovery and must be reconciled against persisted evidence before retry or continuation; a retry must be re-authorized after reconciliation.
+- Runtime recovery handles tool/runtime failures locally when safe. Escalate into the Incident lifecycle only for operational/customer/production/security impact or exhausted recovery; recovery itself may not create Incident state transitions.
+- Runtime trace events reference canonical evidence artifacts by path/digest instead of copying their contents.
+- `STOP-INVARIANT` cannot be resumed in place. Fix the invariant violation or contract version and start a new run from canonical state.
+
+- Runtime Run mutation is single-writer. Do not bypass per-run locking or hand-edit Run/approval/event artifacts to manufacture authorization. Latest immutable operation decision wins; stale approvals are invalid.
+
+## Executor fallback
+
+- Cursor is the default primary executor for interactive implementation. One failed shell command is not an executor failure; a failure is one bounded strategy based on one explicit hypothesis that did not satisfy its verification target.
+- After a bounded Cursor strategy fails, preserve failure evidence and use the generated `executor-fallback` Cursor Skill. Do not repeat the same strategy without materially new evidence.
+- The secondary path is a fresh read-only Codex diagnosis. Codex may invoke the existing implementer for one materially different bounded strategy, or it may escalate directly to `human_decision` / `human_action`.
+- After the secondary Codex implementation fails, autonomous fallback ends. Do not automatically return to Cursor or start another Codex implementation session. A human may explicitly authorize a new run/strategy.
+- MFA, CAPTCHA, interactive authentication, secret creation, payment/contract, legal acceptance, and physical action are human-first; skip the executor chain. Never ask the human to paste a secret into chat.
+- Human action is not proof of success. Verify the resulting state read-only before resuming.
+- Codex fallback implementation does not weaken independent review: the final reviewer remains a fresh ephemeral read-only Codex session.

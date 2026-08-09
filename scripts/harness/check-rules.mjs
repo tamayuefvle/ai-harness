@@ -2,10 +2,12 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { buildOutputs } from "./rule-lib.mjs";
+import { buildSkillOutputs } from "./skill-lib.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const repoRoot = path.resolve(here, "../..");
 const expected = buildOutputs(repoRoot);
+for (const [relative, content] of buildSkillOutputs(repoRoot)) expected.set(relative, content);
 const failures = [];
 
 for (const [relativePath, expectedContent] of expected) {

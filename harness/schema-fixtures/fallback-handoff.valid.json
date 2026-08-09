@@ -1,0 +1,28 @@
+{
+  "schemaVersion": "1.0.0",
+  "handoffId": "FBH-DEV-001-example-AC-001-demo",
+  "taskId": "DEV-001-example",
+  "acceptanceId": "AC-001",
+  "sourceExecutor": "cursor",
+  "targetExecutor": "codex-cli",
+  "failedGoal": "Fix build",
+  "strategyId": "cursor-build-fix-1",
+  "strategySummary": "Inspect dependency state and run targeted build.",
+  "failureClass": "toolchain",
+  "failureSignature": "MODULE_NOT_FOUND:sharp",
+  "commandsExecuted": [
+    "npm run build"
+  ],
+  "changedArtifactRefs": [],
+  "evidenceRefs": [
+    ".harness/reports/DEV-001-example/build.log"
+  ],
+  "cursorDiagnosis": "The bounded Cursor strategy did not resolve the module failure.",
+  "prohibitedRepeats": [
+    "repeat the same install/build strategy without new evidence"
+  ],
+  "approvedPlanDigest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "head": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+  "createdAt": "2026-08-09T07:00:00Z",
+  "workspaceDigest": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+}

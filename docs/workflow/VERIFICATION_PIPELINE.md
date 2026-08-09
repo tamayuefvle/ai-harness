@@ -4,7 +4,7 @@
 
 `package.scripts.fragment.json` is the canonical verification command map.
 
-- `verify:harness`: generated-rule synchronization, Capability validation, Draft 2020-12 static and dynamic artifact validation, and all harness tests.
+- `verify:harness`: generated-rule/Skill synchronization, Capability validation, Execution Safety cross-contract validation, Draft 2020-12 static and dynamic artifact validation, security checks, and all harness tests.
 - `verify:static`: lint and typecheck.
 - `verify:react`: normalized React Doctor CI validation; full scope on the Git root commit, changed scope once a parent exists.
 - `verify:application`: unit/component tests and production build.

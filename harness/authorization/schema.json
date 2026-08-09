@@ -1,0 +1,265 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://portfolio-harness.local/schemas/authorization-manifest.schema.json",
+  "type": "object",
+  "required": [
+    "$schema",
+    "schemaVersion",
+    "defaultEffect",
+    "capabilityManifest",
+    "roles",
+    "conditionDefinitions",
+    "policies",
+    "decisionOrder"
+  ],
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "schemaVersion": {
+      "const": "1.0.0"
+    },
+    "defaultEffect": {
+      "const": "deny"
+    },
+    "capabilityManifest": {
+      "const": "harness/capabilities/manifest.json"
+    },
+    "roles": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z][a-z0-9-]*$"
+      }
+    },
+    "policies": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "role",
+          "effect",
+          "capabilityId",
+          "providerId",
+          "operations",
+          "conditions"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^AUTH-[0-9]{3}$"
+          },
+          "role": {
+            "type": "string"
+          },
+          "effect": {
+            "enum": [
+              "allow",
+              "deny"
+            ]
+          },
+          "capabilityId": {
+            "type": "string"
+          },
+          "providerId": {
+            "type": "string"
+          },
+          "operations": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": {
+              "type": "string"
+            }
+          },
+          "conditions": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+              "enum": [
+                "work-scope-match",
+                "approved-path-match",
+                "operation-approval-required",
+                "approved-digest-match",
+                "idempotency-key-required",
+                "read-only",
+                "evidence-append-only",
+                "provider-enabled"
+              ]
+            }
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "decisionOrder": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 3,
+      "items": {
+        "enum": [
+          "explicit-deny",
+          "matching-allow-all-conditions",
+          "default-deny"
+        ]
+      }
+    },
+    "conditionDefinitions": {
+      "type": "object",
+      "required": [
+        "work-scope-match",
+        "approved-path-match",
+        "operation-approval-required",
+        "approved-digest-match",
+        "idempotency-key-required",
+        "read-only",
+        "evidence-append-only",
+        "provider-enabled"
+      ],
+      "properties": {
+        "work-scope-match": {
+          "type": "object",
+          "required": [
+            "evidenceSource",
+            "selfAssertable"
+          ],
+          "properties": {
+            "evidenceSource": {
+              "type": "string",
+              "minLength": 1
+            },
+            "selfAssertable": {
+              "const": false
+            }
+          },
+          "additionalProperties": false
+        },
+        "approved-path-match": {
+          "type": "object",
+          "required": [
+            "evidenceSource",
+            "selfAssertable"
+          ],
+          "properties": {
+            "evidenceSource": {
+              "type": "string",
+              "minLength": 1
+            },
+            "selfAssertable": {
+              "const": false
+            }
+          },
+          "additionalProperties": false
+        },
+        "operation-approval-required": {
+          "type": "object",
+          "required": [
+            "evidenceSource",
+            "selfAssertable"
+          ],
+          "properties": {
+            "evidenceSource": {
+              "type": "string",
+              "minLength": 1
+            },
+            "selfAssertable": {
+              "const": false
+            }
+          },
+          "additionalProperties": false
+        },
+        "approved-digest-match": {
+          "type": "object",
+          "required": [
+            "evidenceSource",
+            "selfAssertable"
+          ],
+          "properties": {
+            "evidenceSource": {
+              "type": "string",
+              "minLength": 1
+            },
+            "selfAssertable": {
+              "const": false
+            }
+          },
+          "additionalProperties": false
+        },
+        "idempotency-key-required": {
+          "type": "object",
+          "required": [
+            "evidenceSource",
+            "selfAssertable"
+          ],
+          "properties": {
+            "evidenceSource": {
+              "type": "string",
+              "minLength": 1
+            },
+            "selfAssertable": {
+              "const": false
+            }
+          },
+          "additionalProperties": false
+        },
+        "read-only": {
+          "type": "object",
+          "required": [
+            "evidenceSource",
+            "selfAssertable"
+          ],
+          "properties": {
+            "evidenceSource": {
+              "type": "string",
+              "minLength": 1
+            },
+            "selfAssertable": {
+              "const": false
+            }
+          },
+          "additionalProperties": false
+        },
+        "evidence-append-only": {
+          "type": "object",
+          "required": [
+            "evidenceSource",
+            "selfAssertable"
+          ],
+          "properties": {
+            "evidenceSource": {
+              "type": "string",
+              "minLength": 1
+            },
+            "selfAssertable": {
+              "const": false
+            }
+          },
+          "additionalProperties": false
+        },
+        "provider-enabled": {
+          "type": "object",
+          "required": [
+            "evidenceSource",
+            "selfAssertable"
+          ],
+          "properties": {
+            "evidenceSource": {
+              "type": "string",
+              "minLength": 1
+            },
+            "selfAssertable": {
+              "const": false
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

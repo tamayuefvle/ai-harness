@@ -1,0 +1,100 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://portfolio-harness.local/schemas/operation-approval.schema.json",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "approvalId",
+    "runId",
+    "operationId",
+    "operationRef",
+    "target",
+    "argumentDigest",
+    "risk",
+    "decision",
+    "actor",
+    "reason",
+    "decidedAt"
+  ],
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "schemaVersion": {
+      "const": "1.0.0"
+    },
+    "approvalId": {
+      "type": "string",
+      "pattern": "^OPA-[0-9]{8}T[0-9]{6}Z-[a-f0-9]{8}$"
+    },
+    "runId": {
+      "type": "string",
+      "pattern": "^RUN-"
+    },
+    "operationId": {
+      "type": "string",
+      "pattern": "^OP-[A-Z0-9-]+$"
+    },
+    "operationRef": {
+      "type": "object",
+      "required": [
+        "capabilityId",
+        "providerId",
+        "operation"
+      ],
+      "properties": {
+        "capabilityId": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9-]*$"
+        },
+        "providerId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "operation": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "additionalProperties": false
+    },
+    "target": {
+      "type": "string",
+      "minLength": 1
+    },
+    "argumentDigest": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "risk": {
+      "enum": [
+        "local-read",
+        "local-write",
+        "external-read",
+        "external-write",
+        "production"
+      ]
+    },
+    "decision": {
+      "enum": [
+        "approved",
+        "rejected",
+        "revoked",
+        "expired"
+      ]
+    },
+    "actor": {
+      "type": "string",
+      "pattern": "^human:[^\\s]+$"
+    },
+    "reason": {
+      "type": "string",
+      "minLength": 1
+    },
+    "decidedAt": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "additionalProperties": false
+}

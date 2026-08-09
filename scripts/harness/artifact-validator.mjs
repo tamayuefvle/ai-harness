@@ -12,6 +12,12 @@ const SCHEMAS = {
   githubContext: "harness/schemas/github-context.schema.json",
   reactDoctor: "harness/schemas/react-doctor-result.schema.json",
   review: "harness/schemas/review.schema.json",
+  executionRun: "harness/schemas/execution-run.schema.json",
+  operationApproval: "harness/schemas/operation-approval.schema.json",
+  diagnosticEvidence: "harness/schemas/diagnostic-evidence.schema.json",
+  fallbackHandoff: "harness/schemas/fallback-handoff.schema.json",
+  fallbackDecision: "harness/schemas/fallback-decision.schema.json",
+  runtimeEvent: "harness/schemas/runtime-event.schema.json",
 };
 
 function typeMatches(value, type) {

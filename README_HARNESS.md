@@ -1,8 +1,8 @@
-# AI Harness v12.0.0
+# AI Harness v13.1.0
 
 ## Standalone user harness
 
-v12 is a **standalone** engineering harness: clone this repository and run product → spec → implement → verify → release → operate without external maintainer tooling. It extends the v11 lifecycle core with clearer package vs. project-state separation, optional profile bundles, and thin root policy + task dispatcher rules.
+v13.1 is a **standalone** engineering harness: clone this repository and run product → spec → implement → verify → release → operate without external maintainer tooling. It preserves the v12 lifecycle and thin user root policy while adding Task-bound Execution Runs, deny-by-default operation authorization, fail-closed recovery, and a bounded Cursor → Codex → Human executor fallback.
 
 The package ships in `MIGRATION_PENDING`. Set `projectId`, choose `proposedProfiles`, run `npm run profile:resolve`, review baselines, approve migration, then advance to `ACTIVE`. See `docs/workflow/FULL_LIFECYCLE.md` and `MIGRATION.md`.
 
@@ -61,6 +61,7 @@ harness/rules/manifest.json
 npm run harness:generate
 npm run harness:check
 npm run harness:route -- path/to/target
+npm run execution:check
 ```
 
 ## Install into an existing repository
@@ -110,4 +111,4 @@ npm run verify:ci
 npm run verify:all
 ```
 
-See `docs/workflow/VERIFICATION_PIPELINE.md`, `docs/workflow/LIFECYCLE_GATES.md`, and `PACKAGE_MANIFEST.json` for package categories and constraints.
+See `docs/workflow/EXECUTION_SAFETY.md`, `docs/workflow/VERIFICATION_PIPELINE.md`, `docs/workflow/LIFECYCLE_GATES.md`, and `PACKAGE_MANIFEST.json` for package categories and constraints.
