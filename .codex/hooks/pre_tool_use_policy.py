@@ -1,27 +1,26 @@
 #!/usr/bin/env python3
-"""Deny destructive or policy-bypassing Codex tool calls."""
-
+"""Enforce the canonical command/tool guardrail policy for Codex PreToolUse."""
 from __future__ import annotations
 
 import json
+import os
 import re
 import sys
+from pathlib import Path
 from typing import Any
 
 
-DENY_PATTERNS: list[tuple[re.Pattern[str], str]] = [
-    (re.compile(r"(^|\s)git\s+reset\s+--hard(\s|$)", re.I), "git reset --hard is forbidden."),
-    (re.compile(r"(^|\s)git\s+clean\s+-[a-z]*f", re.I), "git clean with force is forbidden."),
-    (re.compile(r"(^|\s)git\s+push\b[^\n;&|]*(--force|-f)(\s|$)", re.I), "Force push is forbidden."),
-    (re.compile(r"(^|\s)rm\s+-[a-z]*r[a-z]*f|(^|\s)rm\s+-[a-z]*f[a-z]*r", re.I), "Recursive forced deletion is forbidden."),
-    (re.compile(r"(^|\s)(npx\s+)?vercel\b[^\n;&|]*--prod(\s|$)", re.I), "Production deployment requires explicit human approval."),
-    (re.compile(r"(^|\s)sudo(\s|$)", re.I), "sudo is outside the repository automation boundary."),
-    (re.compile(r"(curl|wget)[^\n|]*\|\s*(ba)?sh(\s|$)", re.I), "Piping remote scripts into a shell is forbidden."),
-    (re.compile(r"(^|\s)git\s+push(?:\s+\S+)?\s+(main|master)(\s|$)", re.I), "Direct push to the protected branch is forbidden."),
-    (re.compile(r"(^|\s)git\s+push\b[^\n;&|]*HEAD:(main|master)(\s|$)", re.I), "Direct push to the protected branch is forbidden."),
-    (re.compile(r"(^|\s)(cat|less|more|head|tail|sed|awk)\s+[^\n;&|]*\.env(?:\s|$)", re.I), "Reading a real .env file into model-visible output is forbidden."),
-    (re.compile(r"(^|\s)(cat|less|more|head|tail)\s+[^\n;&|]*(id_rsa|id_ed25519|credentials)(\s|$)", re.I), "Reading credential files is forbidden."),
-]
+def repo_root() -> Path:
+    configured = os.environ.get("HARNESS_REPO_ROOT")
+    if configured:
+        return Path(configured).resolve()
+    here = Path(__file__).resolve()
+    return here.parents[2]
+
+
+def load_policy() -> dict[str, Any]:
+    with (repo_root() / "harness/policies/command-guardrails.json").open(encoding="utf-8") as handle:
+        return json.load(handle)
 
 
 def deny(reason: str) -> None:
@@ -58,24 +57,21 @@ def main() -> None:
     except json.JSONDecodeError:
         deny("Hook input was invalid JSON; failing closed.")
 
+    policy = load_policy()
     tool_input = event.get("tool_input") or {}
     visible_input = "\n".join(flatten_strings(tool_input)).replace("\\", "/")
 
-    for pattern, reason in DENY_PATTERNS:
-        if pattern.search(visible_input):
-            deny(reason)
+    for entry in policy["commandPatterns"]:
+        if "codex-hook" not in entry["surfaces"]:
+            continue
+        flags = re.I if "i" in entry.get("flags", "") else 0
+        if re.search(entry["regex"], visible_input, flags):
+            deny(f'{entry["id"]}: {entry["message"]}')
 
     if "harness/rules/" not in visible_input:
-        if re.search(r"(^|/)(AGENTS\.md)(?:\s|$|[\"'])", visible_input):
-            deny(
-                "AGENTS.md files are generated. Edit harness/rules/*.md and run "
-                "`npm run harness:generate` instead."
-            )
-        if "/.cursor/rules/" in visible_input or visible_input.startswith(".cursor/rules/"):
-            deny(
-                "Cursor rule files are generated. Edit harness/rules/*.md and run "
-                "`npm run harness:generate` instead."
-            )
+        for marker in policy["generatedInstructionMarkers"]:
+            if marker in visible_input:
+                deny("POLICY-GENERATED-INSTRUCTION: edit canonical harness sources and regenerate projections instead.")
 
     raise SystemExit(0)
 

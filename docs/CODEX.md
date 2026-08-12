@@ -1,5 +1,5 @@
 <!-- GENERATED FILE. DO NOT EDIT DIRECTLY. -->
-<!-- Source: harness/rules/docs-router.md; run npm run harness:generate -->
+<!-- Source: harness/rules/docs-router.md; consumer: codex; run npm run harness:generate -->
 # Documentation router
 
 ## Role

@@ -92,6 +92,16 @@
       "instance": "harness/schema-fixtures/incident-gate.valid.json"
     },
     {
+      "id": "discovery-session",
+      "schema": "harness/schemas/discovery-session.schema.json",
+      "instance": "harness/schema-fixtures/discovery-session.valid.json"
+    },
+    {
+      "id": "discovery-turn",
+      "schema": "harness/schemas/discovery-turn.schema.json",
+      "instance": "harness/schema-fixtures/discovery-turn.valid.json"
+    },
+    {
       "id": "operational-signal",
       "schema": "harness/schemas/operational-signal.schema.json",
       "instance": "harness/schema-fixtures/operational-signal.valid.json"
@@ -180,6 +190,21 @@
       "id": "runtime-event",
       "schema": "harness/schemas/runtime-event.schema.json",
       "instance": "harness/schema-fixtures/runtime-event.valid.json"
+    },
+    {
+      "id": "command-guardrail-policy",
+      "schema": "harness/policies/schema.json",
+      "instance": "harness/policies/command-guardrails.json"
+    },
+    {
+      "id": "cursor-cli-manifest",
+      "schema": "harness/cursor/schema.json",
+      "instance": "harness/cursor/manifest.json"
+    },
+    {
+      "id": "cursor-agent-result",
+      "schema": "harness/schemas/cursor-agent-result.schema.json",
+      "instance": "harness/schema-fixtures/cursor-agent-result.valid.json"
     }
   ]
 }

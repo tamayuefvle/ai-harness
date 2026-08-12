@@ -1,4 +1,4 @@
-# Security policy
+# Security policy — AI Development Harness v14.3.0
 
 - Default deny for production writes, destructive operations, secret access, dependency installation, and external resource creation.
 - Human approval uses `human:<name>` records and must be reinforced by external controls such as protected branches and GitHub Environments. Local JSON alone is not a security boundary.
@@ -9,6 +9,8 @@
 - Non-idempotent and ambiguous external writes are never blindly retried; reconcile persisted evidence and re-authorize before retrying.
 - Executor fallback is bounded to Cursor, a fresh read-only Codex diagnosis, at most one materially different Codex implementation, then Human. Automatic Cursor/Codex loops are prohibited.
 - Prohibited operations include `git reset --hard`, destructive `git clean`, force push, direct protected-branch push, `rm -rf`, unnecessary `sudo`, remote-script-to-shell pipelines, and unapproved production deployment.
+- `harness/policies/command-guardrails.json` is the canonical owner of command/tool denials. Runtime validation, security scanning, Codex rules, Cursor permissions, and hooks consume or are generated from it.
+- Cursor CLI is optional. Read-only and reviewer roles deny writes; implementer writes require a harness-managed Git-common-dir worktree and are never auto-applied. `Shell(*)` and all MCP tools are denied. Hooks are defense in depth, not the hard boundary.
 - Report vulnerabilities privately to the repository owner; do not include secrets or exploit production systems.
 
 ## Local diagnostics

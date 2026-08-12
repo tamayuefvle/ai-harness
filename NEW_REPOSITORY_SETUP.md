@@ -1,4 +1,4 @@
-# New Repository Setup — LLM execution runbook
+# New Repository Setup — v14.3.0
 
 > 対象: **このハーネスを Git リポジトリへ新規配置したが、Git root に `package.json` がまだ存在しない場合**。
 >
@@ -16,6 +16,17 @@
 - `git reset --hard`、強制 `git clean`、force push、履歴の無断書換え、既存ファイルの無断削除を行わない。
 - `.env`、token、cookie、秘密鍵等を表示・commit しない。
 - 生成物（`AGENTS.md` / `.cursor/rules` 等）は直接編集せず、正本→`npm run harness:generate` の順を守る。
+
+## 0.0 Greenfield product vs legacy migration
+
+Bootstrap 完了後、`harness/project.json` は通常 `MIGRATION_PENDING` です。次のどちらかを選びます（混在させない）。
+
+| Path | いつ使うか | 最初のコマンド |
+|---|---|---|
+| **Greenfield product** | 新規 product を企画から作る | `npm run project:discover [--tier lite\|full]` → `docs/workflow/PRODUCT_DISCOVERY.md` |
+| **Legacy migration** | 既存 v11/v12 資産を一括移行する | `MIGRATION.md` の migration 手順 |
+
+Greenfield では `task:start` や実装 task を **`ACTIVE` 到達前** に開始しません。`npm run product:status` で次に埋める product 文書を確認します。
 
 ## 0.1 初期設定で人間が行うこと（チェックリスト）
 

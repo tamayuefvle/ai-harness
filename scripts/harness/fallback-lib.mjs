@@ -4,7 +4,7 @@ import path from "node:path";
 import { execFileSync } from "node:child_process";
 
 export function loadFallback(root){return JSON.parse(fs.readFileSync(path.join(root,"harness/fallback/manifest.json"),"utf8"));}
-export function isHumanFirst(reason,root){return JSON.parse(fs.readFileSync(path.join(root,"harness/execution/manifest.json"),"utf8")).executorFallback.humanFirstReasons.includes(reason);}
+export function isHumanFirst(reason,root){return loadFallback(root).humanFirstReasons.includes(reason);}
 export function readJson(file){return JSON.parse(fs.readFileSync(file,"utf8"));}
 export function sha256File(file){return crypto.createHash("sha256").update(fs.readFileSync(file)).digest("hex");}
 export function gitHead(root){return execFileSync("git",["rev-parse","HEAD"],{cwd:root,encoding:"utf8"}).trim();}
@@ -185,4 +185,3 @@ export function recordHumanHandoff(root,decisionPath){
     return ledger;
   });
 }
-

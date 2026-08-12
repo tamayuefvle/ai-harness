@@ -1,5 +1,5 @@
 <!-- GENERATED FILE. DO NOT EDIT DIRECTLY. -->
-<!-- Source: harness/rules/specs.md; run npm run harness:generate -->
+<!-- Source: harness/rules/specs.md; consumer: codex; run npm run harness:generate -->
 # Specification and gatekeeper role
 
 ## Ownership

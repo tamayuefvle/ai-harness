@@ -54,10 +54,11 @@ export function collectRuntimeDoctor(options = {}) {
       [/^approval_policy\s*=\s*"on-request"/m, "approval_policy=on-request"],
       [/^sandbox_mode\s*=\s*"workspace-write"/m, "sandbox_mode=workspace-write"],
       [/^network_access\s*=\s*false/m, "network_access=false"],
+      [/^project_doc_fallback_filenames\s*=\s*\["CODEX\.md"\]/m, "project_doc_fallback_filenames=[\"CODEX.md\"]"],
       [/^hooks\s*=\s*true/m, "hooks=true"],
     ];
     const missing = required.filter(([pattern]) => !pattern.test(text)).map(([, label]) => label);
-    add(checks, "Codex config", missing.length ? "fail" : "pass", missing.length ? `Missing: ${missing.join(", ")}` : "approval, sandbox, network, and hooks settings are present.");
+    add(checks, "Codex config", missing.length ? "fail" : "pass", missing.length ? `Missing: ${missing.join(", ")}` : "approval, sandbox, network, CODEX fallback, and hooks settings are present.");
   }
 
   if (!fs.existsSync(hooksPath)) add(checks, "PreToolUse hook config", "fail", ".codex/hooks.json is missing.");
@@ -109,4 +110,3 @@ function main() {
 }
 
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) main();
-

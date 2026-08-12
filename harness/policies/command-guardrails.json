@@ -1,0 +1,367 @@
+{
+  "$schema": "./schema.json",
+  "schemaVersion": "1.0.0",
+  "owner": "execution-safety-kernel",
+  "deniedExecutables": [
+    {
+      "id": "CMD-SHELL-SH",
+      "name": "sh"
+    },
+    {
+      "id": "CMD-SHELL-BASH",
+      "name": "bash"
+    },
+    {
+      "id": "CMD-SHELL-ZSH",
+      "name": "zsh"
+    },
+    {
+      "id": "CMD-SHELL-FISH",
+      "name": "fish"
+    },
+    {
+      "id": "CMD-SHELL-CMD",
+      "name": "cmd"
+    },
+    {
+      "id": "CMD-SHELL-CMD-EXE",
+      "name": "cmd.exe"
+    },
+    {
+      "id": "CMD-SHELL-POWERSHELL",
+      "name": "powershell"
+    },
+    {
+      "id": "CMD-SHELL-POWERSHELL-EXE",
+      "name": "powershell.exe"
+    },
+    {
+      "id": "CMD-SHELL-PWSH",
+      "name": "pwsh"
+    },
+    {
+      "id": "CMD-SUDO",
+      "name": "sudo"
+    },
+    {
+      "id": "CMD-SU",
+      "name": "su"
+    },
+    {
+      "id": "CMD-RM",
+      "name": "rm"
+    },
+    {
+      "id": "CMD-RMDIR",
+      "name": "rmdir"
+    }
+  ],
+  "commandPatterns": [
+    {
+      "id": "CMD-GIT-HARD-RESET",
+      "regex": "(^|\\s)git\\s+reset\\s+--hard(\\s|$)",
+      "flags": "i",
+      "message": "git reset --hard is forbidden.",
+      "surfaces": [
+        "runtime",
+        "security",
+        "codex-hook",
+        "cursor-hook"
+      ]
+    },
+    {
+      "id": "CMD-GIT-FORCE-CLEAN",
+      "regex": "(^|\\s)git\\s+clean\\s+[^\\n]*(?:-f|--force)",
+      "flags": "i",
+      "message": "git clean with force is forbidden.",
+      "surfaces": [
+        "runtime",
+        "security",
+        "codex-hook",
+        "cursor-hook"
+      ]
+    },
+    {
+      "id": "CMD-GIT-FORCE-PUSH",
+      "regex": "(^|\\s)git\\s+push\\b[^\\n;&|]*(--force|-f)(\\s|$)",
+      "flags": "i",
+      "message": "Force push is forbidden.",
+      "surfaces": [
+        "runtime",
+        "security",
+        "codex-hook",
+        "cursor-hook"
+      ]
+    },
+    {
+      "id": "CMD-SUDO-USE",
+      "regex": "(^|[;&|]\\s*|\\s)sudo(?:\\s|$)",
+      "flags": "i",
+      "message": "sudo is outside the repository automation boundary.",
+      "surfaces": [
+        "security",
+        "codex-hook",
+        "cursor-hook"
+      ]
+    },
+    {
+      "id": "CMD-SU-USE",
+      "regex": "(^|[;&|]\\s*|\\s)su(?:\\s|$)",
+      "flags": "i",
+      "message": "su is outside the repository automation boundary.",
+      "surfaces": [
+        "security",
+        "codex-hook",
+        "cursor-hook"
+      ]
+    },
+    {
+      "id": "CMD-RM-RF",
+      "regex": "(^|\\s)rm\\s+-[a-z]*r[a-z]*f|(^|\\s)rm\\s+-[a-z]*f[a-z]*r",
+      "flags": "i",
+      "message": "Recursive forced deletion is forbidden.",
+      "surfaces": [
+        "security",
+        "codex-hook",
+        "cursor-hook"
+      ]
+    },
+    {
+      "id": "CMD-PRODUCTION-DEPLOY",
+      "regex": "(^|\\s)(npx\\s+)?vercel\\b[^\\n;&|]*--prod(\\s|$)",
+      "flags": "i",
+      "message": "Production deployment requires explicit human approval.",
+      "surfaces": [
+        "security",
+        "codex-hook",
+        "cursor-hook"
+      ]
+    },
+    {
+      "id": "CMD-REMOTE-SHELL-PIPE",
+      "regex": "(curl|wget)[^\\n|]*\\|\\s*(ba)?sh(\\s|$)",
+      "flags": "i",
+      "message": "Piping remote scripts into a shell is forbidden.",
+      "surfaces": [
+        "security",
+        "codex-hook",
+        "cursor-hook"
+      ]
+    },
+    {
+      "id": "CMD-PROTECTED-BRANCH-PUSH",
+      "regex": "(^|\\s)git\\s+push(?:\\s+\\S+)?\\s+(main|master)(\\s|$)|(^|\\s)git\\s+push\\b[^\\n;&|]*HEAD:(main|master)(\\s|$)",
+      "flags": "i",
+      "message": "Direct push to a protected branch is forbidden.",
+      "surfaces": [
+        "codex-hook",
+        "cursor-hook"
+      ]
+    },
+    {
+      "id": "CMD-SECRET-ENV-READ",
+      "regex": "(^|\\s)(cat|less|more|head|tail|sed|awk)\\s+[^\\n;&|]*\\.env(?:\\s|$)",
+      "flags": "i",
+      "message": "Reading a real .env file into model-visible output is forbidden.",
+      "surfaces": [
+        "codex-hook",
+        "cursor-hook"
+      ]
+    },
+    {
+      "id": "CMD-CREDENTIAL-FILE-READ",
+      "regex": "(^|\\s)(cat|less|more|head|tail)\\s+[^\\n;&|]*(id_rsa|id_ed25519|credentials)(\\s|$)",
+      "flags": "i",
+      "message": "Reading credential files is forbidden.",
+      "surfaces": [
+        "codex-hook",
+        "cursor-hook"
+      ]
+    }
+  ],
+  "inlineInterpreterExecutables": [
+    "node",
+    "python",
+    "python3",
+    "ruby",
+    "perl"
+  ],
+  "secretArgumentPatterns": [
+    {
+      "id": "SECRET-PRIVATE-KEY",
+      "regex": "-----BEGIN [A-Z ]*PRIVATE KEY-----",
+      "flags": "i"
+    },
+    {
+      "id": "SECRET-GITHUB-TOKEN",
+      "regex": "gh[pousr]_[A-Za-z0-9_]{20,}",
+      "flags": ""
+    },
+    {
+      "id": "SECRET-AWS-ACCESS-KEY",
+      "regex": "AKIA[0-9A-Z]{16}",
+      "flags": ""
+    }
+  ],
+  "generatedInstructionMarkers": [
+    "AGENTS.md",
+    "CODEX.md",
+    "/.cursor/rules/",
+    "/.codex/rules/guardrails.rules",
+    "/.codex/hooks/pre_tool_use_policy.py",
+    "/.cursor/cli.json",
+    "/.cursor/hooks.json"
+  ],
+  "cursorPermissions": {
+    "baseDeny": [
+      "Shell(*)",
+      "Mcp(*:*)",
+      "Read(.env*)",
+      "Read(**/.env*)",
+      "Read(**/*.key)",
+      "Read(**/id_rsa)",
+      "Read(**/id_ed25519)",
+      "Write(.env*)",
+      "Write(**/.env*)",
+      "Write(**/*.key)",
+      "Write(AGENTS.md)",
+      "Write(**/CODEX.md)",
+      "Write(**/.cursor/rules/**)",
+      "Write(.cursor/cli.json)",
+      "Write(.cursor/hooks.json)",
+      "Write(.codex/rules/guardrails.rules)",
+      "Write(.codex/hooks/pre_tool_use_policy.py)"
+    ],
+    "readOnlyExtraDeny": [
+      "Write(**/*)"
+    ],
+    "implementerExtraDeny": []
+  },
+  "codexPrefixRules": [
+    {
+      "id": "CMD-GIT-HARD-RESET",
+      "pattern": [
+        "git",
+        "reset",
+        "--hard"
+      ],
+      "decision": "forbidden",
+      "justification": "履歴と未コミット変更を破壊します。安全な差分確認と限定的な restore を使用してください。",
+      "match": [
+        "git reset --hard",
+        "git reset --hard HEAD~1"
+      ]
+    },
+    {
+      "id": "CMD-GIT-FORCE-CLEAN",
+      "pattern": [
+        "git",
+        "clean"
+      ],
+      "decision": "forbidden",
+      "justification": "未追跡ファイルを削除します。削除対象を人間が確認してください。",
+      "match": [
+        "git clean -fd",
+        "git clean -fdx"
+      ]
+    },
+    {
+      "id": "CMD-GIT-FORCE-PUSH-LONG",
+      "pattern": [
+        "git",
+        "push",
+        "--force"
+      ],
+      "decision": "forbidden",
+      "justification": "共有履歴を書き換えます。通常 push または新しい修正 commit を使用してください。",
+      "match": [
+        "git push --force",
+        "git push --force origin main"
+      ]
+    },
+    {
+      "id": "CMD-GIT-FORCE-PUSH-SHORT",
+      "pattern": [
+        "git",
+        "push",
+        "-f"
+      ],
+      "decision": "forbidden",
+      "justification": "共有履歴を書き換えます。通常 push または新しい修正 commit を使用してください。",
+      "match": [
+        "git push -f",
+        "git push -f origin feature"
+      ]
+    },
+    {
+      "id": "CMD-RM-RF",
+      "pattern": [
+        "rm",
+        "-rf"
+      ],
+      "decision": "forbidden",
+      "justification": "再帰的な強制削除は禁止です。対象を限定し、人間の承認を得てください。",
+      "match": [
+        "rm -rf .next",
+        "rm -rf /"
+      ]
+    },
+    {
+      "id": "CMD-VERCEL-PROD",
+      "pattern": [
+        "vercel",
+        "--prod"
+      ],
+      "decision": "forbidden",
+      "justification": "本番デプロイは人間の明示承認後、保護された main から実行してください。",
+      "match": [
+        "vercel --prod"
+      ]
+    },
+    {
+      "id": "CMD-NPX-VERCEL-PROD",
+      "pattern": [
+        "npx",
+        "vercel",
+        "--prod"
+      ],
+      "decision": "forbidden",
+      "justification": "本番デプロイは人間の明示承認後、保護された main から実行してください。",
+      "match": [
+        "npx vercel --prod"
+      ]
+    },
+    {
+      "id": "CMD-NPM-INSTALL",
+      "pattern": [
+        "npm",
+        "install"
+      ],
+      "decision": "prompt",
+      "justification": "依存追加・更新は ADR と lockfile 差分の確認が必要です。",
+      "match": [
+        "npm install",
+        "npm install zod",
+        "npm install -D vitest"
+      ]
+    },
+    {
+      "id": "CMD-GH-MUTATION",
+      "pattern": [
+        "gh",
+        [
+          "pr",
+          "issue",
+          "release"
+        ]
+      ],
+      "decision": "prompt",
+      "justification": "GitHub 上の状態を変更または公開する可能性があるため確認が必要です。",
+      "match": [
+        "gh pr create",
+        "gh issue close 12",
+        "gh release create v1.0.0"
+      ]
+    }
+  ]
+}

@@ -4,7 +4,7 @@ globs: ["**/*.{js,mjs,cjs,ts,py,sh,ps1}"]
 alwaysApply: true
 ---
 <!-- GENERATED FILE. DO NOT EDIT DIRECTLY. -->
-<!-- Source: harness/rules/scripts.md; run npm run harness:generate -->
+<!-- Source: harness/rules/scripts.md; consumer: cursor; run npm run harness:generate -->
 # Automation and developer tooling role
 
 ## Scope

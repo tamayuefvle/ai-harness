@@ -12,7 +12,7 @@
     "resume",
     "retry",
     "failureClasses",
-    "executorFallback"
+    "fallbackPolicy"
   ],
   "properties": {
     "$schema": {
@@ -286,48 +286,14 @@
         "additionalProperties": false
       }
     },
-    "executorFallback": {
+    "fallbackPolicy": {
       "type": "object",
       "required": [
-        "defaultOrder",
-        "maxBoundedStrategiesPerExecutor",
-        "requireFailureEvidenceBeforeFallback",
-        "requireIndependentDiagnosisOnSecondary",
-        "repeatFailedStrategy",
-        "automaticReturnToPreviousExecutor",
-        "humanFirstReasons"
+        "manifest"
       ],
       "properties": {
-        "defaultOrder": {
-          "const": [
-            "cursor",
-            "codex-cli",
-            "human"
-          ]
-        },
-        "maxBoundedStrategiesPerExecutor": {
-          "const": 1
-        },
-        "requireFailureEvidenceBeforeFallback": {
-          "const": true
-        },
-        "requireIndependentDiagnosisOnSecondary": {
-          "const": true
-        },
-        "repeatFailedStrategy": {
-          "const": "deny"
-        },
-        "automaticReturnToPreviousExecutor": {
-          "const": false
-        },
-        "humanFirstReasons": {
-          "type": "array",
-          "minItems": 1,
-          "uniqueItems": true,
-          "items": {
-            "type": "string",
-            "pattern": "^[A-Z0-9_-]+$"
-          }
+        "manifest": {
+          "const": "harness/fallback/manifest.json"
         }
       },
       "additionalProperties": false

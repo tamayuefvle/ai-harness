@@ -1,0 +1,16 @@
+{
+  "schemaVersion":"1.0.0",
+  "runId":"CURSOR-EXAMPLE-001",
+  "logicalExecutor":"cursor",
+  "transport":"cursor-cli",
+  "role":"implementer",
+  "status":"passed",
+  "exitCode":0,
+  "baseHead":"0123456789abcdef",
+  "worktree":{"path":".harness/worktrees/cursor/CURSOR-EXAMPLE-001","preserved":true,"autoApplied":false},
+  "rawOutputRef":".harness/reports/cursor/CURSOR-EXAMPLE-001/raw.json",
+  "changedFiles":["src/example.ts"],
+  "startedAt":"2026-08-12T07:00:00.000Z",
+  "finishedAt":"2026-08-12T07:01:00.000Z",
+  "failureReason":null
+}

@@ -68,5 +68,11 @@ export function assertProjectAllowsDelivery(repoRoot = canonicalRoot) {
   if (!fs.existsSync(file)) return;
   const project = readJson(file);
   if (project.lifecycleMode === "delivery-only") return;
-  if (project.state !== "ACTIVE") throw new Error(`Full lifecycle mode blocks new delivery tasks while project state is ${project.state}; project state ACTIVE is required.`);
+  if (project.state !== "ACTIVE") {
+    throw new Error(
+      `Full lifecycle mode blocks delivery tasks while project state is ${project.state}. ` +
+      "Complete product discovery first (npm run project:discover, fill docs/product/*, npm run project:gate -- --to PRODUCT_APPROVED ...), " +
+      "then stack/architecture approval until ACTIVE.",
+    );
+  }
 }

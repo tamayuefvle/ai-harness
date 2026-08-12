@@ -8,7 +8,7 @@ import { collectRuntimeDoctor } from "./runtime-doctor.mjs";
 function rootFixture() {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), "runtime-doctor-"));
   fs.mkdirSync(path.join(root, ".codex/hooks"), { recursive: true });
-  fs.writeFileSync(path.join(root, ".codex/config.toml"), 'approval_policy = "on-request"\nsandbox_mode = "workspace-write"\n[sandbox_workspace_write]\nnetwork_access = false\n[features]\nhooks = true\n[mcp_servers.chrome_devtools]\ncommand = "node"\nargs = ["scripts/mcp/start-chrome-devtools.mjs"]\nenabled = false\nrequired = false\n');
+  fs.writeFileSync(path.join(root, ".codex/config.toml"), 'approval_policy = "on-request"\nsandbox_mode = "workspace-write"\nproject_doc_fallback_filenames = ["CODEX.md"]\n[sandbox_workspace_write]\nnetwork_access = false\n[features]\nhooks = true\n[mcp_servers.chrome_devtools]\ncommand = "node"\nargs = ["scripts/mcp/start-chrome-devtools.mjs"]\nenabled = false\nrequired = false\n');
   fs.writeFileSync(path.join(root, ".codex/hooks.json"), JSON.stringify({ hooks: { PreToolUse: [{ matcher: "Bash|apply_patch|Edit|Write", hooks: [{ command: "pre_tool_use_policy.py" }] }] } }));
   fs.writeFileSync(path.join(root, ".codex/hooks/pre_tool_use_policy.py"), "# fixture\n");
   return root;
@@ -39,4 +39,3 @@ test("fails when network isolation is removed", () => {
   const report = collectRuntimeDoctor({ repoRoot: root, runner });
   assert.equal(report.checks.find((item) => item.name === "Codex config").status, "fail");
 });
-

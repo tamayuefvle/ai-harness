@@ -1,0 +1,11 @@
+{
+  "phase": "problem",
+  "targetDocument": "docs/product/problem.md",
+  "suggestedQuestion": "Who experiences the problem most acutely today?",
+  "rationale": "Problem context must identify the primary affected user before outcomes.",
+  "openQuestions": [
+    "What channels create the most fragmentation?"
+  ],
+  "fabricationRisk": "none",
+  "requiresCitation": false
+}

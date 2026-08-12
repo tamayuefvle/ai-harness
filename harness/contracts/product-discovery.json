@@ -1,0 +1,72 @@
+{
+  "schemaVersion": "1.0.0",
+  "tiers": {
+    "lite": {
+      "label": "MVP discovery",
+      "documents": [
+        "docs/product/problem.md",
+        "docs/product/users.md",
+        "docs/product/outcomes.md",
+        "docs/product/requirements.md"
+      ],
+      "sections": {
+        "docs/product/problem.md": ["## Context", "## Problem"],
+        "docs/product/users.md": ["## Primary users"],
+        "docs/product/outcomes.md": ["## Success metrics"],
+        "docs/product/requirements.md": ["## Must"]
+      },
+      "minMetrics": 1,
+      "requireNonGoals": false,
+      "requireStakeholders": false,
+      "requireWhyNow": false,
+      "requireIdeaTrace": true,
+      "requireOutcomeTrace": true,
+      "requireWontDecisions": false,
+      "requireAssumptionValidation": false
+    },
+    "full": {
+      "label": "Full discovery",
+      "documents": [
+        "docs/product/problem.md",
+        "docs/product/users.md",
+        "docs/product/outcomes.md",
+        "docs/product/requirements.md"
+      ],
+      "sections": {
+        "docs/product/problem.md": ["## Context", "## Problem", "## Why now"],
+        "docs/product/users.md": ["## Primary users", "## Stakeholders"],
+        "docs/product/outcomes.md": ["## Success metrics", "## Non-goals"],
+        "docs/product/requirements.md": ["## Must"]
+      },
+      "minMetrics": 1,
+      "requireNonGoals": true,
+      "requireStakeholders": true,
+      "requireWhyNow": true,
+      "requireIdeaTrace": true,
+      "requireOutcomeTrace": true,
+      "requireWontDecisions": true,
+      "requireAssumptionValidation": true
+    }
+  },
+  "patterns": {
+    "ideaId": "IDEA-\\d{3}",
+    "outcomeId": "OUT-\\d{3}",
+    "decisionId": "PD-\\d{3}",
+    "assumptionId": "ASM-\\d{3}"
+  },
+  "antiFabrication": {
+    "patterns": [
+      "user research (shows|confirms|indicates)",
+      "users (confirmed|validated|reported)",
+      "market (data|research) (shows|indicates)",
+      "interviews (show|confirm)",
+      "調査(?:の)?結果",
+      "ユーザー調査"
+    ],
+    "citationPatterns": [
+      "\\[session:DISC-[0-9]{8}-[a-z0-9]{6}\\]",
+      "\\[source:[^\\]]+\\]",
+      "\\[assumption:ASM-\\d{3}\\]"
+    ]
+  }
+}

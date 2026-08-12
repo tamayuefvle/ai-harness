@@ -1,0 +1,21 @@
+{
+  "$schema":"https://json-schema.org/draft/2020-12/schema",
+  "$id":"https://portfolio-harness.local/schemas/cursor-agent-result.schema.json",
+  "type":"object",
+  "required":["schemaVersion","runId","logicalExecutor","transport","role","status","exitCode","baseHead","worktree","rawOutputRef","changedFiles","startedAt","finishedAt"],
+  "properties":{
+    "schemaVersion":{"const":"1.0.0"},
+    "runId":{"type":"string","pattern":"^[A-Za-z0-9._-]{1,80}$"},
+    "logicalExecutor":{"const":"cursor"},"transport":{"const":"cursor-cli"},
+    "role":{"enum":["read-only","reviewer","implementer"]},
+    "status":{"enum":["passed","failed","blocked"]},
+    "exitCode":{"type":["integer","null"]},
+    "baseHead":{"type":"string","pattern":"^[0-9a-f]{7,64}$"},
+    "worktree":{"type":"object","required":["path","preserved","autoApplied"],"properties":{"path":{"type":"string"},"preserved":{"type":"boolean"},"autoApplied":{"const":false}},"additionalProperties":false},
+    "rawOutputRef":{"type":"string","pattern":"^\\.harness/reports/cursor/"},
+    "changedFiles":{"type":"array","uniqueItems":true,"items":{"type":"string"}},
+    "startedAt":{"type":"string","format":"date-time"},"finishedAt":{"type":"string","format":"date-time"},
+    "failureReason":{"type":["string","null"]}
+  },
+  "additionalProperties":false
+}

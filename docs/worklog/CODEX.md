@@ -1,5 +1,5 @@
 <!-- GENERATED FILE. DO NOT EDIT DIRECTLY. -->
-<!-- Source: harness/rules/worklog.md; run npm run harness:generate -->
+<!-- Source: harness/rules/worklog.md; consumer: codex; run npm run harness:generate -->
 # Worklog contract
 
 ## Purpose

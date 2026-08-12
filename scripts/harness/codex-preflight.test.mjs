@@ -8,7 +8,7 @@ import { collectCodexPreflight } from "./codex-preflight.mjs";
 function fixture() {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), "codex-preflight-"));
   fs.mkdirSync(path.join(root, ".codex"), { recursive: true });
-  fs.writeFileSync(path.join(root, ".codex/config.toml"), `approval_policy = "on-request"\nsandbox_mode = "workspace-write"\n[sandbox_workspace_write]\nnetwork_access = false\n[features]\nhooks = true\n[mcp_servers.chrome_devtools]\ncommand = "node"\nargs = ["scripts/mcp/start-chrome-devtools.mjs"]\nenabled = false\nrequired = false\n`);
+  fs.writeFileSync(path.join(root, ".codex/config.toml"), `approval_policy = "on-request"\nsandbox_mode = "workspace-write"\nproject_doc_fallback_filenames = ["CODEX.md"]\n[sandbox_workspace_write]\nnetwork_access = false\n[features]\nhooks = true\n[mcp_servers.chrome_devtools]\ncommand = "node"\nargs = ["scripts/mcp/start-chrome-devtools.mjs"]\nenabled = false\nrequired = false\n`);
   return root;
 }
 
@@ -48,4 +48,3 @@ test("fails before runtime probing when committed config is incomplete", () => {
   const report = collectCodexPreflight({ repoRoot: root, runner: runnerFor() });
   assert.equal(report.reasonCode, "static_contract_invalid");
 });
-

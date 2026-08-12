@@ -1,5 +1,5 @@
 <!-- GENERATED FILE. DO NOT EDIT DIRECTLY. -->
-<!-- Source: harness/rules/github-integration.md; run npm run harness:generate -->
+<!-- Source: harness/rules/github-integration.md; consumer: codex; run npm run harness:generate -->
 # GitHub integration gateway
 
 ## Purpose

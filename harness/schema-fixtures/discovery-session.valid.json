@@ -1,0 +1,28 @@
+{
+  "schemaVersion": "1.0.0",
+  "sessionId": "DISC-20260812-a1b2c3",
+  "projectId": "example-product",
+  "discoveryTier": "full",
+  "phase": "problem",
+  "startedAt": "2026-08-12T12:00:00.000Z",
+  "updatedAt": "2026-08-12T12:05:00.000Z",
+  "turns": [
+    {
+      "at": "2026-08-12T12:05:00.000Z",
+      "role": "agent",
+      "summary": "Asked for problem context",
+      "question": "Who experiences the problem today?",
+      "targetDocument": "docs/product/problem.md"
+    }
+  ],
+  "openQuestions": [
+    "What is the measurable pain today?"
+  ],
+  "citations": [],
+  "productCheckSnapshot": {
+    "ok": false,
+    "errors": [
+      "docs/product/problem.md: unreplaced template placeholder remains"
+    ]
+  }
+}

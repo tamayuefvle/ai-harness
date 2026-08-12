@@ -4,7 +4,7 @@ globs: []
 alwaysApply: true
 ---
 <!-- GENERATED FILE. DO NOT EDIT DIRECTLY. -->
-<!-- Source: harness/rules/user-task-dispatcher.md; run npm run harness:generate -->
+<!-- Source: harness/rules/user-task-dispatcher.md; consumer: cursor; run npm run harness:generate -->
 # User task dispatcher
 
 ## User interface
@@ -28,7 +28,8 @@ npm run worklog:context
 
 `harness/project.json` の `state` を確認します。
 
-- `MIGRATION_PENDING` のときは実装・依存追加・profile 解決済み前提の変更を開始しません。`projectId` の設定、`proposedProfiles` の選択、`npm run profile:resolve`、baseline レビュー、人間承認の案内に留めます。
+- `MIGRATION_PENDING` のときは実装・依存追加・profile 解決済み前提の delivery task を開始しません。新規 product の場合は **`npm run project:discover`** で `DISCOVERY` に入り、`docs/product/*` を埋めます。legacy 資産の一括移行の場合は `MIGRATION.md` の migration 経路に従います。
+- `DISCOVERY` のときは **`npm run product:status`** で次に埋める product 文書を確認し、コード変更や delivery task を開始しません。
 - `ACTIVE` へ自動進行しません。明示的な人間承認と gate 記録が必要です。
 - resolved profiles に基づく rules と checks のみ適用します（未選択 stack rule は生成されません）。
 
@@ -78,7 +79,9 @@ Codex を発火する前に必ず `npm run codex:preflight` を通します。la
 
 ## Task lifecycle (summary)
 
-- 新規企画: `npm run task:start`（active task が無い場合）。`brief.md` と `acceptance.md` のみ。
+- **新規 product 企画**: `npm run project:discover [--tier lite|full]` → `npm run product:status` → `docs/product/*`（`OUT-xxx` / promoted `IDEA-xxx` / `PD-xxx` / `ASM-xxx` トレース）→ `npm run ai:discover`（任意）→ `npm run product:check` → `project:gate`
+- **運用 signal → product**: `npm run product:signal-link -- --signal SIG-... --affects OUT-001 --action review --summary "..."`
+- **delivery task 開始**（`ACTIVE` 到達後）: `npm run task:start` または `npm run task:new`（active task が無い場合）
 - 仕様承認後: `npm run task:gate -- approve-spec` → `npm run task:advance -- SPEC_READY`
 - 設計: 必要なら `npm run ai:research` → plan / test-plan → `approve-plan` → `PLAN_READY`
 - 実装: 対象 AC 明示、`npm run ai:implement -- AC-xxx` または Cursor 局所実装

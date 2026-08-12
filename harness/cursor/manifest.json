@@ -1,0 +1,58 @@
+{
+  "$schema": "./schema.json",
+  "schemaVersion": "1.0.0",
+  "owner": "execution-safety-kernel",
+  "provider": "cursor-cli",
+  "logicalExecutor": "cursor",
+  "binaryCandidates": [
+    "agent",
+    "cursor-agent"
+  ],
+  "nonInteractive": {
+    "enabled": true,
+    "outputFormat": "json",
+    "maxPromptBytes": 32768,
+    "timeoutSeconds": 1800,
+    "forceByRole": {
+      "read-only": false,
+      "reviewer": false,
+      "implementer": true
+    }
+  },
+  "isolation": {
+    "mode": "harness-managed-git-worktree",
+    "requireCleanBase": true,
+    "autoApplyToPrimaryWorktree": false,
+    "preserveImplementerWorktree": true,
+    "location": "git-common-dir",
+    "rootName": "harness-worktrees/cursor"
+  },
+  "roles": {
+    "read-only": {
+      "write": false,
+      "preserveWorktree": false
+    },
+    "reviewer": {
+      "write": false,
+      "preserveWorktree": false
+    },
+    "implementer": {
+      "write": true,
+      "preserveWorktree": true
+    }
+  },
+  "projectConfig": ".cursor/cli.json",
+  "hooksConfig": ".cursor/hooks.json",
+  "policy": "harness/policies/command-guardrails.json",
+  "resultSchema": "harness/schemas/cursor-agent-result.schema.json",
+  "acp": {
+    "adapterBoundaryReady": true,
+    "enabledByDefault": false,
+    "reason": "v14 keeps ACP behind a stable adapter boundary until session/permission semantics are validated independently."
+  },
+  "hookReliability": {
+    "hardBoundary": false,
+    "primaryBoundary": "cursor project permissions plus harness-managed worktree isolation",
+    "note": "preToolUse deny hooks are defense in depth because current Cursor builds have known hook delivery/output races."
+  }
+}

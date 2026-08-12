@@ -96,6 +96,16 @@
         "null"
       ]
     },
+    "discoveryTier": {
+      "enum": [
+        "lite",
+        "full"
+      ]
+    },
+    "activeDiscoverySession": {
+      "type": "string",
+      "pattern": "^DISC-[0-9]{8}-[a-z0-9]{6}$"
+    },
     "migration": {
       "type": [
         "object",

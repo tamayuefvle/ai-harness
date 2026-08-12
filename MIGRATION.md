@@ -1,4 +1,67 @@
-# Migration from v13.1.0 to v13.2.0
+# Migration to v14.3.0
+
+## From v14.2.0
+
+Compatible upgrade. Merge `package.scripts.fragment.json`, run `npm run harness:generate`, then `npm run verify:harness`.
+
+New behavior:
+
+- `npm run ai:discover` during `DISCOVERY` records Codex read-only turns under `.harness/discovery/`.
+- Must requirements referencing `ASM-xxx` require validated assumptions in `docs/product/assumptions.md`.
+- Research-like product claims require explicit citations or fail `product:check`.
+- Link operational signals to product traces with `npm run product:signal-link`.
+
+---
+
+# Migration to v14.2.0
+
+## From v14.1.0
+
+Compatible upgrade. Merge `package.scripts.fragment.json`, run `npm run harness:generate`, then `npm run verify:harness`.
+
+New behavior:
+
+- `npm run project:discover -- --tier lite|full` stores `discoveryTier`.
+- Product templates now use `OUT-xxx`, `IDEA-xxx`, and `PD-xxx` trace ids.
+- Full-tier discovery requires decision files under `docs/product/decisions/` for Won't items.
+
+---
+
+# Migration to v14.1.0
+
+## From v14.0.0
+
+Compatible control-plane upgrade. Preserve product code, lifecycle state, tasks, and `.harness/` evidence.
+
+1. Overlay v14.1 and merge `package.scripts.fragment.json`.
+2. Run `npm run harness:generate`.
+3. Run `npm run verify:harness`.
+
+New commands:
+
+```bash
+npm run project:discover      # MIGRATION_PENDING → DISCOVERY
+npm run product:status        # next planning action
+npm run product:check         # semantic validation of docs/product/*
+```
+
+If you already skipped straight to migration documents, stay on the migration path in the section below. Use `project:discover` only for greenfield product planning.
+
+---
+
+# Migration to v14.0.0
+
+## From v13.2.0
+
+1. Back up the repository and record the current commit. Preserve product files, lifecycle/task state, approved evidence, and `.harness/` records.
+2. Overlay v14 and merge `package.scripts.fragment.json`; do not replace the product `package.json` wholesale.
+3. Run `npm run harness:generate`. Marker-owned nested generated `AGENTS.md` files are removed, directory Codex rules become `CODEX.md`, Cursor keeps scoped `.mdc`, and policy projections are generated.
+4. Run `npm run verify:harness`.
+5. If Cursor CLI is installed and the repository has a clean committed base, optionally run `npm run cursor:preflight`. Implementer results remain in an isolated worktree and are never auto-applied.
+
+The Project/Task/Release/Incident lifecycle and `harness/project.json` state are unchanged. Switching between Cursor IDE and CLI is not a new strategy budget. Rollback restores reviewed v13.2 harness-owned sources and reruns its generator; preserve product and runtime evidence.
+
+## From v13.1.0 to v13.2.0
 
 1. Back up the repository and record the current commit. Do not use destructive Git commands.
 2. Overlay the v13.2 package while preserving application files, lifecycle state, and existing task evidence.

@@ -1,5 +1,11 @@
 # Cursor × Codex CLI operating model
 
+## v14 provider projection and Cursor transport
+
+Shared policy is generated only to root `AGENTS.md`. Directory specialization is generated to `CODEX.md` for Codex and scoped `.cursor/rules/*.mdc` for Cursor, avoiding duplicate Cursor context. The source remains `harness/rules/*` plus its manifest.
+
+Cursor IDE and Cursor CLI are transports of one logical Cursor executor and share one bounded-strategy budget. `npm run cursor:preflight` checks the optional CLI and committed policy projections. Read-only/reviewer roles cannot write; implementer execution is confined to a linked worktree under the Git common directory, uses no auto-apply, and leaves the diff for human/agent inspection. Cursor Hooks are defense in depth; project permissions, worktree isolation, authorization, and human control points remain authoritative.
+
 ## Instruction architecture
 
 ルート `AGENTS.md` は司令塔です。詳細ルールを保持せず、依頼と対象パスを分類して下位roleへ分岐します。
@@ -36,7 +42,7 @@ npm run harness:route -- src/components/ProjectCard.tsx
 
 ### Cursor
 
-- 人間との企画対話
+- 人間との企画対話（`DISCOVERY` では `.cursor/skills/product-discovery`）
 - active file周辺のUI実装
 - ブラウザを見ながらの微調整
 - 学習内容と変更理由の説明
@@ -44,6 +50,7 @@ npm run harness:route -- src/components/ProjectCard.tsx
 ### Codex CLI
 
 - リポジトリ全体の調査
+- `DISCOVERY` 中の read-only product facilitation（`npm run ai:discover`）
 - spec / planに基づく複数ファイル変更
 - test作成とfailure解析
 - read-onlyの独立diff review

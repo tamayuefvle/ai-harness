@@ -209,7 +209,7 @@ test("latest immutable approval decision supersedes earlier approval", () => {
 test("full lifecycle blocks execution runs while project is not ACTIVE", () => {
   const dir=runFixture();
   fs.writeFileSync(path.join(dir,"harness/project.json"),JSON.stringify({schemaVersion:"1.0.0",lifecycleMode:"full",state:"MIGRATION_PENDING"}));
-  assert.throws(()=>startRun(dir,{task:"DEV-001-example",role:"implementer"}),/project state ACTIVE is required/);
+  assert.throws(()=>startRun(dir,{task:"DEV-001-example",role:"implementer"}),/blocks delivery tasks while project state is MIGRATION_PENDING/);
 });
 
 test("path-scoped authorization rejects targets outside approved plan scope", () => {

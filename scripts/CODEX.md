@@ -1,5 +1,5 @@
 <!-- GENERATED FILE. DO NOT EDIT DIRECTLY. -->
-<!-- Source: harness/rules/scripts.md; run npm run harness:generate -->
+<!-- Source: harness/rules/scripts.md; consumer: codex; run npm run harness:generate -->
 # Automation and developer tooling role
 
 ## Scope

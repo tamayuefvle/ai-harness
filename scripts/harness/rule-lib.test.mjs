@@ -52,7 +52,7 @@ test("duplicate replace targets fail instead of silently overwriting", () => {
 
   assert.throws(
     () => buildOutputs(root),
-    /Duplicate generated AGENTS target without append mode/,
+    /Duplicate generated shared-agents target without append mode/,
   );
 });
 
@@ -77,8 +77,31 @@ test("rule manifest keeps generated instruction files outside public", () => {
     );
   }
 
-  assert.ok(outputs.has(".cursor/rules/public-assets.mdc"));
+  assert.equal(outputs.has(".cursor/rules/public-assets.mdc"), false);
   assert.match(outputs.get("AGENTS.md"), /# Public asset role/);
+});
+
+test("codex targets use CODEX.md and preserve proposedProfiles activation", () => {
+  const root = fixture(
+    [{ id: "react", source: "react.md", requiresProfiles: ["framework/react"], agentsTargets: [], codexTargets: ["src/CODEX.md"] }],
+    { "react.md": "react" },
+    { activeProfiles: [], migration: { proposedProfiles: ["framework/react"] } },
+  );
+  const output = buildOutputs(root).get("src/CODEX.md");
+  assert.match(output, /consumer: codex/);
+  assert.match(output, /react/);
+});
+
+test("writeOutputs removes generated instruction orphans but preserves hand-written files", () => {
+  const root = fixture([{ id: "core", source: "core.md", agentsTargets: ["AGENTS.md"] }], { "core.md": "core" });
+  fs.mkdirSync(path.join(root, "docs/.cursor/rules"), { recursive: true });
+  fs.writeFileSync(path.join(root, "docs/AGENTS.md"), "<!-- GENERATED FILE. DO NOT EDIT DIRECTLY. -->\nstale\n");
+  fs.writeFileSync(path.join(root, "docs/CODEX.md"), "hand written\n");
+  fs.writeFileSync(path.join(root, "docs/.cursor/rules/stale.mdc"), "<!-- GENERATED FILE. DO NOT EDIT DIRECTLY. -->\nstale\n");
+  writeOutputs(root);
+  assert.equal(fs.existsSync(path.join(root, "docs/AGENTS.md")), false);
+  assert.equal(fs.existsSync(path.join(root, "docs/.cursor/rules/stale.mdc")), false);
+  assert.equal(fs.readFileSync(path.join(root, "docs/CODEX.md"), "utf8"), "hand written\n");
 });
 
 

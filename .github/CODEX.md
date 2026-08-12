@@ -1,5 +1,5 @@
 <!-- GENERATED FILE. DO NOT EDIT DIRECTLY. -->
-<!-- Source: harness/rules/github.md; run npm run harness:generate -->
+<!-- Source: harness/rules/github.md; consumer: codex; run npm run harness:generate -->
 # GitHub and CI role
 
 ## Pull request discipline

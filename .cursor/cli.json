@@ -1,0 +1,24 @@
+{
+  "permissions": {
+    "deny": [
+      "Shell(*)",
+      "Mcp(*:*)",
+      "Read(.env*)",
+      "Read(**/.env*)",
+      "Read(**/*.key)",
+      "Read(**/id_rsa)",
+      "Read(**/id_ed25519)",
+      "Write(.env*)",
+      "Write(**/.env*)",
+      "Write(**/*.key)",
+      "Write(AGENTS.md)",
+      "Write(**/CODEX.md)",
+      "Write(**/.cursor/rules/**)",
+      "Write(.cursor/cli.json)",
+      "Write(.cursor/hooks.json)",
+      "Write(.codex/rules/guardrails.rules)",
+      "Write(.codex/hooks/pre_tool_use_policy.py)",
+      "Write(**/*)"
+    ]
+  }
+}

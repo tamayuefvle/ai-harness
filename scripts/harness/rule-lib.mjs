@@ -21,29 +21,44 @@ function yamlArray(values) {
   return `[${values.map((value) => JSON.stringify(value)).join(", ")}]`;
 }
 
-function generatedHeader(source) {
+function generatedHeader(source, consumer) {
   return [
     "<!-- GENERATED FILE. DO NOT EDIT DIRECTLY. -->",
-    `<!-- Source: harness/rules/${source}; run npm run harness:generate -->`,
+    `<!-- Source: harness/rules/${source}; consumer: ${consumer}; run npm run harness:generate -->`,
     "",
   ].join("\n");
 }
 
-function normalizeAgentsTarget(target) {
+function normalizeTarget(target) {
   if (typeof target === "string") {
     return { path: target, mode: "replace" };
   }
 
   if (!target || typeof target.path !== "string") {
-    throw new TypeError("agentsTargets entries must be paths or { path, mode } objects");
+    throw new TypeError("instruction targets must be paths or { path, mode } objects");
   }
 
   const mode = target.mode ?? "replace";
   if (!new Set(["replace", "append"]).has(mode)) {
-    throw new TypeError(`Unsupported agentsTargets mode: ${mode}`);
+    throw new TypeError(`Unsupported target mode: ${mode}`);
   }
 
   return { path: target.path, mode };
+}
+
+function addTextTarget(outputs, rawTarget, body, source, consumer) {
+  const target = normalizeTarget(rawTarget);
+  assertSafeRelativePath(target.path, `${consumer} target path`);
+  const content = `${generatedHeader(source, consumer)}${body}\n`;
+  if (target.mode === "append") {
+    const existing = outputs.get(target.path);
+    outputs.set(target.path, existing ? `${existing.trimEnd()}\n\n${content}` : content);
+    return;
+  }
+  if (outputs.has(target.path)) {
+    throw new Error(`Duplicate generated ${consumer} target without append mode: ${target.path}`);
+  }
+  outputs.set(target.path, content);
 }
 
 function assertSafeRelativePath(relativePath, label) {
@@ -68,27 +83,8 @@ export function buildOutputs(repoRoot) {
       .readFileSync(path.join(repoRoot, "harness/rules", role.source), "utf8")
       .trim();
 
-    for (const rawTarget of role.agentsTargets ?? []) {
-      const target = normalizeAgentsTarget(rawTarget);
-      assertSafeRelativePath(target.path, "agentsTargets path");
-      const content = `${generatedHeader(role.source)}${body}\n`;
-
-      if (target.mode === "append") {
-        const existing = outputs.get(target.path);
-        outputs.set(
-          target.path,
-          existing ? `${existing.trimEnd()}\n\n${content}` : content,
-        );
-        continue;
-      }
-
-      if (outputs.has(target.path)) {
-        throw new Error(
-          `Duplicate generated AGENTS target without append mode: ${target.path}`,
-        );
-      }
-      outputs.set(target.path, content);
-    }
+    for (const target of role.agentsTargets ?? []) addTextTarget(outputs, target, body, role.source, "shared-agents");
+    for (const target of role.codexTargets ?? []) addTextTarget(outputs, target, body, role.source, "codex");
 
     for (const cursor of role.cursorTargets ?? []) {
       assertSafeRelativePath(cursor.path, "cursorTargets path");
@@ -107,21 +103,12 @@ export function buildOutputs(repoRoot) {
 
       outputs.set(
         cursor.path,
-        `${frontmatter}${generatedHeader(role.source)}${body}\n`,
+        `${frontmatter}${generatedHeader(role.source, "cursor")}${body}\n`,
       );
     }
   }
 
   return outputs;
-}
-
-function allManifestTargets(repoRoot) {
-  const targets = new Set();
-  for (const role of loadManifest(repoRoot)) {
-    for (const target of role.agentsTargets ?? []) targets.add(normalizeAgentsTarget(target).path);
-    for (const target of role.cursorTargets ?? []) targets.add(target.path);
-  }
-  return targets;
 }
 
 /** Generated paths retired from the manifest; still removed on harness:generate when they carry the generated marker. */
@@ -130,25 +117,44 @@ export const RETIRED_GENERATED_TARGETS = Object.freeze([
   "app/.cursor/rules/application.mdc",
 ]);
 
-function removeGeneratedIfPresent(repoRoot, relativePath) {
-  assertSafeRelativePath(relativePath, "generated target path");
-  const target = path.join(repoRoot, relativePath);
-  if (!fs.existsSync(target) || !fs.statSync(target).isFile()) return false;
-  const content = fs.readFileSync(target, "utf8");
+function isGeneratedInstruction(relativePath, content) {
   if (!content.includes("GENERATED FILE. DO NOT EDIT DIRECTLY.")) return false;
-  fs.rmSync(target);
-  return true;
+  return relativePath === "AGENTS.md" || relativePath.endsWith("/AGENTS.md") ||
+    relativePath === "CODEX.md" || relativePath.endsWith("/CODEX.md") ||
+    /(^|\/)\.cursor\/rules\/.*\.mdc$/.test(relativePath);
+}
+
+export function findGeneratedInstructionFiles(repoRoot) {
+  const found = new Set();
+  const pending = [repoRoot];
+  while (pending.length) {
+    const current = pending.pop();
+    for (const entry of fs.readdirSync(current, { withFileTypes: true })) {
+      if ([".git", "node_modules", ".harness"].includes(entry.name)) continue;
+      const absolute = path.join(current, entry.name);
+      if (entry.isDirectory()) {
+        pending.push(absolute);
+        continue;
+      }
+      if (!entry.isFile()) continue;
+      const relative = path.relative(repoRoot, absolute).replaceAll("\\", "/");
+      if (!/(AGENTS\.md|CODEX\.md|\.mdc)$/.test(relative)) continue;
+      if (isGeneratedInstruction(relative, fs.readFileSync(absolute, "utf8"))) found.add(relative);
+    }
+  }
+  return found;
 }
 
 export function writeOutputs(repoRoot) {
   const outputs = buildOutputs(repoRoot);
-  for (const relativePath of allManifestTargets(repoRoot)) {
+  const generated = findGeneratedInstructionFiles(repoRoot);
+  for (const relativePath of RETIRED_GENERATED_TARGETS) generated.add(relativePath);
+  for (const relativePath of generated) {
     if (outputs.has(relativePath)) continue;
-    removeGeneratedIfPresent(repoRoot, relativePath);
-  }
-  for (const relativePath of RETIRED_GENERATED_TARGETS) {
-    if (outputs.has(relativePath)) continue;
-    removeGeneratedIfPresent(repoRoot, relativePath);
+    assertSafeRelativePath(relativePath, "generated target path");
+    const target = path.join(repoRoot, relativePath);
+    if (!fs.existsSync(target) || !fs.statSync(target).isFile()) continue;
+    if (isGeneratedInstruction(relativePath, fs.readFileSync(target, "utf8"))) fs.rmSync(target);
   }
   for (const [relativePath, content] of outputs) {
     const target = path.join(repoRoot, relativePath);

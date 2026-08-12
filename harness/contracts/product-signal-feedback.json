@@ -1,0 +1,15 @@
+{
+  "schemaVersion": "1.0.0",
+  "patterns": {
+    "signalId": "SIG-[0-9]{4}-[0-9]{2}-[0-9]{2}-[a-z0-9-]+",
+    "outcomeId": "OUT-\\d{3}",
+    "assumptionId": "ASM-\\d{3}"
+  },
+  "actions": [
+    "monitor",
+    "review",
+    "revise"
+  ],
+  "signalDirectory": "docs/operations/signals",
+  "feedbackDocument": "docs/product/signal-feedback.md"
+}

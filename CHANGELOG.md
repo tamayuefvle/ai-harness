@@ -1,5 +1,34 @@
 # Changelog
 
+## v14.3.0 - 2026-08-12
+
+- Added discovery session artifacts (`.harness/discovery/DISC-*.json`) and `npm run ai:discover` Codex read-only facilitation.
+- Added assumption register (`docs/product/assumptions.md`) with fail-closed validation for Must items referencing `ASM-xxx`.
+- Added anti-fabrication checks for research-like claims without session/source/assumption citations.
+- Added operational signal → product trace linking via `product:signal-link` and `docs/product/signal-feedback.md`.
+- Added Cursor skill `product-discovery` and Codex prompt `harness/prompts/product-discovery.md`.
+
+## v14.2.0 - 2026-08-12
+
+- Added progressive product discovery tiers (`lite` / `full`) via `project:discover --tier` and `discoveryTier` on project state.
+- Added traceability checks: promoted `IDEA-xxx` → requirements, `OUT-xxx` outcomes → Must requirements, `PD-xxx` decisions → Won't items (full tier).
+- Added `harness/contracts/product-discovery.json` and `docs/product/decisions/TEMPLATE.md`; updated product templates for IDs.
+
+## v14.1.0 - 2026-08-12
+
+- Added greenfield product discovery entry: `project:discover`, `product:status`, and `product:check` with fail-closed placeholder/metrics/requirements validation.
+- Wired semantic product checks into `project:gate` for `DISCOVERY → PRODUCT_APPROVED` and `verify:harness` (`--if-applicable`).
+- Clarified dispatcher/bootstrap guidance: product planning uses project lifecycle; `task:start` remains delivery-only after `ACTIVE`.
+- Added `docs/workflow/PRODUCT_DISCOVERY.md` and lifecycle transition `MIGRATION_PENDING → DISCOVERY`.
+
+## v14.0.0 - 2026-08-12
+
+- Split instruction projection into root shared `AGENTS.md`, directory-scoped Codex `CODEX.md`, and scoped Cursor `.mdc`; generation removes marker-owned orphan projections.
+- Centralized command guardrails in `harness/policies/command-guardrails.json` and generated Codex/Cursor policy files from that source.
+- Made `harness/fallback/manifest.json` the semantic owner of human-first and Cursor IDE/CLI transport behavior; execution now references it.
+- Added optional bounded Cursor CLI preflight/execution, structured results, read-only/reviewer denial, isolated Git-common-dir implementer worktrees, no auto-apply, and defense-in-depth hooks.
+- Preserved the v13.2 React Doctor, active-spec fingerprint, proposed-profile, and `frontend-app → src/` corrections.
+
 ## v13.2.0 - 2026-08-12
 
 ### Fixed

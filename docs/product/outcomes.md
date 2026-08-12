@@ -1,13 +1,13 @@
 # Outcomes and success metrics
 
-<!-- Template: define measurable outcomes. -->
+<!-- Define measurable outcomes. Each metric needs an OUT-xxx id referenced by Must requirements. -->
 
 ## Success metrics
 
-| Metric | Target | Measurement |
-|---|---|---|
-| _Example_ | _Target value_ | _How you will measure_ |
+| ID | Metric | Target | Measurement |
+|---|---|---|---|
+| OUT-001 | _Example metric_ | _Target value_ | _How you will measure_ |
 
 ## Non-goals
 
-- _Outcomes you are not optimizing for_
+- _Outcomes you are not optimizing for in this cycle_

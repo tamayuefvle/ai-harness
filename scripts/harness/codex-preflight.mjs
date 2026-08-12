@@ -48,6 +48,7 @@ export function staticCodexContract(repoRoot) {
     [config, /^approval_policy\s*=\s*"on-request"/m, "approval_policy=on-request"],
     [config, /^sandbox_mode\s*=\s*"workspace-write"/m, "sandbox_mode=workspace-write"],
     [config, /^network_access\s*=\s*false/m, "network_access=false"],
+    [config, /^project_doc_fallback_filenames\s*=\s*\["CODEX\.md"\]/m, "project_doc_fallback_filenames=[\"CODEX.md\"]"],
     [config, /^hooks\s*=\s*true/m, "features.hooks=true"],
     [config, /^\[mcp_servers\.chrome_devtools\]/m, "chrome_devtools MCP table"],
     [chrome, /^command\s*=\s*"node"/m, "chrome_devtools command=node"],
@@ -73,7 +74,7 @@ export function collectCodexPreflight(options = {}) {
 
   const version = runner("codex", ["--version"], { cwd: repoRoot, timeoutMs: 5000 });
   if (version.exitCode !== 0) {
-    checks.push(check("Codex CLI", "fail", "codex_cli_missing", "Codex CLI is required before ai:research / ai:implement / ai:review. Install/configure it, then rerun this preflight."));
+    checks.push(check("Codex CLI", "fail", "codex_cli_missing", "Codex CLI is required before ai:research / ai:discover / ai:implement / ai:review. Install/configure it, then rerun this preflight."));
     return { schemaVersion: "1.0.0", status: "fail", reasonCode: "codex_cli_missing", checks };
   }
   checks.push(check("Codex CLI", "pass", null, String(version.stdout).trim().split(/\r?\n/)[0] || "available"));
@@ -119,4 +120,3 @@ function main() {
 }
 
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) main();
-

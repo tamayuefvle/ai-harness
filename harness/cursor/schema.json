@@ -1,0 +1,233 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://portfolio-harness.local/schemas/cursor-cli-manifest.schema.json",
+  "type": "object",
+  "required": [
+    "$schema",
+    "schemaVersion",
+    "owner",
+    "provider",
+    "logicalExecutor",
+    "binaryCandidates",
+    "nonInteractive",
+    "isolation",
+    "roles",
+    "projectConfig",
+    "hooksConfig",
+    "policy",
+    "resultSchema",
+    "acp",
+    "hookReliability"
+  ],
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "schemaVersion": {
+      "const": "1.0.0"
+    },
+    "owner": {
+      "const": "execution-safety-kernel"
+    },
+    "provider": {
+      "const": "cursor-cli"
+    },
+    "logicalExecutor": {
+      "const": "cursor"
+    },
+    "binaryCandidates": {
+      "const": [
+        "agent",
+        "cursor-agent"
+      ]
+    },
+    "nonInteractive": {
+      "type": "object",
+      "required": [
+        "enabled",
+        "outputFormat",
+        "forceByRole",
+        "maxPromptBytes",
+        "timeoutSeconds"
+      ],
+      "properties": {
+        "enabled": {
+          "const": true
+        },
+        "outputFormat": {
+          "const": "json"
+        },
+        "maxPromptBytes": {
+          "type": "integer",
+          "minimum": 1024,
+          "maximum": 131072
+        },
+        "timeoutSeconds": {
+          "type": "integer",
+          "minimum": 30,
+          "maximum": 3600
+        },
+        "forceByRole": {
+          "type": "object",
+          "required": [
+            "read-only",
+            "reviewer",
+            "implementer"
+          ],
+          "properties": {
+            "read-only": {
+              "const": false
+            },
+            "reviewer": {
+              "const": false
+            },
+            "implementer": {
+              "const": true
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "isolation": {
+      "type": "object",
+      "required": [
+        "mode",
+        "location",
+        "rootName",
+        "requireCleanBase",
+        "autoApplyToPrimaryWorktree",
+        "preserveImplementerWorktree"
+      ],
+      "properties": {
+        "mode": {
+          "const": "harness-managed-git-worktree"
+        },
+        "requireCleanBase": {
+          "const": true
+        },
+        "autoApplyToPrimaryWorktree": {
+          "const": false
+        },
+        "preserveImplementerWorktree": {
+          "const": true
+        },
+        "location": {
+          "const": "git-common-dir"
+        },
+        "rootName": {
+          "const": "harness-worktrees/cursor"
+        }
+      },
+      "additionalProperties": false
+    },
+    "roles": {
+      "type": "object",
+      "required": [
+        "read-only",
+        "reviewer",
+        "implementer"
+      ],
+      "properties": {
+        "read-only": {
+          "$ref": "#/$defs/roleReadOnly"
+        },
+        "reviewer": {
+          "$ref": "#/$defs/roleReadOnly"
+        },
+        "implementer": {
+          "type": "object",
+          "required": [
+            "write",
+            "preserveWorktree"
+          ],
+          "properties": {
+            "write": {
+              "const": true
+            },
+            "preserveWorktree": {
+              "const": true
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "projectConfig": {
+      "const": ".cursor/cli.json"
+    },
+    "hooksConfig": {
+      "const": ".cursor/hooks.json"
+    },
+    "policy": {
+      "const": "harness/policies/command-guardrails.json"
+    },
+    "resultSchema": {
+      "const": "harness/schemas/cursor-agent-result.schema.json"
+    },
+    "acp": {
+      "type": "object",
+      "required": [
+        "adapterBoundaryReady",
+        "enabledByDefault",
+        "reason"
+      ],
+      "properties": {
+        "adapterBoundaryReady": {
+          "const": true
+        },
+        "enabledByDefault": {
+          "const": false
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "additionalProperties": false
+    },
+    "hookReliability": {
+      "type": "object",
+      "required": [
+        "hardBoundary",
+        "primaryBoundary",
+        "note"
+      ],
+      "properties": {
+        "hardBoundary": {
+          "const": false
+        },
+        "primaryBoundary": {
+          "type": "string",
+          "minLength": 1
+        },
+        "note": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "$defs": {
+    "roleReadOnly": {
+      "type": "object",
+      "required": [
+        "write",
+        "preserveWorktree"
+      ],
+      "properties": {
+        "write": {
+          "const": false
+        },
+        "preserveWorktree": {
+          "const": false
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

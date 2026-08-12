@@ -17,6 +17,12 @@
       "transitions": [
         {
           "from": "MIGRATION_PENDING",
+          "to": "DISCOVERY",
+          "approval": "none",
+          "requiredDocuments": []
+        },
+        {
+          "from": "MIGRATION_PENDING",
           "to": "ACTIVE",
           "approval": "human",
           "requiredDocuments": [

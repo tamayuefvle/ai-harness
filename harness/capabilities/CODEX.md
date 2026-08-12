@@ -1,5 +1,5 @@
 <!-- GENERATED FILE. DO NOT EDIT DIRECTLY. -->
-<!-- Source: harness/rules/capabilities.md; run npm run harness:generate -->
+<!-- Source: harness/rules/capabilities.md; consumer: codex; run npm run harness:generate -->
 # Capability layer
 
 ## Contract

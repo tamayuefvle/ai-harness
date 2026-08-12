@@ -11,6 +11,7 @@
 
 | From | To | Approval | Required documents |
 |---|---|---|---|
+| `MIGRATION_PENDING` | `DISCOVERY` | none | — |
 | `MIGRATION_PENDING` | `ACTIVE` | human | `docs/product/vision.md`<br>`docs/product/scope.md`<br>`docs/product/technology-decision.md`<br>`docs/architecture/ADR-0001-stack.md`<br>`docs/architecture/baseline.md` |
 | `DISCOVERY` | `PRODUCT_APPROVED` | human | `docs/product/problem.md`<br>`docs/product/users.md`<br>`docs/product/outcomes.md`<br>`docs/product/requirements.md` |
 | `PRODUCT_APPROVED` | `STACK_APPROVED` | human | `docs/product/technology-options.md`<br>`docs/product/technology-decision.md` |

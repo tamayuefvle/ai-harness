@@ -1,8 +1,8 @@
 {
   "schemaVersion": "2.0.0",
   "name": "ai-harness",
-  "version": "13.2.0",
-  "sourceVersion": "13.1.0",
+  "version": "14.3.0",
+  "sourceVersion": "14.2.0",
   "lifecycleModeDefault": "full",
   "bootstrap": {
     "projectStateTemplate": "harness/templates/project.bootstrap.json",
@@ -15,6 +15,8 @@
       "harness/execution",
       "harness/authorization",
       "harness/fallback",
+      "harness/policies",
+      "harness/cursor",
       "harness/skills",
       "harness/schemas",
       "harness/schema-fixtures",
@@ -81,7 +83,11 @@
     },
     "generated": [
       "AGENTS.md",
+      "**/CODEX.md",
       "**/.cursor/rules/*.mdc",
+      ".cursor/cli.json",
+      ".cursor/hooks.json",
+      ".codex/rules/guardrails.rules",
       "docs/workflow/LIFECYCLE_REFERENCE.generated.md",
       "harness/generated/profile-resolution.json"
     ]
@@ -100,7 +106,10 @@
     "Production release workflow verifies approval but does not deploy by itself.",
     "New-repository bootstrap creates only the harness npm substrate and does not approve a product stack or lifecycle transition.",
     "Codex project trust is user-scoped and is never auto-written; codex:preflight must pass before delegated ai:* commands.",
-    "GitHub context requires an intended HTTPS origin and reports bounded unavailability reason codes without stderr or tokens."
+    "GitHub context requires an intended HTTPS origin and reports bounded unavailability reason codes without stderr or tokens.",
+    "Cursor CLI is optional; live provider authentication and permission behavior must be verified on a workstation with the CLI installed.",
+    "Cursor Hooks are defense in depth; project permissions and Git-common-dir worktree isolation remain the primary boundary.",
+    "Directory-scoped generated AGENTS.md files are retired; Codex specialization uses CODEX.md while Cursor uses scoped .mdc rules."
   ],
   "executionSafety": {
     "schemaVersion": "1.0.0",
@@ -113,6 +122,34 @@
   "executorFallback": {
     "manifest": "harness/fallback/manifest.json",
     "cursorSkill": ".cursor/skills/executor-fallback/SKILL.md",
-    "defaultOrder": ["cursor", "codex-cli", "human"]
+    "defaultOrder": [
+      "cursor",
+      "codex-cli",
+      "human"
+    ],
+    "cursorTransports": [
+      "cursor-ide",
+      "cursor-cli"
+    ]
+  },
+  "instructionProjection": {
+    "manifest": "harness/rules/manifest.json",
+    "sharedGlobal": "AGENTS.md",
+    "codexDirectoryFallback": "CODEX.md",
+    "cursorScopedRules": ".cursor/rules/*.mdc",
+    "sameConsumerDuplicationCheck": "scripts/harness/check-instruction-graph.mjs"
+  },
+  "commandPolicy": {
+    "manifest": "harness/policies/command-guardrails.json",
+    "projectionCheck": "scripts/harness/check-policy-projections.mjs"
+  },
+  "cursorCli": {
+    "manifest": "harness/cursor/manifest.json",
+    "optional": true,
+    "logicalExecutor": "cursor",
+    "transport": "cursor-cli",
+    "primarySafetyBoundary": "project permissions plus harness-managed Git-common-dir worktree isolation",
+    "autoApply": false,
+    "acpEnabledByDefault": false
   }
 }

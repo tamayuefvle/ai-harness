@@ -18,6 +18,7 @@ const SCHEMAS = {
   fallbackHandoff: "harness/schemas/fallback-handoff.schema.json",
   fallbackDecision: "harness/schemas/fallback-decision.schema.json",
   runtimeEvent: "harness/schemas/runtime-event.schema.json",
+  cursorAgentResult: "harness/schemas/cursor-agent-result.schema.json",
 };
 
 function typeMatches(value, type) {
@@ -45,6 +46,14 @@ function validateNode(value, schema, rootSchema, location, errors) {
     return;
   }
   for (const branch of schema.allOf ?? []) validateNode(value, branch, rootSchema, location, errors);
+  if (schema.anyOf) {
+    const accepted = schema.anyOf.some((branch) => {
+      const probe = [];
+      validateNode(value, branch, rootSchema, location, probe);
+      return probe.length === 0;
+    });
+    if (!accepted) errors.push(`${location} must match at least one anyOf branch`);
+  }
   if (schema.if) {
     const probe = [];
     validateNode(value, schema.if, rootSchema, location, probe);

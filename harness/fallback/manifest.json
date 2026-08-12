@@ -44,5 +44,20 @@
     ],
     "agentVerificationRequiredBeforeResume": true,
     "secretsMustNotBeRequested": true
-  }
+  },
+  "humanFirstReasons": [
+    "MFA_REQUIRED",
+    "CAPTCHA_REQUIRED",
+    "INTERACTIVE_AUTH_REQUIRED",
+    "SECRET_CREATION_REQUIRED",
+    "PAYMENT_OR_CONTRACT",
+    "LEGAL_ACCEPTANCE",
+    "PHYSICAL_ACTION_REQUIRED"
+  ],
+  "primaryTransports": [
+    "cursor-ide",
+    "cursor-cli"
+  ],
+  "transportSwitchConsumesNewStrategyBudget": false,
+  "cursorCliManifest": "harness/cursor/manifest.json"
 }

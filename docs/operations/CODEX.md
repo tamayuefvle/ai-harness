@@ -1,5 +1,5 @@
 <!-- GENERATED FILE. DO NOT EDIT DIRECTLY. -->
-<!-- Source: harness/rules/operations.md; run npm run harness:generate -->
+<!-- Source: harness/rules/operations.md; consumer: codex; run npm run harness:generate -->
 # Release, operations, and improvement role
 
 ## Scope

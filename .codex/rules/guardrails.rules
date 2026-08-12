@@ -1,65 +1,74 @@
-# Destructive Git and filesystem operations are forbidden.
+# GENERATED FILE. DO NOT EDIT DIRECTLY.
+# Source: harness/policies/command-guardrails.json; run npm run harness:generate
+
+# policyId: CMD-GIT-HARD-RESET
 prefix_rule(
-    pattern = ["git", "reset", "--hard"],
+    pattern = ["git","reset","--hard"],
     decision = "forbidden",
     justification = "履歴と未コミット変更を破壊します。安全な差分確認と限定的な restore を使用してください。",
-    match = ["git reset --hard", "git reset --hard HEAD~1"],
+    match = ["git reset --hard","git reset --hard HEAD~1"],
 )
 
+# policyId: CMD-GIT-FORCE-CLEAN
 prefix_rule(
-    pattern = ["git", "clean"],
+    pattern = ["git","clean"],
     decision = "forbidden",
     justification = "未追跡ファイルを削除します。削除対象を人間が確認してください。",
-    match = ["git clean -fd", "git clean -fdx"],
+    match = ["git clean -fd","git clean -fdx"],
 )
 
+# policyId: CMD-GIT-FORCE-PUSH-LONG
 prefix_rule(
-    pattern = ["git", "push", "--force"],
+    pattern = ["git","push","--force"],
     decision = "forbidden",
     justification = "共有履歴を書き換えます。通常 push または新しい修正 commit を使用してください。",
-    match = ["git push --force", "git push --force origin main"],
+    match = ["git push --force","git push --force origin main"],
 )
 
+# policyId: CMD-GIT-FORCE-PUSH-SHORT
 prefix_rule(
-    pattern = ["git", "push", "-f"],
+    pattern = ["git","push","-f"],
     decision = "forbidden",
     justification = "共有履歴を書き換えます。通常 push または新しい修正 commit を使用してください。",
-    match = ["git push -f", "git push -f origin feature"],
+    match = ["git push -f","git push -f origin feature"],
 )
 
+# policyId: CMD-RM-RF
 prefix_rule(
-    pattern = ["rm", "-rf"],
+    pattern = ["rm","-rf"],
     decision = "forbidden",
     justification = "再帰的な強制削除は禁止です。対象を限定し、人間の承認を得てください。",
-    match = ["rm -rf .next", "rm -rf /"],
+    match = ["rm -rf .next","rm -rf /"],
 )
 
-# Production actions always require the user.
+# policyId: CMD-VERCEL-PROD
 prefix_rule(
-    pattern = ["vercel", "--prod"],
+    pattern = ["vercel","--prod"],
     decision = "forbidden",
     justification = "本番デプロイは人間の明示承認後、保護された main から実行してください。",
     match = ["vercel --prod"],
 )
 
+# policyId: CMD-NPX-VERCEL-PROD
 prefix_rule(
-    pattern = ["npx", "vercel", "--prod"],
+    pattern = ["npx","vercel","--prod"],
     decision = "forbidden",
     justification = "本番デプロイは人間の明示承認後、保護された main から実行してください。",
     match = ["npx vercel --prod"],
 )
 
-# Dependency and remote mutation commands require approval.
+# policyId: CMD-NPM-INSTALL
 prefix_rule(
-    pattern = ["npm", "install"],
+    pattern = ["npm","install"],
     decision = "prompt",
     justification = "依存追加・更新は ADR と lockfile 差分の確認が必要です。",
-    match = ["npm install", "npm install zod", "npm install -D vitest"],
+    match = ["npm install","npm install zod","npm install -D vitest"],
 )
 
+# policyId: CMD-GH-MUTATION
 prefix_rule(
-    pattern = ["gh", ["pr", "issue", "release"]],
+    pattern = ["gh",["pr","issue","release"]],
     decision = "prompt",
     justification = "GitHub 上の状態を変更または公開する可能性があるため確認が必要です。",
-    match = ["gh pr create", "gh issue close 12", "gh release create v1.0.0"],
+    match = ["gh pr create","gh issue close 12","gh release create v1.0.0"],
 )

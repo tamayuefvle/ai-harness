@@ -5,14 +5,7 @@
     "agentsTargets": [
       "AGENTS.md"
     ],
-    "cursorTargets": [
-      {
-        "path": ".cursor/rules/00-user-root-policy.mdc",
-        "description": "User root policy: authority order, instruction chain, stop conditions, and verification honesty.",
-        "globs": [],
-        "alwaysApply": true
-      }
-    ]
+    "cursorTargets": []
   },
   {
     "id": "user-task-dispatcher",
@@ -30,9 +23,7 @@
   {
     "id": "capabilities",
     "source": "capabilities.md",
-    "agentsTargets": [
-      "harness/capabilities/AGENTS.md"
-    ],
+    "agentsTargets": [],
     "cursorTargets": [
       {
         "path": "harness/capabilities/.cursor/rules/capabilities.mdc",
@@ -42,14 +33,15 @@
         ],
         "alwaysApply": true
       }
+    ],
+    "codexTargets": [
+      "harness/capabilities/CODEX.md"
     ]
   },
   {
     "id": "docs-router",
     "source": "docs-router.md",
-    "agentsTargets": [
-      "docs/AGENTS.md"
-    ],
+    "agentsTargets": [],
     "cursorTargets": [
       {
         "path": "docs/.cursor/rules/00-docs-router.mdc",
@@ -59,14 +51,15 @@
         ],
         "alwaysApply": true
       }
+    ],
+    "codexTargets": [
+      "docs/CODEX.md"
     ]
   },
   {
     "id": "worklog",
     "source": "worklog.md",
-    "agentsTargets": [
-      "docs/worklog/AGENTS.md"
-    ],
+    "agentsTargets": [],
     "cursorTargets": [
       {
         "path": "docs/worklog/.cursor/rules/worklog.mdc",
@@ -76,14 +69,15 @@
         ],
         "alwaysApply": true
       }
+    ],
+    "codexTargets": [
+      "docs/worklog/CODEX.md"
     ]
   },
   {
     "id": "product",
     "source": "product.md",
-    "agentsTargets": [
-      "docs/product/AGENTS.md"
-    ],
+    "agentsTargets": [],
     "cursorTargets": [
       {
         "path": "docs/product/.cursor/rules/product.mdc",
@@ -93,14 +87,15 @@
         ],
         "alwaysApply": true
       }
+    ],
+    "codexTargets": [
+      "docs/product/CODEX.md"
     ]
   },
   {
     "id": "specs",
     "source": "specs.md",
-    "agentsTargets": [
-      "docs/specs/AGENTS.md"
-    ],
+    "agentsTargets": [],
     "cursorTargets": [
       {
         "path": "docs/specs/.cursor/rules/spec-gates.mdc",
@@ -110,14 +105,15 @@
         ],
         "alwaysApply": true
       }
+    ],
+    "codexTargets": [
+      "docs/specs/CODEX.md"
     ]
   },
   {
     "id": "architecture",
     "source": "architecture.md",
-    "agentsTargets": [
-      "docs/architecture/AGENTS.md"
-    ],
+    "agentsTargets": [],
     "cursorTargets": [
       {
         "path": "docs/architecture/.cursor/rules/architecture.mdc",
@@ -127,14 +123,15 @@
         ],
         "alwaysApply": true
       }
+    ],
+    "codexTargets": [
+      "docs/architecture/CODEX.md"
     ]
   },
   {
     "id": "operations",
     "source": "operations.md",
-    "agentsTargets": [
-      "docs/operations/AGENTS.md"
-    ],
+    "agentsTargets": [],
     "cursorTargets": [
       {
         "path": "docs/operations/.cursor/rules/operations.mdc",
@@ -144,14 +141,15 @@
         ],
         "alwaysApply": true
       }
+    ],
+    "codexTargets": [
+      "docs/operations/CODEX.md"
     ]
   },
   {
     "id": "frontend-app",
     "source": "frontend-app.md",
-    "agentsTargets": [
-      "src/AGENTS.md"
-    ],
+    "agentsTargets": [],
     "cursorTargets": [
       {
         "path": "src/.cursor/rules/application.mdc",
@@ -164,15 +162,15 @@
     ],
     "requiresProfiles": [
       "framework/nextjs-app-router"
+    ],
+    "codexTargets": [
+      "src/CODEX.md"
     ]
   },
   {
     "id": "components",
     "source": "components.md",
-    "agentsTargets": [
-      "components/AGENTS.md",
-      "src/components/AGENTS.md"
-    ],
+    "agentsTargets": [],
     "cursorTargets": [
       {
         "path": "components/.cursor/rules/components.mdc",
@@ -193,15 +191,16 @@
     ],
     "requiresProfiles": [
       "framework/react"
+    ],
+    "codexTargets": [
+      "components/CODEX.md",
+      "src/components/CODEX.md"
     ]
   },
   {
     "id": "lib",
     "source": "lib.md",
-    "agentsTargets": [
-      "lib/AGENTS.md",
-      "src/lib/AGENTS.md"
-    ],
+    "agentsTargets": [],
     "cursorTargets": [
       {
         "path": "lib/.cursor/rules/domain-lib.mdc",
@@ -222,15 +221,16 @@
     ],
     "requiresProfiles": [
       "language/typescript"
+    ],
+    "codexTargets": [
+      "lib/CODEX.md",
+      "src/lib/CODEX.md"
     ]
   },
   {
     "id": "content",
     "source": "content.md",
-    "agentsTargets": [
-      "content/AGENTS.md",
-      "src/content/AGENTS.md"
-    ],
+    "agentsTargets": [],
     "cursorTargets": [
       {
         "path": "content/.cursor/rules/content.mdc",
@@ -251,15 +251,16 @@
     ],
     "requiresProfiles": [
       "framework/react"
+    ],
+    "codexTargets": [
+      "content/CODEX.md",
+      "src/content/CODEX.md"
     ]
   },
   {
     "id": "styles",
     "source": "styles.md",
-    "agentsTargets": [
-      "styles/AGENTS.md",
-      "src/styles/AGENTS.md"
-    ],
+    "agentsTargets": [],
     "cursorTargets": [
       {
         "path": "styles/.cursor/rules/styles.mdc",
@@ -280,15 +281,16 @@
     ],
     "requiresProfiles": [
       "framework/react"
+    ],
+    "codexTargets": [
+      "styles/CODEX.md",
+      "src/styles/CODEX.md"
     ]
   },
   {
     "id": "tests",
     "source": "tests.md",
-    "agentsTargets": [
-      "tests/AGENTS.md",
-      "src/__tests__/AGENTS.md"
-    ],
+    "agentsTargets": [],
     "cursorTargets": [
       {
         "path": "tests/.cursor/rules/tests.mdc",
@@ -309,14 +311,16 @@
     ],
     "requiresProfiles": [
       "test/vitest-rtl"
+    ],
+    "codexTargets": [
+      "tests/CODEX.md",
+      "src/__tests__/CODEX.md"
     ]
   },
   {
     "id": "e2e",
     "source": "e2e.md",
-    "agentsTargets": [
-      "e2e/AGENTS.md"
-    ],
+    "agentsTargets": [],
     "cursorTargets": [
       {
         "path": "e2e/.cursor/rules/e2e.mdc",
@@ -329,14 +333,15 @@
     ],
     "requiresProfiles": [
       "test/playwright"
+    ],
+    "codexTargets": [
+      "e2e/CODEX.md"
     ]
   },
   {
     "id": "github-integration",
     "source": "github-integration.md",
-    "agentsTargets": [
-      "scripts/github/AGENTS.md"
-    ],
+    "agentsTargets": [],
     "cursorTargets": [
       {
         "path": "scripts/github/.cursor/rules/github-integration.mdc",
@@ -346,14 +351,15 @@
         ],
         "alwaysApply": true
       }
+    ],
+    "codexTargets": [
+      "scripts/github/CODEX.md"
     ]
   },
   {
     "id": "scripts",
     "source": "scripts.md",
-    "agentsTargets": [
-      "scripts/AGENTS.md"
-    ],
+    "agentsTargets": [],
     "cursorTargets": [
       {
         "path": "scripts/.cursor/rules/automation.mdc",
@@ -363,14 +369,15 @@
         ],
         "alwaysApply": true
       }
+    ],
+    "codexTargets": [
+      "scripts/CODEX.md"
     ]
   },
   {
     "id": "harness",
     "source": "harness.md",
-    "agentsTargets": [
-      "harness/AGENTS.md"
-    ],
+    "agentsTargets": [],
     "cursorTargets": [
       {
         "path": "harness/.cursor/rules/harness-maintenance.mdc",
@@ -380,14 +387,15 @@
         ],
         "alwaysApply": true
       }
+    ],
+    "codexTargets": [
+      "harness/CODEX.md"
     ]
   },
   {
     "id": "github",
     "source": "github.md",
-    "agentsTargets": [
-      ".github/AGENTS.md"
-    ],
+    "agentsTargets": [],
     "cursorTargets": [
       {
         "path": ".github/.cursor/rules/github-ci.mdc",
@@ -397,6 +405,9 @@
         ],
         "alwaysApply": true
       }
+    ],
+    "codexTargets": [
+      ".github/CODEX.md"
     ]
   },
   {
@@ -408,23 +419,12 @@
         "mode": "append"
       }
     ],
-    "cursorTargets": [
-      {
-        "path": ".cursor/rules/public-assets.mdc",
-        "description": "Public asset licensing, privacy, naming, optimization, and font rules without publishing harness instructions.",
-        "globs": [
-          "public/**/*"
-        ],
-        "alwaysApply": false
-      }
-    ]
+    "cursorTargets": []
   },
   {
     "id": "mcp",
     "source": "mcp.md",
-    "agentsTargets": [
-      "scripts/mcp/AGENTS.md"
-    ],
+    "agentsTargets": [],
     "cursorTargets": [
       {
         "path": "scripts/mcp/.cursor/rules/mcp.mdc",
@@ -434,6 +434,9 @@
         ],
         "alwaysApply": true
       }
+    ],
+    "codexTargets": [
+      "scripts/mcp/CODEX.md"
     ]
   },
   {
@@ -443,20 +446,9 @@
       {
         "path": "AGENTS.md",
         "mode": "append"
-      },
-      {
-        "path": "harness/AGENTS.md",
-        "mode": "append"
       }
     ],
-    "cursorTargets": [
-      {
-        "path": ".cursor/rules/02-full-lifecycle.mdc",
-        "description": "Project, task, release, incident, and improvement lifecycle boundaries.",
-        "globs": [],
-        "alwaysApply": true
-      }
-    ]
+    "cursorTargets": []
   },
   {
     "id": "execution-safety",
@@ -465,30 +457,14 @@
       {
         "path": "AGENTS.md",
         "mode": "append"
-      },
-      {
-        "path": "harness/AGENTS.md",
-        "mode": "append"
       }
     ],
-    "cursorTargets": [
-      {
-        "path": ".cursor/rules/03-execution-safety.mdc",
-        "description": "Task-bound Execution Runs, authorization, recovery, and bounded Cursor-to-Codex-to-Human fallback.",
-        "globs": [],
-        "alwaysApply": true
-      }
-    ]
+    "cursorTargets": []
   },
   {
     "id": "technology-profiles",
     "source": "profiles.md",
-    "agentsTargets": [
-      {
-        "path": "harness/AGENTS.md",
-        "mode": "append"
-      }
-    ],
+    "agentsTargets": [],
     "cursorTargets": [
       {
         "path": "harness/.cursor/rules/technology-profiles.mdc",
@@ -499,6 +475,12 @@
           "generated/profile-resolution.json"
         ],
         "alwaysApply": true
+      }
+    ],
+    "codexTargets": [
+      {
+        "path": "harness/CODEX.md",
+        "mode": "append"
       }
     ]
   }

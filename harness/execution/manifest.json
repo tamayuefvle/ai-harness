@@ -204,25 +204,7 @@
       ]
     }
   ],
-  "executorFallback": {
-    "defaultOrder": [
-      "cursor",
-      "codex-cli",
-      "human"
-    ],
-    "maxBoundedStrategiesPerExecutor": 1,
-    "requireFailureEvidenceBeforeFallback": true,
-    "requireIndependentDiagnosisOnSecondary": true,
-    "repeatFailedStrategy": "deny",
-    "automaticReturnToPreviousExecutor": false,
-    "humanFirstReasons": [
-      "MFA_REQUIRED",
-      "CAPTCHA_REQUIRED",
-      "INTERACTIVE_AUTH_REQUIRED",
-      "SECRET_CREATION_REQUIRED",
-      "PAYMENT_OR_CONTRACT",
-      "LEGAL_ACCEPTANCE",
-      "PHYSICAL_ACTION_REQUIRED"
-    ]
+  "fallbackPolicy": {
+    "manifest": "harness/fallback/manifest.json"
   }
 }

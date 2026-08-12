@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "hooks": {
+    "preToolUse": [
+      {
+        "command": "node scripts/harness/cursor-policy-hook.mjs",
+        "matcher": "Shell|Write|StrReplace|Delete|CallMcpTool",
+        "failClosed": false,
+        "timeout": 10
+      }
+    ]
+  }
+}

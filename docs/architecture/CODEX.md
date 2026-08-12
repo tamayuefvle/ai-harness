@@ -1,5 +1,5 @@
 <!-- GENERATED FILE. DO NOT EDIT DIRECTLY. -->
-<!-- Source: harness/rules/architecture.md; run npm run harness:generate -->
+<!-- Source: harness/rules/architecture.md; consumer: codex; run npm run harness:generate -->
 # Architecture decision role
 
 ## Scope

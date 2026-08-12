@@ -1,5 +1,5 @@
 <!-- GENERATED FILE. DO NOT EDIT DIRECTLY. -->
-<!-- Source: harness/rules/mcp.md; run npm run harness:generate -->
+<!-- Source: harness/rules/mcp.md; consumer: codex; run npm run harness:generate -->
 # MCP integration and permission role
 
 MCP is optional and is not a workflow, state, approval, GitHub, documentation, or quality-gate authority. The only committed MCP provider is Chrome DevTools, exposed through the Browser Capability. Context7 MCP and GitHub MCP are unsupported.

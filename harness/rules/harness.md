@@ -10,7 +10,8 @@
 
 次は生成物であり、直接編集しません。
 
-- すべての `AGENTS.md`
+- root `AGENTS.md`
+- すべての `CODEX.md`
 - すべての `.cursor/rules/*.mdc`
 
 変更手順:
@@ -24,7 +25,7 @@
 
 ## Design principles
 
-- ルートは薄い policy に限定し、詳細規約は domain role へ置く。
+- ルートは薄い shared policy に限定し、詳細規約は Codex `CODEX.md` / Cursor scoped `.mdc` へ consumer 別に投影する。
 - 子 role は目的、入力、許可範囲、禁止、verification を持つ。
 - 同一内容を複数 source へ複製しない。
 - stack 固有 rule は profile 選択後のみ生成する（`requiresProfiles`）。

@@ -1,14 +1,14 @@
 # Requirements backlog
 
-<!-- Template: capture requirements before they become specs. -->
+<!-- Capture requirements before they become specs. Must items must reference OUT-xxx from outcomes.md. -->
 
 ## Must
 
-- _Requirement_
+- _Requirement_ (OUT-001)
 
 ## Should
 
-- _Requirement_
+- _Requirement_ (OUT-001)
 
 ## Could
 
@@ -16,4 +16,4 @@
 
 ## Won't (this cycle)
 
-- _Requirement_
+- _Requirement_ (PD-001) — see docs/product/decisions/PD-001-example.md

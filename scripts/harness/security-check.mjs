@@ -1,6 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { loadCommandGuardrails, compileRegex } from "./policy-lib.mjs";
 
 export const defaultRepoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
 
@@ -19,18 +20,14 @@ const enforcementDefinitions = new Set([
   ".codex/rules/guardrails.rules",
   "scripts/harness/runtime-doctor.mjs",
   "scripts/harness/security-check.mjs",
+  "scripts/harness/command-policy.mjs",
 ]);
 
 function dangerousPatterns() {
-  const join = (...parts) => parts.join("\\s+");
-  return [
-    [new RegExp(join("git", "reset", "--hard"), "i"), "destructive Git reset"],
-    [/git\s+clean\s+[^\n]*(?:-f|--force)/i, "forced Git clean"],
-    [/git\s+push\s+[^\n]*(?:--force|-f)(?:\s|$)/i, "force push"],
-    [/\brm\s+-[^\n\s]*r[^\n\s]*f|\brm\s+-[^\n\s]*f[^\n\s]*r/i, "recursive forced deletion"],
-    [/(?:curl|wget)[^\n|]*\|\s*(?:ba)?sh(?:\s|$)/i, "remote script piped to shell"],
-    [/\b(?:npx\s+)?vercel\b[^\n]*--prod(?:\s|$)/i, "direct production deploy"],
-  ];
+  const policy = loadCommandGuardrails();
+  return policy.commandPatterns
+    .filter((entry) => entry.surfaces.includes("security"))
+    .map((entry) => [compileRegex(entry), `${entry.id}: ${entry.message}`]);
 }
 
 function normalizeInventoryEntry(value) {
@@ -133,4 +130,3 @@ function main() {
 }
 
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) main();
-
