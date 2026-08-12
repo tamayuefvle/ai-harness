@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://portfolio-harness.local/schemas/design-turn.schema.json",
+  "type": "object",
+  "required": [
+    "phase",
+    "targetDocument",
+    "suggestedQuestion",
+    "rationale",
+    "openQuestions",
+    "fabricationRisk"
+  ],
+  "properties": {
+    "phase": {
+      "enum": ["stack-options", "stack-decision", "architecture", "review"]
+    },
+    "targetDocument": {
+      "type": "string",
+      "pattern": "^docs/(product/technology-(options|decision)|architecture/(baseline|security-baseline|quality-strategy))\\.md$"
+    },
+    "suggestedQuestion": { "type": "string", "minLength": 1 },
+    "rationale": { "type": "string", "minLength": 1 },
+    "openQuestions": { "type": "array", "items": { "type": "string" } },
+    "fabricationRisk": { "enum": ["none", "low", "high"] },
+    "requiresCitation": { "type": "boolean" }
+  },
+  "additionalProperties": false
+}

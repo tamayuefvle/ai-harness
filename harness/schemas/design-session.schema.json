@@ -1,0 +1,58 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://portfolio-harness.local/schemas/design-session.schema.json",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "sessionId",
+    "projectId",
+    "designTier",
+    "phase",
+    "startedAt",
+    "updatedAt",
+    "turns",
+    "openQuestions"
+  ],
+  "properties": {
+    "schemaVersion": { "const": "1.0.0" },
+    "sessionId": {
+      "type": "string",
+      "pattern": "^DSN-[0-9]{8}-[a-z0-9]{6}$"
+    },
+    "projectId": { "type": "string", "minLength": 1 },
+    "designTier": { "enum": ["lite", "full"] },
+    "phase": {
+      "enum": ["stack-options", "stack-decision", "architecture", "review"]
+    },
+    "startedAt": { "type": "string", "format": "date-time" },
+    "updatedAt": { "type": "string", "format": "date-time" },
+    "turns": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["at", "role", "summary"],
+        "properties": {
+          "at": { "type": "string", "format": "date-time" },
+          "role": { "enum": ["agent", "human"] },
+          "summary": { "type": "string", "minLength": 1 },
+          "question": { "type": "string" },
+          "answer": { "type": "string" },
+          "targetDocument": { "type": "string" }
+        },
+        "additionalProperties": false
+      }
+    },
+    "openQuestions": { "type": "array", "items": { "type": "string" } },
+    "checkSnapshot": {
+      "type": "object",
+      "required": ["kind", "ok", "errors"],
+      "properties": {
+        "kind": { "enum": ["stack", "architecture"] },
+        "ok": { "type": "boolean" },
+        "errors": { "type": "array", "items": { "type": "string" } }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

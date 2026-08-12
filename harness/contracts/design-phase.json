@@ -1,0 +1,70 @@
+{
+  "schemaVersion": "1.0.0",
+  "tiers": {
+    "lite": {
+      "label": "MVP design",
+      "stack": {
+        "documents": [
+          "docs/product/technology-options.md",
+          "docs/product/technology-decision.md"
+        ],
+        "optionsSections": ["## Candidates", "## Recommendation"],
+        "decisionSections": ["## Decision", "## Selected profiles", "## Rationale"],
+        "minCandidates": 1,
+        "minSelectedProfiles": 1,
+        "requireRejectedOptions": false,
+        "requireProposedProfileSync": true
+      },
+      "architecture": {
+        "documents": [
+          "docs/architecture/baseline.md"
+        ],
+        "baselineSections": [
+          "## System context",
+          "## Boundaries",
+          "## Quality attributes",
+          "## Rollback"
+        ],
+        "minSectionChars": 40,
+        "minPolicyChars": 80,
+        "requireSecurityQuality": false,
+        "requireOutcomeTrace": true,
+        "requireAllOutcomes": false
+      }
+    },
+    "full": {
+      "label": "Full design",
+      "stack": {
+        "documents": [
+          "docs/product/technology-options.md",
+          "docs/product/technology-decision.md"
+        ],
+        "optionsSections": ["## Candidates", "## Recommendation"],
+        "decisionSections": ["## Decision", "## Selected profiles", "## Rationale"],
+        "minCandidates": 1,
+        "minSelectedProfiles": 1,
+        "requireRejectedOptions": true,
+        "requireProposedProfileSync": true
+      },
+      "architecture": {
+        "documents": [
+          "docs/architecture/baseline.md",
+          "docs/architecture/security-baseline.md",
+          "docs/architecture/quality-strategy.md"
+        ],
+        "baselineSections": [
+          "## System context",
+          "## Boundaries",
+          "## Quality attributes",
+          "## Rollback"
+        ],
+        "minSectionChars": 40,
+        "minPolicyChars": 80,
+        "requireSecurityQuality": true,
+        "requireOutcomeTrace": true,
+        "requireAllOutcomes": true
+      }
+    }
+  },
+  "profileIdPattern": "[a-z0-9-]+/[a-z0-9-]+"
+}

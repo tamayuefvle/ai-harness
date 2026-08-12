@@ -102,6 +102,16 @@
       "instance": "harness/schema-fixtures/discovery-turn.valid.json"
     },
     {
+      "id": "design-session",
+      "schema": "harness/schemas/design-session.schema.json",
+      "instance": "harness/schema-fixtures/design-session.valid.json"
+    },
+    {
+      "id": "design-turn",
+      "schema": "harness/schemas/design-turn.schema.json",
+      "instance": "harness/schema-fixtures/design-turn.valid.json"
+    },
+    {
       "id": "operational-signal",
       "schema": "harness/schemas/operational-signal.schema.json",
       "instance": "harness/schema-fixtures/operational-signal.valid.json"

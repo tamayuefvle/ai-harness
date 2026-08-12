@@ -73,10 +73,11 @@ Codex を発火する前に必ず `npm run codex:preflight` を通します。la
 ## Task lifecycle (summary)
 
 - **新規 product 企画**: `npm run project:discover [--tier lite|full]` → `npm run product:status` → `docs/product/*`（`OUT-xxx` / promoted `IDEA-xxx` / `PD-xxx` / `ASM-xxx` トレース）→ `npm run ai:discover`（任意）→ `npm run product:check` → `project:gate`
+- **プロジェクト設計**（`PRODUCT_APPROVED` 後）: `npm run design:status [--tier lite|full]` → stack docs → `npm run ai:evaluate-stack`（任意）→ `stack:check` → `STACK_APPROVED` → architecture baselines（`OUT-xxx` トレース）→ `ai:evaluate-stack`（任意）→ `architecture:check` → `ARCHITECTURE_APPROVED` → `profile:resolve` → `ACTIVE`
 - **運用 signal → product**: `npm run product:signal-link -- --signal SIG-... --affects OUT-001 --action review --summary "..."`
 - **delivery task 開始**（`ACTIVE` 到達後）: `npm run task:start` または `npm run task:new`（active task が無い場合）
 - 仕様承認後: `npm run task:gate -- approve-spec` → `npm run task:advance -- SPEC_READY`
-- 設計: 必要なら `npm run ai:research` → plan / test-plan → `approve-plan` → `PLAN_READY`
+- 設計（task）: 必要なら `npm run ai:research` → plan / test-plan → `approve-plan` → `PLAN_READY`
 - 実装: 対象 AC 明示、`npm run ai:implement -- AC-xxx` または Cursor 局所実装
 - 検証: `npm run verify:ci`、証拠を `task:gate record-*` で固定
 - レビュー: `npm run ai:review` → `REVIEW_READY`

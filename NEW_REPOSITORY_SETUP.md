@@ -1,4 +1,4 @@
-# New Repository Setup — v14.3.0
+# New Repository Setup — v14.6.0
 
 > 対象: **このハーネスを Git リポジトリへ新規配置したが、Git root に `package.json` がまだ存在しない場合**。
 >
@@ -23,10 +23,10 @@ Bootstrap 完了後、`harness/project.json` は通常 `MIGRATION_PENDING` で�
 
 | Path | いつ使うか | 最初のコマンド |
 |---|---|---|
-| **Greenfield product** | 新規 product を企画から作る | `npm run project:discover [--tier lite\|full]` → `docs/workflow/PRODUCT_DISCOVERY.md` |
+| **Greenfield product** | 新規 product を企画から作る | `npm run project:discover [--tier lite\|full]` → `docs/workflow/PRODUCT_DISCOVERY.md` → `docs/workflow/STACK_ARCHITECTURE.md` |
 | **Legacy migration** | 既存 v11/v12 資産を一括移行する | `MIGRATION.md` の migration 手順 |
 
-Greenfield では `task:start` や実装 task を **`ACTIVE` 到達前** に開始しません。`npm run product:status` で次に埋める product 文書を確認します。
+Greenfield では `task:start` や実装 task を **`ACTIVE` 到達前** に開始しません。企画は `npm run product:status`、設計は `npm run design:status` で次手を確認します。設計対話の記録は `npm run ai:evaluate-stack`（Codex read-only）です。
 
 ## 0.1 初期設定で人間が行うこと（チェックリスト）
 

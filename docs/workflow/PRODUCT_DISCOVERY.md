@@ -91,12 +91,13 @@ npm run project:advance -- --to PRODUCT_APPROVED
 
 ## After product approval
 
-Continue the project lifecycle:
+Continue the **stack and architecture** loop (`docs/workflow/STACK_ARCHITECTURE.md`):
 
-1. `docs/product/technology-options.md` + `technology-decision.md`
-2. Architecture baselines
-3. `npm run profile:resolve`
-4. Human approval to `ACTIVE`
+1. `npm run design:status`
+2. `docs/product/technology-options.md` + `technology-decision.md` → optional `ai:evaluate-stack` → `stack:check` → `STACK_APPROVED`
+3. Architecture baselines → optional `ai:evaluate-stack` → `architecture:check` → `ARCHITECTURE_APPROVED`
+4. `npm run profile:resolve`
+5. Human approval to `ACTIVE`
 
 See `docs/workflow/FULL_LIFECYCLE.md`.
 

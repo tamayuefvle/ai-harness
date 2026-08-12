@@ -51,6 +51,7 @@ npm run harness:route -- src/components/ProjectCard.tsx
 
 - リポジトリ全体の調査
 - `DISCOVERY` 中の read-only product facilitation（`npm run ai:discover`）
+- `PRODUCT_APPROVED` / `STACK_APPROVED` 中の read-only stack/architecture facilitation（`npm run ai:evaluate-stack`）
 - spec / planに基づく複数ファイル変更
 - test作成とfailure解析
 - read-onlyの独立diff review

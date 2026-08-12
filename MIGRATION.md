@@ -1,3 +1,46 @@
+# Migration to v14.6.0
+
+## From v14.5.0
+
+Compatible upgrade. Merge `package.scripts.fragment.json`, run `npm run harness:generate`, then `npm run verify:harness`.
+
+New behavior:
+
+- `npm run ai:evaluate-stack` during `PRODUCT_APPROVED` or `STACK_APPROVED` records Codex read-only turns under `.harness/design/`.
+- Finalize snapshots `stack:check` or `architecture:check` without failing the session when documents are still incomplete, and without editing design docs or advancing gates.
+- Do not use task `ai:research` for project stack/architecture design.
+
+---
+
+# Migration to v14.5.0
+
+## From v14.4.0
+
+Compatible upgrade. Merge `package.scripts.fragment.json`, run `npm run harness:generate`, then `npm run verify:harness`.
+
+New behavior:
+
+- `npm run design:status -- --tier lite|full` stores `designTier` (defaults to `discoveryTier`).
+- Architecture Quality attributes must reference `OUT-xxx`.
+- Full-tier stack decisions need a Rejected options row.
+- Empty `proposedProfiles` is filled from the technology decision at `STACK_APPROVED`.
+
+---
+
+# Migration to v14.4.0
+
+## From v14.3.0
+
+Compatible upgrade. Merge `package.scripts.fragment.json`, run `npm run harness:generate`, then `npm run verify:harness`.
+
+New behavior:
+
+- After `PRODUCT_APPROVED`, use `npm run design:status` for the stack/architecture path.
+- `stack:check` / `architecture:check` are required before the matching `project:gate` transitions.
+- Selected profiles in `technology-decision.md` must exist in `harness/profiles/registry.json`.
+
+---
+
 # Migration to v14.3.0
 
 ## From v14.2.0
@@ -57,7 +100,7 @@ If you already skipped straight to migration documents, stay on the migration pa
 2. Overlay v14 and merge `package.scripts.fragment.json`; do not replace the product `package.json` wholesale.
 3. Run `npm run harness:generate`. Marker-owned nested generated `AGENTS.md` files are removed, directory Codex rules become `CODEX.md`, Cursor keeps scoped `.mdc`, and policy projections are generated.
 4. Run `npm run verify:harness`.
-5. If Cursor CLI is installed and the repository has a clean committed base, optionally run `npm run cursor:preflight`. Implementer results remain in an isolated worktree and are never auto-applied.
+5. If Cursor CLI is installed and the repository has a clean committed base, optionally run `npm run cursor:preflight`. Implementer results remain in an isolated worktree and are never auto-applied. Provider-free regression for this path lives in `scripts/harness/cursor-exec.test.mjs` (live authentication remains a workstation smoke check).
 
 The Project/Task/Release/Incident lifecycle and `harness/project.json` state are unchanged. Switching between Cursor IDE and CLI is not a new strategy budget. Rollback restores reviewed v13.2 harness-owned sources and reruns its generator; preserve product and runtime evidence.
 

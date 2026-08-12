@@ -1,0 +1,24 @@
+{
+  "schemaVersion": "1.0.0",
+  "sessionId": "DSN-20260813-a1b2c3",
+  "projectId": "example-product",
+  "designTier": "full",
+  "phase": "stack-options",
+  "startedAt": "2026-08-13T00:00:00.000Z",
+  "updatedAt": "2026-08-13T00:05:00.000Z",
+  "turns": [
+    {
+      "at": "2026-08-13T00:05:00.000Z",
+      "role": "agent",
+      "summary": "Asked which runtime constraints are non-negotiable",
+      "question": "Which approved outcomes constrain the runtime choice?",
+      "targetDocument": "docs/product/technology-options.md"
+    }
+  ],
+  "openQuestions": ["Is a separate API process required in the first release?"],
+  "checkSnapshot": {
+    "kind": "stack",
+    "ok": false,
+    "errors": ["docs/product/technology-options.md: template banner remains; replace with project-specific content"]
+  }
+}

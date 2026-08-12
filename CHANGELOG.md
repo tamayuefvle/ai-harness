@@ -1,5 +1,24 @@
 # Changelog
 
+## v14.6.0 - 2026-08-13
+
+- Added design session artifacts (`.harness/design/DSN-*.json`) and `npm run ai:evaluate-stack` Codex read-only facilitation for stack (`PRODUCT_APPROVED`) and architecture (`STACK_APPROVED`).
+- Finalize records a `stack:check` or `architecture:check` snapshot without failing the session when documents are still incomplete; docs are not auto-edited and gates are not auto-advanced.
+- Task `ai:research` remains delivery-only after `ACTIVE` / `SPEC_READY`.
+
+## v14.5.0 - 2026-08-13
+
+- Added design tiers (`lite` / `full`) via `design:status --tier` and `designTier` on project state.
+- Added architecture `OUT-xxx` trace from outcomes; full tier requires rejected stack options and security/quality checks.
+- `project:gate` to `STACK_APPROVED` copies selected profiles into `proposedProfiles` when empty.
+
+## v14.4.0 - 2026-08-13
+
+- Added design entry loop: `design:status`, `stack:check`, and `architecture:check` with fail-closed placeholder/profile validation.
+- Wired semantic stack/architecture checks into `project:gate` and `verify:harness` (`--if-applicable`).
+- Added `docs/workflow/STACK_ARCHITECTURE.md` and Cursor skill `stack-architecture`; expanded technology/architecture prompts.
+- Added provider-free `cursor:exec` fixture E2E coverage (read-only cleanup, read-only leak → blocked, implementer preserve / no auto-apply).
+
 ## v14.3.0 - 2026-08-12
 
 - Added discovery session artifacts (`.harness/discovery/DISC-*.json`) and `npm run ai:discover` Codex read-only facilitation.

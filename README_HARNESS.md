@@ -1,8 +1,8 @@
-# AI Development Harness v14.3.0
+# AI Development Harness v14.6.0
 
 ## Standalone user harness
 
-v14.3 adds **agent discovery** (`ai:discover`, session artifacts, assumption register, anti-fabrication checks, signal→product linking) on top of v14.2 progressive tiers and v14.1 product discovery entry.
+v14.6 adds **design session artifacts** (`npm run ai:evaluate-stack`, `.harness/design/DSN-*.json`) on top of the v14.5 design tiers and OUT → architecture trace.
 
 The package ships in `MIGRATION_PENDING`. For a **new product**, run `npm run project:discover` and follow `docs/workflow/PRODUCT_DISCOVERY.md`. For **legacy migration**, follow `MIGRATION.md`. Set `projectId`, choose profiles, resolve, review baselines, approve, then advance to `ACTIVE`.
 

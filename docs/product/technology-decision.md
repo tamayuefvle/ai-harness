@@ -1,18 +1,19 @@
 # Technology decision
 
-<!-- Template: record the chosen stack after evaluation. -->
+<!-- Record the chosen stack after evaluation. Selected profiles must exist in harness/profiles/registry.json. -->
 
 ## Decision
 
-_Status: pending — fill after `docs/product/technology-options.md` review._
+_Status: pending — fill after docs/product/technology-options.md review._
 
 ## Selected profiles
 
-_List profile IDs from `harness/profiles/` (example: `runtime/node`, `framework/react`)._
+- `runtime/node`
+- `package-manager/npm`
 
 ## Rationale
 
-_Why this stack fits the product constraints._
+_Why this stack fits the approved product constraints and non-functional needs._
 
 ## Rejected options
 

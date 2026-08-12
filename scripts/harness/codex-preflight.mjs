@@ -74,7 +74,7 @@ export function collectCodexPreflight(options = {}) {
 
   const version = runner("codex", ["--version"], { cwd: repoRoot, timeoutMs: 5000 });
   if (version.exitCode !== 0) {
-    checks.push(check("Codex CLI", "fail", "codex_cli_missing", "Codex CLI is required before ai:research / ai:discover / ai:implement / ai:review. Install/configure it, then rerun this preflight."));
+    checks.push(check("Codex CLI", "fail", "codex_cli_missing", "Codex CLI is required before ai:research / ai:discover / ai:evaluate-stack / ai:implement / ai:review. Install/configure it, then rerun this preflight."));
     return { schemaVersion: "1.0.0", status: "fail", reasonCode: "codex_cli_missing", checks };
   }
   checks.push(check("Codex CLI", "pass", null, String(version.stdout).trim().split(/\r?\n/)[0] || "available"));

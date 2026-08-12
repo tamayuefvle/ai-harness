@@ -1,6 +1,6 @@
 # Technology options
 
-<!-- Template: compare stack candidates before committing. -->
+<!-- Compare stack candidates against approved product requirements before deciding. -->
 
 ## Candidates
 

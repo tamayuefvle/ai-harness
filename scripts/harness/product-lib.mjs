@@ -476,8 +476,8 @@ export function discoveryProgress(repoRoot) {
     projectId: project.projectId,
     discoveryTier: tier,
     nextAction: state === "PRODUCT_APPROVED"
-      ? "Continue stack selection: docs/product/technology-options.md"
-      : "See docs/workflow/PRODUCT_DISCOVERY.md and FULL_LIFECYCLE.md",
+      ? "npm run design:status — continue stack selection (docs/workflow/STACK_ARCHITECTURE.md)"
+      : "See docs/workflow/PRODUCT_DISCOVERY.md, STACK_ARCHITECTURE.md, and FULL_LIFECYCLE.md",
     blockers,
     sections,
   };

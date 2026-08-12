@@ -90,6 +90,14 @@
         "pattern": "^[a-z0-9-]+/[a-z0-9-]+$"
       }
     },
+    "proposedProfiles": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z0-9-]+/[a-z0-9-]+$"
+      }
+    },
     "profileResolutionPath": {
       "type": [
         "string",
@@ -102,9 +110,19 @@
         "full"
       ]
     },
+    "designTier": {
+      "enum": [
+        "lite",
+        "full"
+      ]
+    },
     "activeDiscoverySession": {
       "type": "string",
       "pattern": "^DISC-[0-9]{8}-[a-z0-9]{6}$"
+    },
+    "activeDesignSession": {
+      "type": "string",
+      "pattern": "^DSN-[0-9]{8}-[a-z0-9]{6}$"
     },
     "migration": {
       "type": [

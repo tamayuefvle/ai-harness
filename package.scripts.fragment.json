@@ -1,7 +1,7 @@
 {
   "scripts": {
     "harness:generate": "node scripts/harness/sync-contracts.mjs && node scripts/harness/generate-rules.mjs && node scripts/harness/generate-policies.mjs && node scripts/harness/generate-lifecycle-reference.mjs",
-    "harness:check": "node scripts/harness/sync-contracts.mjs --check && node scripts/harness/check-rules.mjs && node scripts/harness/check-policy-projections.mjs && node scripts/harness/check-instruction-graph.mjs && node scripts/harness/generate-lifecycle-reference.mjs --check && node scripts/harness/check-current-version.mjs && node scripts/harness/product-check.mjs --if-applicable",
+    "harness:check": "node scripts/harness/sync-contracts.mjs --check && node scripts/harness/check-rules.mjs && node scripts/harness/check-policy-projections.mjs && node scripts/harness/check-instruction-graph.mjs && node scripts/harness/generate-lifecycle-reference.mjs --check && node scripts/harness/check-current-version.mjs && node scripts/harness/product-check.mjs --if-applicable && node scripts/harness/stack-check.mjs --if-applicable && node scripts/harness/architecture-check.mjs --if-applicable",
     "security:check": "node scripts/harness/security-check.mjs",
     "harness:doctor": "node scripts/harness/runtime-doctor.mjs",
     "codex:preflight": "node scripts/harness/codex-preflight.mjs",
@@ -21,6 +21,7 @@
     "ai:decide": "node scripts/harness/codex-decision.mjs",
     "ai:research": "bash scripts/harness/codex-research.sh",
     "ai:discover": "bash scripts/harness/codex-discover.sh",
+    "ai:evaluate-stack": "bash scripts/harness/codex-evaluate-stack.sh",
     "ai:implement": "bash scripts/harness/codex-implement.sh",
     "ai:record": "node scripts/harness/record-delegation.mjs",
     "mcp:doctor": "node scripts/mcp/doctor.mjs",
@@ -79,6 +80,9 @@
     "product:status": "node scripts/harness/product-status.mjs",
     "product:check": "node scripts/harness/product-check.mjs",
     "product:signal-link": "node scripts/harness/product-signal-link.mjs",
+    "design:status": "node scripts/harness/design-status.mjs",
+    "stack:check": "node scripts/harness/stack-check.mjs",
+    "architecture:check": "node scripts/harness/architecture-check.mjs",
     "project:gate": "node scripts/harness/project-gate.mjs",
     "project:advance": "node scripts/harness/project-advance.mjs",
     "project:migrate-full": "node scripts/harness/migrate-full-lifecycle.mjs",

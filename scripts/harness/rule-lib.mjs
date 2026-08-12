@@ -1,5 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
+import { proposedProfileIds } from "./design-lib.mjs";
 
 export function loadEnabledProfiles(repoRoot) {
   const projectPath = path.join(repoRoot, "harness/project.json");
@@ -7,7 +8,7 @@ export function loadEnabledProfiles(repoRoot) {
   const project = JSON.parse(fs.readFileSync(projectPath, "utf8"));
   const selected = project.activeProfiles?.length
     ? project.activeProfiles
-    : project.migration?.proposedProfiles ?? [];
+    : proposedProfileIds(project);
   return new Set(selected);
 }
 
