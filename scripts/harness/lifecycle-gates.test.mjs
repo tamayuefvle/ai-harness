@@ -131,6 +131,24 @@ test("lifecycle metadata commits do not change the implementation fingerprint", 
   assert.equal(fingerprintChanges(root, baseline, "PF-001-example"), before);
 });
 
+test("active spec pointer commits do not change the implementation fingerprint", () => {
+  const root = tempRepo();
+  const baseline = execFileSync("git", ["rev-parse", "main"], { cwd: root, encoding: "utf8" }).trim();
+  fs.mkdirSync(path.join(root, "src"));
+  fs.writeFileSync(path.join(root, "src/example.ts"), "export const value = 1;\n");
+  execFileSync("git", ["add", "src/example.ts"], { cwd: root });
+  execFileSync("git", ["commit", "-m", "implementation"], { cwd: root, stdio: "ignore" });
+  const before = fingerprintChanges(root, baseline, "PF-001-example");
+  fs.mkdirSync(path.join(root, "docs/specs"), { recursive: true });
+  fs.writeFileSync(
+    path.join(root, "docs/specs/_active.md"),
+    "---\nactive_spec: PF-001-example\nstatus: IMPLEMENTING\n---\n",
+  );
+  execFileSync("git", ["add", "docs/specs/_active.md"], { cwd: root });
+  execFileSync("git", ["commit", "-m", "advance active status"], { cwd: root, stdio: "ignore" });
+  assert.equal(fingerprintChanges(root, baseline, "PF-001-example"), before);
+});
+
 
 function writeJson(file, value) {
   fs.mkdirSync(path.dirname(file), { recursive: true });

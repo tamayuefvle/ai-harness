@@ -29,7 +29,7 @@
     "reason": null,
     "counts": { "errors": 0, "warnings": 0 },
     "raw_contract": {
-      "schema_version": 1,
+      "schema_version": 3,
       "mode": "diff",
       "react_detected": true,
       "baseline_degraded": false,

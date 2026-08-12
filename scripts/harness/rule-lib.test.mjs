@@ -4,7 +4,7 @@ import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import test from "node:test";
-import { buildOutputs } from "./rule-lib.mjs";
+import { buildOutputs, writeOutputs } from "./rule-lib.mjs";
 
 function fixture(manifest, rules, project = null) {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), "harness-rules-"));
@@ -94,4 +94,31 @@ test("profile-scoped rules are omitted when their technology profile is inactive
   const outputs = buildOutputs(root);
   assert.ok(outputs.has("AGENTS.md"));
   assert.equal(outputs.has("components/AGENTS.md"), false);
+});
+
+test("writeOutputs removes retired generated frontend-app root projections", () => {
+  const root = fixture(
+    [{ id: "core", source: "core.md", agentsTargets: ["AGENTS.md"] }],
+    { "core.md": "core" },
+  );
+  const retiredAgents = path.join(root, "app/AGENTS.md");
+  const retiredCursor = path.join(root, "app/.cursor/rules/application.mdc");
+  fs.mkdirSync(path.dirname(retiredCursor), { recursive: true });
+  fs.writeFileSync(
+    retiredAgents,
+    "<!-- GENERATED FILE. DO NOT EDIT DIRECTLY. -->\n<!-- Source: harness/rules/frontend-app.md; run npm run harness:generate -->\n# stale app\n",
+  );
+  fs.writeFileSync(
+    retiredCursor,
+    "---\ndescription: \"stale\"\nglobs: []\nalwaysApply: true\n---\n<!-- GENERATED FILE. DO NOT EDIT DIRECTLY. -->\n# stale cursor\n",
+  );
+  const handEdited = path.join(root, "app/NOTES.md");
+  fs.writeFileSync(handEdited, "keep me\n");
+
+  writeOutputs(root);
+
+  assert.equal(fs.existsSync(retiredAgents), false);
+  assert.equal(fs.existsSync(retiredCursor), false);
+  assert.equal(fs.readFileSync(handEdited, "utf8"), "keep me\n");
+  assert.ok(fs.existsSync(path.join(root, "AGENTS.md")));
 });

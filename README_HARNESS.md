@@ -1,8 +1,8 @@
-# AI Harness v13.1.0
+# AI Harness v13.2.0
 
 ## Standalone user harness
 
-v13.1 is a **standalone** engineering harness: clone this repository and run product → spec → implement → verify → release → operate without external maintainer tooling. It preserves the v12 lifecycle and thin user root policy while adding Task-bound Execution Runs, deny-by-default operation authorization, fail-closed recovery, and a bounded Cursor → Codex → Human executor fallback.
+v13.2 is a **standalone** engineering harness: clone this repository and run product → spec → implement → verify → release → operate without external maintainer tooling. It preserves the v12 lifecycle and thin user root policy, keeps the v13.1 Execution Safety + fallback contracts, and applies field fixes from first-deploy use of v13.1 (React Doctor evidence schema v3, active-spec fingerprint exclusion, src-only frontend-app rule projection).
 
 The package ships in `MIGRATION_PENDING`. Set `projectId`, choose `proposedProfiles`, run `npm run profile:resolve`, review baselines, approve migration, then advance to `ACTIVE`. See `docs/workflow/FULL_LIFECYCLE.md` and `MIGRATION.md`.
 
@@ -27,8 +27,7 @@ AGENTS.md                # User root policy: authority, chain, stop conditions
 │  ├─ specs/AGENTS.md
 │  ├─ architecture/AGENTS.md
 │  └─ operations/AGENTS.md
-├─ app/AGENTS.md         # Optional: Next.js (profile-selected)
-├─ src/AGENTS.md
+├─ src/AGENTS.md         # Optional: Next.js under src/ (profile-selected)
 ├─ components/AGENTS.md
 ├─ tests/AGENTS.md
 ├─ e2e/AGENTS.md

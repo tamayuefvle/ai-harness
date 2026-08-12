@@ -1,5 +1,18 @@
 # Changelog
 
+## v13.2.0 - 2026-08-12
+
+### Fixed
+
+- Accepted React Doctor raw evidence `schema_version` 1 or 3 and treat `baseline_degraded !== true` as the pass condition so validator matches the v3 CLI contract used by `react-doctor.mjs`.
+- Excluded `docs/specs/_active.md` from implementation fingerprints (same lifecycle-metadata class as gate/worklog), so status-pointer commits no longer invalidate verification/review replay.
+- Projected `frontend-app` rules to `src/` only, avoiding root `app/` instructions that shadow Next.js `src/app` layouts.
+- `harness:generate` now removes retired generated root `app/` projections so upgrades do not keep shadowing files.
+
+### Notes
+
+- `react-doctor@0.7.7` remains pinned in `package.devDependencies.fragment.json` (no new dependency change). Merge the fragment into the application `package.json` during bootstrap if local diagnostics require the CLI.
+
 ## v13.1.0 - 2026-08-09
 
 - Added the Execution Safety Kernel as Task-bound Run, invariant, authorization, approval, retry, recovery, and evidence contracts without changing Project, Task, Release, or Incident lifecycle states.

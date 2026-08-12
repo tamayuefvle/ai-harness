@@ -161,7 +161,8 @@ export function validateReactDoctorArtifact(absolutePath, taskId, expectedHead, 
   if (report.run.active_spec !== taskId) throw new Error(`React Doctor active_spec mismatch: ${report.run.active_spec} != ${taskId}`);
   if (expectedHead && report.run.git_head !== expectedHead) throw new Error("React Doctor HEAD does not match verification HEAD.");
   const warningCompatible = report.run.blocking !== "warning" || report.result.counts.warnings === 0;
-  const passing = report.result.status === "passed" && report.result.exit_code === 0 && report.result.counts.errors === 0 && warningCompatible && report.tool.version === report.tool.expected_version && report.result.raw_contract.schema_version === 1 && report.result.raw_contract.react_detected === true && report.result.raw_contract.project_count > 0 && report.result.raw_contract.baseline_degraded === false && report.result.raw_contract.incomplete_project_count === 0;
+  const schemaCompatible = [1, 3].includes(report.result.raw_contract.schema_version);
+  const passing = report.result.status === "passed" && report.result.exit_code === 0 && report.result.counts.errors === 0 && warningCompatible && report.tool.version === report.tool.expected_version && schemaCompatible && report.result.raw_contract.react_detected === true && report.result.raw_contract.project_count > 0 && report.result.raw_contract.baseline_degraded !== true && report.result.raw_contract.incomplete_project_count === 0;
   if (requirePassing && !passing) throw new Error(`React Doctor report is not passing (status=${report.result.status}).`);
   return { report, status: passing ? "passed" : "failed" };
 }

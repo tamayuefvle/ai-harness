@@ -150,18 +150,9 @@
     "id": "frontend-app",
     "source": "frontend-app.md",
     "agentsTargets": [
-      "app/AGENTS.md",
       "src/AGENTS.md"
     ],
     "cursorTargets": [
-      {
-        "path": "app/.cursor/rules/application.mdc",
-        "description": "Next.js App Router page, layout, route, metadata, and Server/Client implementation rules.",
-        "globs": [
-          "**/*.{ts,tsx,css,md,mdx}"
-        ],
-        "alwaysApply": true
-      },
       {
         "path": "src/.cursor/rules/application.mdc",
         "description": "Next.js application implementation rules for repositories using a src directory.",

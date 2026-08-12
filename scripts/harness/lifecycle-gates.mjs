@@ -168,6 +168,7 @@ export function parseAllowedPaths(planText) {
 }
 
 function isLifecycleMetadata(file, taskId) {
+  if (file === "docs/specs/_active.md") return true;
   if (file.startsWith(".harness/reports/") || file.startsWith("docs/worklog/")) return true;
   if (!taskId) return false;
   return new Set([

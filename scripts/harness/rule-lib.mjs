@@ -124,14 +124,31 @@ function allManifestTargets(repoRoot) {
   return targets;
 }
 
+/** Generated paths retired from the manifest; still removed on harness:generate when they carry the generated marker. */
+export const RETIRED_GENERATED_TARGETS = Object.freeze([
+  "app/AGENTS.md",
+  "app/.cursor/rules/application.mdc",
+]);
+
+function removeGeneratedIfPresent(repoRoot, relativePath) {
+  assertSafeRelativePath(relativePath, "generated target path");
+  const target = path.join(repoRoot, relativePath);
+  if (!fs.existsSync(target) || !fs.statSync(target).isFile()) return false;
+  const content = fs.readFileSync(target, "utf8");
+  if (!content.includes("GENERATED FILE. DO NOT EDIT DIRECTLY.")) return false;
+  fs.rmSync(target);
+  return true;
+}
+
 export function writeOutputs(repoRoot) {
   const outputs = buildOutputs(repoRoot);
   for (const relativePath of allManifestTargets(repoRoot)) {
     if (outputs.has(relativePath)) continue;
-    const target = path.join(repoRoot, relativePath);
-    if (!fs.existsSync(target) || !fs.statSync(target).isFile()) continue;
-    const content = fs.readFileSync(target, "utf8");
-    if (content.includes("GENERATED FILE. DO NOT EDIT DIRECTLY.")) fs.rmSync(target);
+    removeGeneratedIfPresent(repoRoot, relativePath);
+  }
+  for (const relativePath of RETIRED_GENERATED_TARGETS) {
+    if (outputs.has(relativePath)) continue;
+    removeGeneratedIfPresent(repoRoot, relativePath);
   }
   for (const [relativePath, content] of outputs) {
     const target = path.join(repoRoot, relativePath);

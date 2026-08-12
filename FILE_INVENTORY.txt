@@ -231,6 +231,7 @@ scripts/github/production-environment.mjs
 scripts/github/production-environment.test.mjs
 scripts/harness/advance-task.mjs
 scripts/harness/artifact-validator.mjs
+scripts/harness/artifact-validator.test.mjs
 scripts/harness/authorization-check.mjs
 scripts/harness/bootstrap-new-repository.mjs
 scripts/harness/bootstrap-new-repository.test.mjs
