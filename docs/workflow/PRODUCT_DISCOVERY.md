@@ -64,12 +64,13 @@ Defer scope explicitly with `PD-xxx` decision records under `docs/product/decisi
 
 During `DISCOVERY`:
 
+- Use Cursor IDE Agent mode to facilitate the dialogue and write the resulting product document. Do not use Cursor Plan mode when the agent must write files.
 - Treat product docs as the only writable product surface.
 - Do not start implementation, add dependencies, or run `task:start`.
 - Update **one document per turn** when facilitating discovery.
 - Never invent user research, market facts, or metrics. Label unknowns explicitly.
 - Run `npm run product:status` before proposing the next edit.
-- Use `npm run ai:discover` to record Codex read-only discovery turns in `.harness/discovery/DISC-*.json`.
+- Use `npm run ai:discover` to record Codex read-only discovery turns in `.harness/discovery/DISC-*.json`; it does not edit product documents.
 - Register validated assumptions in `docs/product/assumptions.md` (`ASM-xxx`).
 - Link operational signals with `npm run product:signal-link` into `docs/product/signal-feedback.md`.
 

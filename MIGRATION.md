@@ -1,3 +1,11 @@
+# Migration to v14.9.1
+
+## From v14.9.0
+
+Compatible overlay. Interactive Cursor IDE sessions with an unset or empty `HARNESS_CURSOR_ROLE` may now write approved repository paths. Explicit Cursor CLI read-only/reviewer roles remain write-denied, while generated instruction projections and dangerous commands remain denied for every session. Keep the generated `.cursor/cli.json` `Write(**/*)` deny as the CLI baseline, overlay v14.9.1, then run `npm run harness:generate` and `npm run verify:harness`.
+
+---
+
 # Migration to v14.9.0
 
 ## From v14.8.0

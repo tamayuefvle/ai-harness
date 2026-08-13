@@ -4,7 +4,7 @@
 
 Shared policy is generated only to root `AGENTS.md`. Directory specialization is generated to `CODEX.md` for Codex and scoped `.cursor/rules/*.mdc` for Cursor, avoiding duplicate Cursor context. The source remains `harness/rules/*` plus its manifest.
 
-Cursor IDE and Cursor CLI are transports of one logical Cursor executor and share one bounded-strategy budget. `npm run cursor:preflight` checks the optional CLI and committed policy projections. Read-only/reviewer roles cannot write; implementer execution is confined to a linked worktree under the Git common directory, uses no auto-apply, and leaves the diff for human/agent inspection. Cursor Hooks are defense in depth; project permissions, worktree isolation, authorization, and human control points remain authoritative.
+Cursor IDE and Cursor CLI are transports of one logical Cursor executor and share one bounded-strategy budget. `npm run cursor:preflight` checks the optional CLI and committed policy projections. An interactive Cursor IDE session has no `HARNESS_CURSOR_ROLE` and may write approved repository paths; during `DISCOVERY`, Cursor Agent mode writes the facilitated result to `docs/product/*`. Cursor Plan mode is a separate Cursor product read-only mode and cannot be used when the agent must write files. An explicit CLI read-only/reviewer role cannot write, while CLI implementer execution is confined to a linked worktree under the Git common directory, uses no auto-apply, and leaves the diff for human/agent inspection. Cursor Hooks are defense in depth; generated instruction projections and dangerous commands remain denied, and project permissions, worktree isolation, authorization, and human control points remain authoritative.
 
 ## Instruction architecture
 
@@ -42,7 +42,7 @@ npm run harness:route -- src/components/ProjectCard.tsx
 
 ### Cursor
 
-- 人間との企画対話（`DISCOVERY` では `.cursor/skills/product-discovery`）
+- 人間との企画対話（`DISCOVERY` では Agent mode と `.cursor/skills/product-discovery` を使い、`docs/product/*` を更新）
 - active file周辺のUI実装
 - ブラウザを見ながらの微調整
 - 学習内容と変更理由の説明

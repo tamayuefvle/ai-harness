@@ -1,5 +1,11 @@
 # Changelog
 
+## v14.9.1 - 2026-08-14
+
+- Allowed interactive Cursor IDE sessions with an unset or empty `HARNESS_CURSOR_ROLE` to write approved repository paths, including `docs/product/*` during discovery.
+- Kept explicit Cursor CLI read-only/reviewer writes denied, and retained generated-instruction and dangerous-command hook denials for every session.
+- Clarified that Cursor Agent mode performs discovery document writes, while Cursor Plan mode and `npm run ai:discover` remain read-only.
+
 ## v14.9.0 - 2026-08-13
 
 - Added `deployment/aws` as a selectable hosting profile. It records AWS preview/production intent without creating resources or deploying.

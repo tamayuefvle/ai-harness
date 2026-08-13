@@ -53,6 +53,6 @@
   "hookReliability": {
     "hardBoundary": false,
     "primaryBoundary": "cursor project permissions plus harness-managed worktree isolation",
-    "note": "preToolUse deny hooks are defense in depth because current Cursor builds have known hook delivery/output races."
+    "note": "preToolUse deny hooks are defense in depth because current Cursor builds have known hook delivery/output races; role-readonly write denial applies only when HARNESS_CURSOR_ROLE explicitly names a non-implementer CLI worker, while an unset or empty role represents an interactive IDE session."
   }
 }

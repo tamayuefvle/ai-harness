@@ -1,4 +1,4 @@
-# New Repository Setup — v14.9.0
+# New Repository Setup — v14.9.1
 
 > 対象: **このハーネスを Git リポジトリへ新規配置したが、Git root に製品用 `package.json` がまだ存在しない場合**。配布物自身はハーネス基板の `package.json` を同梱する。
 >
@@ -30,7 +30,7 @@ Greenfield では `task:start` や実装 task を **`ACTIVE` 到達前** に開�
 
 ## 0.0.1 配布物に基板が既にある場合
 
-この配布物はハーネス専用の private `package.json`（version はハーネス版、現在 `14.9.0`）と `package-lock.json` を同梱する。これは製品ランタイムではない。空 root 向け `bootstrap --write` が作る `0.0.0` とは別物である。
+この配布物はハーネス専用の private `package.json`（version はハーネス版、現在 `14.9.1`）と `package-lock.json` を同梱する。これは製品ランタイムではない。空 root 向け `bootstrap --write` が作る `0.0.0` とは別物である。
 
 | 状況 | 手順 |
 |---|---|

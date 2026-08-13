@@ -51,6 +51,7 @@ docs/architecture/security-baseline.md
 docs/improvements/IMP-20260813-01.md
 docs/improvements/IMP-20260813-02.md
 docs/improvements/IMP-20260813-03.md
+docs/improvements/IMP-20260814-01.md
 docs/improvements/TEMPLATE.md
 docs/operations/.cursor/rules/operations.mdc
 docs/operations/CODEX.md

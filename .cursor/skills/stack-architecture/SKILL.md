@@ -14,7 +14,7 @@ Use after project state `PRODUCT_APPROVED` and before `ACTIVE`.
 ## Workflow
 
 1. Run `npm run design:status [--tier lite|full]` and follow `nextAction`.
-2. For stack: update `docs/product/technology-options.md`, then `technology-decision.md` (one file per turn).
+2. For stack: in Agent mode (not Plan mode), update `docs/product/technology-options.md`, then `technology-decision.md` (one file per turn).
 3. Selected profiles must be real ids from `harness/profiles/registry.json`. Full tier needs a Rejected options row.
 4. After substantive dialogue, run `npm run ai:evaluate-stack` (Codex read-only) to append a design session artifact.
 5. Run `npm run stack:check` before proposing `project:gate --to STACK_APPROVED`.

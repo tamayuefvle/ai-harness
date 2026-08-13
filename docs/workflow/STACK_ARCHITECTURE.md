@@ -56,6 +56,7 @@ Do not use task `ai:research` for project design; that path is delivery-only aft
 ## Agent behavior
 
 - Run `npm run design:status` before proposing the next edit.
+- Use Cursor IDE Agent mode to write design documents. Do not use Cursor Plan mode when the agent must write files.
 - Update **one design document per turn**.
 - After substantive dialogue, run `npm run ai:evaluate-stack` (Codex read-only).
 - Never invent latency/security claims; label assumptions.

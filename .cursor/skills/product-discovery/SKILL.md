@@ -15,7 +15,7 @@ Use during project state `DISCOVERY` to facilitate greenfield product planning.
 
 1. Confirm state is `DISCOVERY`. If `MIGRATION_PENDING`, run `npm run project:discover [--tier lite|full]` first.
 2. Run `npm run product:status` and follow `nextAction`.
-3. Ask **one question at a time**. Update **one file per turn** under `docs/product/`.
+3. Ask **one question at a time**. Update **one file per turn** under `docs/product/`. Use Agent mode, not Plan mode.
 4. Capture promoted ideas as `IDEA-xxx`, metrics as `OUT-xxx`, deferred scope as `PD-xxx` decision files.
 5. Record validated assumptions in `docs/product/assumptions.md` as `ASM-xxx`.
 6. After substantive dialogue, run `npm run ai:discover` (Codex read-only) to append a discovery session artifact.
