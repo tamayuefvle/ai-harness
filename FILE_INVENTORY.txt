@@ -43,15 +43,18 @@ docs/architecture/ADR-0006-bootstrap-safe-ci.md
 docs/architecture/ADR-0007-full-lifecycle-and-profiles.md
 docs/architecture/ADR-0008-coderabbit-advisory-review.md
 docs/architecture/ADR-0009-distribution-npm-substrate.md
+docs/architecture/ADR-0010-aws-deployment-profile.md
 docs/architecture/CODEX.md
 docs/architecture/baseline.md
 docs/architecture/quality-strategy.md
 docs/architecture/security-baseline.md
 docs/improvements/IMP-20260813-01.md
 docs/improvements/IMP-20260813-02.md
+docs/improvements/IMP-20260813-03.md
 docs/improvements/TEMPLATE.md
 docs/operations/.cursor/rules/operations.mdc
 docs/operations/CODEX.md
+docs/operations/aws-deployment.md
 docs/operations/definition-of-done.md
 docs/operations/deploy-runbook.md
 docs/operations/improvements/TEMPLATE.md
@@ -136,6 +139,7 @@ harness/lifecycle/manifest.json
 harness/policies/command-guardrails.json
 harness/policies/schema.json
 harness/profiles/ci-github-actions.json
+harness/profiles/deployment-aws.json
 harness/profiles/deployment-vercel.json
 harness/profiles/framework-nextjs-app-router.json
 harness/profiles/framework-react.json

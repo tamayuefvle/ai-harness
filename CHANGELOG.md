@@ -1,5 +1,11 @@
 # Changelog
 
+## v14.9.0 - 2026-08-13
+
+- Added `deployment/aws` as a selectable hosting profile. It records AWS preview/production intent without creating resources or deploying.
+- Documented human-only AWS account, IAM, CLI, and rollback setup in `docs/operations/aws-deployment.md`.
+- Denied unapproved `cdk deploy`, `sam deploy`, `aws cloudformation deploy`, and Amplify `publish`/`push` the same way `vercel --prod` is denied.
+
 ## v14.8.0 - 2026-08-13
 
 - Shipped a private harness npm substrate (`package.json` + `package-lock.json`) so the distribution repository can reach CI `ready` after the root commit.

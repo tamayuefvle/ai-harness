@@ -38,6 +38,10 @@
       "path": "harness/profiles/ci-github-actions.json"
     },
     {
+      "id": "deployment/aws",
+      "path": "harness/profiles/deployment-aws.json"
+    },
+    {
       "id": "deployment/vercel",
       "path": "harness/profiles/deployment-vercel.json"
     },

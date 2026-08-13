@@ -1,4 +1,4 @@
-# New Repository Setup — v14.8.0
+# New Repository Setup — v14.9.0
 
 > 対象: **このハーネスを Git リポジトリへ新規配置したが、Git root に製品用 `package.json` がまだ存在しない場合**。配布物自身はハーネス基板の `package.json` を同梱する。
 >
@@ -30,7 +30,7 @@ Greenfield では `task:start` や実装 task を **`ACTIVE` 到達前** に開�
 
 ## 0.0.1 配布物に基板が既にある場合
 
-この配布物はハーネス専用の private `package.json`（version はハーネス版、現在 `14.8.0`）と `package-lock.json` を同梱する。これは製品ランタイムではない。空 root 向け `bootstrap --write` が作る `0.0.0` とは別物である。
+この配布物はハーネス専用の private `package.json`（version はハーネス版、現在 `14.9.0`）と `package-lock.json` を同梱する。これは製品ランタイムではない。空 root 向け `bootstrap --write` が作る `0.0.0` とは別物である。
 
 | 状況 | 手順 |
 |---|---|
@@ -68,6 +68,8 @@ LLM は次を**自動完了扱いしない**。未完了なら案内して一時
 | 10 | 初回 push 判断 | push してよいか（origin/auth 確立後） | 明示依頼なしの push、force push | **完了報告に残す**／依頼時のみ実行 |
 | 11 | GitHub `production` Environment | UI 確認後の checker 実行タイミング | 未確認を「設定済み」と記録、Environment の自動変更 | 本番準備段階で案内。**完了報告に残す** |
 | 12 | visibility / plan 制約の確認 | 利用可能な protection の範囲確認 | 使えない control を設定済みと記録 | **完了報告に残す** |
+
+AWS アカウント・IAM・CLI は bootstrap 対象外。`deployment/aws` を選ぶ場合は stack 承認時に `docs/operations/aws-deployment.md` を人間が実施する。
 
 ### C. bootstrap 成功後〜 foundation 直前
 
