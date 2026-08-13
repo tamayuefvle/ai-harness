@@ -138,6 +138,17 @@
       ]
     },
     {
+      "id": "CMD-AWS-PRODUCTION-DEPLOY",
+      "regex": "(^|\\s)(npx\\s+)?cdk\\s+deploy\\b|(^|\\s)(npx\\s+)?sam\\s+deploy\\b|(^|\\s)aws\\s+cloudformation\\s+deploy\\b|(^|\\s)amplify\\s+(publish|push)\\b",
+      "flags": "i",
+      "message": "AWS production deployment requires explicit human approval.",
+      "surfaces": [
+        "security",
+        "codex-hook",
+        "cursor-hook"
+      ]
+    },
+    {
       "id": "CMD-REMOTE-SHELL-PIPE",
       "regex": "(curl|wget)[^\\n|]*\\|\\s*(ba)?sh(\\s|$)",
       "flags": "i",
@@ -329,6 +340,80 @@
       "justification": "本番デプロイは人間の明示承認後、保護された main から実行してください。",
       "match": [
         "npx vercel --prod"
+      ]
+    },
+    {
+      "id": "CMD-CDK-DEPLOY",
+      "pattern": [
+        "cdk",
+        "deploy"
+      ],
+      "decision": "forbidden",
+      "justification": "AWS 本番デプロイは人間の明示承認後、保護された main から実行してください。",
+      "match": [
+        "cdk deploy"
+      ]
+    },
+    {
+      "id": "CMD-NPX-CDK-DEPLOY",
+      "pattern": [
+        "npx",
+        "cdk",
+        "deploy"
+      ],
+      "decision": "forbidden",
+      "justification": "AWS 本番デプロイは人間の明示承認後、保護された main から実行してください。",
+      "match": [
+        "npx cdk deploy"
+      ]
+    },
+    {
+      "id": "CMD-SAM-DEPLOY",
+      "pattern": [
+        "sam",
+        "deploy"
+      ],
+      "decision": "forbidden",
+      "justification": "AWS 本番デプロイは人間の明示承認後、保護された main から実行してください。",
+      "match": [
+        "sam deploy"
+      ]
+    },
+    {
+      "id": "CMD-AWS-CLOUDFORMATION-DEPLOY",
+      "pattern": [
+        "aws",
+        "cloudformation",
+        "deploy"
+      ],
+      "decision": "forbidden",
+      "justification": "AWS 本番デプロイは人間の明示承認後、保護された main から実行してください。",
+      "match": [
+        "aws cloudformation deploy"
+      ]
+    },
+    {
+      "id": "CMD-AMPLIFY-PUBLISH",
+      "pattern": [
+        "amplify",
+        "publish"
+      ],
+      "decision": "forbidden",
+      "justification": "AWS 本番デプロイは人間の明示承認後、保護された main から実行してください。",
+      "match": [
+        "amplify publish"
+      ]
+    },
+    {
+      "id": "CMD-AMPLIFY-PUSH",
+      "pattern": [
+        "amplify",
+        "push"
+      ],
+      "decision": "forbidden",
+      "justification": "AWS 本番デプロイは人間の明示承認後、保護された main から実行してください。",
+      "match": [
+        "amplify push"
       ]
     },
     {

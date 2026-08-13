@@ -57,6 +57,54 @@ prefix_rule(
     match = ["npx vercel --prod"],
 )
 
+# policyId: CMD-CDK-DEPLOY
+prefix_rule(
+    pattern = ["cdk","deploy"],
+    decision = "forbidden",
+    justification = "AWS 本番デプロイは人間の明示承認後、保護された main から実行してください。",
+    match = ["cdk deploy"],
+)
+
+# policyId: CMD-NPX-CDK-DEPLOY
+prefix_rule(
+    pattern = ["npx","cdk","deploy"],
+    decision = "forbidden",
+    justification = "AWS 本番デプロイは人間の明示承認後、保護された main から実行してください。",
+    match = ["npx cdk deploy"],
+)
+
+# policyId: CMD-SAM-DEPLOY
+prefix_rule(
+    pattern = ["sam","deploy"],
+    decision = "forbidden",
+    justification = "AWS 本番デプロイは人間の明示承認後、保護された main から実行してください。",
+    match = ["sam deploy"],
+)
+
+# policyId: CMD-AWS-CLOUDFORMATION-DEPLOY
+prefix_rule(
+    pattern = ["aws","cloudformation","deploy"],
+    decision = "forbidden",
+    justification = "AWS 本番デプロイは人間の明示承認後、保護された main から実行してください。",
+    match = ["aws cloudformation deploy"],
+)
+
+# policyId: CMD-AMPLIFY-PUBLISH
+prefix_rule(
+    pattern = ["amplify","publish"],
+    decision = "forbidden",
+    justification = "AWS 本番デプロイは人間の明示承認後、保護された main から実行してください。",
+    match = ["amplify publish"],
+)
+
+# policyId: CMD-AMPLIFY-PUSH
+prefix_rule(
+    pattern = ["amplify","push"],
+    decision = "forbidden",
+    justification = "AWS 本番デプロイは人間の明示承認後、保護された main から実行してください。",
+    match = ["amplify push"],
+)
+
 # policyId: CMD-NPM-INSTALL
 prefix_rule(
     pattern = ["npm","install"],

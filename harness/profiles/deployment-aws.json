@@ -1,0 +1,25 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "deployment/aws",
+  "version": "1.0.0",
+  "kind": "deployment",
+  "status": "stable",
+  "requires": [
+    "runtime/node"
+  ],
+  "conflicts": [],
+  "rules": [],
+  "commands": {},
+  "checks": [],
+  "capabilities": [
+    "preview-deployment",
+    "production-deployment"
+  ],
+  "riskControls": [
+    "production-human-approval",
+    "rollback-target-required",
+    "secrets-not-in-repository",
+    "iam-least-privilege",
+    "service-topology-recorded"
+  ]
+}

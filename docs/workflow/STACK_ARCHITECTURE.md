@@ -34,6 +34,7 @@ npm run design:status
 - Compare at least one real candidate in technology-options.
 - Record a non-pending decision with rationale.
 - List selected profiles as `category/name` ids that exist in `harness/profiles/registry.json`.
+- Deployment profiles (`deployment/vercel`, `deployment/aws`) record the hosting intent only. They do not install CLIs, create cloud resources, or deploy. AWS humans follow `docs/operations/aws-deployment.md`.
 - Full tier: record at least one Rejected options row.
 - Selected profiles are copied into `proposedProfiles` at `STACK_APPROVED` when that list is empty.
 - Do not install application dependencies or activate profiles until human stack approval.

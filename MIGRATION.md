@@ -1,3 +1,11 @@
+# Migration to v14.9.0
+
+## From v14.8.0
+
+Compatible upgrade. Overlay v14.9.0, merge `package.scripts.fragment.json` if needed, run `npm run harness:generate`, then `npm run verify:harness`. To host on AWS, add `deployment/aws` to the approved profile list instead of (or, only if dual-hosting, in addition to) `deployment/vercel`, record the AWS topology in `docs/architecture/baseline.md`, and follow `docs/operations/aws-deployment.md`. Do not add AWS SDK/CLI to the harness substrate.
+
+---
+
 # Migration to v14.8.0
 
 ## From v14.7.0
