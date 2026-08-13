@@ -34,8 +34,24 @@ jobs:
         if: ${{ steps.project-state.outputs.state == 'bootstrap' }}
         run: echo "::notice title=Harness bootstrap::E2E is skipped only for this harness-only root commit. Add package.json and one npm lockfile in the next commit."
 
-      - name: Setup Node
+      - name: Resolve E2E applicability
+        id: e2e-profile
         if: ${{ steps.project-state.outputs.state == 'ready' }}
+        shell: bash
+        run: |
+          node - <<'NODE'
+          const fs = require('node:fs');
+          const resolution = JSON.parse(fs.readFileSync('harness/generated/profile-resolution.json', 'utf8'));
+          const enabled = resolution.status === 'resolved' && Array.isArray(resolution.checks) && resolution.checks.includes('e2e');
+          fs.appendFileSync(process.env.GITHUB_OUTPUT, `enabled=${enabled}\n`);
+          NODE
+
+      - name: Harness substrate notice
+        if: ${{ steps.project-state.outputs.state == 'ready' && steps.e2e-profile.outputs.enabled != 'true' }}
+        run: echo "::notice title=E2E skipped::Playwright E2E stays off until profile resolution includes the e2e check."
+
+      - name: Setup Node
+        if: ${{ steps.project-state.outputs.state == 'ready' && steps.e2e-profile.outputs.enabled == 'true' }}
         uses: actions/setup-node@v7
         with:
           node-version: lts/*
@@ -43,21 +59,21 @@ jobs:
           cache-dependency-path: ${{ steps.project-state.outputs.lockfile }}
 
       - name: Clean install
-        if: ${{ steps.project-state.outputs.state == 'ready' }}
+        if: ${{ steps.project-state.outputs.state == 'ready' && steps.e2e-profile.outputs.enabled == 'true' }}
         run: npm ci
 
       - name: Install Playwright
-        if: ${{ steps.project-state.outputs.state == 'ready' }}
+        if: ${{ steps.project-state.outputs.state == 'ready' && steps.e2e-profile.outputs.enabled == 'true' }}
         run: npx playwright install --with-deps
 
       - name: Run E2E tests
-        if: ${{ steps.project-state.outputs.state == 'ready' }}
+        if: ${{ steps.project-state.outputs.state == 'ready' && steps.e2e-profile.outputs.enabled == 'true' }}
         run: npm run verify:e2e
         env:
           CI: true
 
       - name: Upload Playwright report
-        if: ${{ always() && steps.project-state.outputs.state == 'ready' }}
+        if: ${{ always() && steps.project-state.outputs.state == 'ready' && steps.e2e-profile.outputs.enabled == 'true' }}
         uses: actions/upload-artifact@v7
         with:
           name: playwright-report

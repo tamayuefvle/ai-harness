@@ -1,8 +1,10 @@
-# AI Development Harness v14.7.0
+# AI Development Harness v14.8.0
 
 ## Standalone user harness
 
-v14.7 adds an optional **CodeRabbit advisory PR review layer** with repository-owned `.coderabbit.yaml`. It preserves deterministic verification and the fresh read-only Codex independent final review introduced by the existing harness contract.
+v14.8 ships a **private harness npm substrate** (`package.json` + `package-lock.json`) so post-root CI can enter `ready` and run `verify:harness`. This is not a product application runtime and does not select a product stack. Overlaying onto an existing application must merge the package fragments and must not overwrite that application's package metadata.
+
+v14.7 added an optional CodeRabbit advisory PR review layer with repository-owned `.coderabbit.yaml`.
 
 The package ships in `MIGRATION_PENDING`. For a **new product**, run `npm run project:discover` and follow `docs/workflow/PRODUCT_DISCOVERY.md`. For **legacy migration**, follow `MIGRATION.md`. Set `projectId`, choose profiles, resolve, review baselines, approve, then advance to `ACTIVE`.
 
@@ -58,8 +60,8 @@ npm run execution:check
 
 ## Install into an existing repository
 
-1. このフォルダの内容を Git root へコピーする。
-2. `package.scripts.fragment.json` と `package.devDependencies.fragment.json` を既存 `package.json` へマージする。
+1. このフォルダの内容を Git root へコピーする。**既存アプリケーションの `package.json` / lockfile は上書きしない。** 配布物の `package.json` と `package-lock.json` はハーネス基板であり、製品メタデータではない。
+2. `package.scripts.fragment.json` と `package.devDependencies.fragment.json` を既存 `package.json` へマージし、既存 lockfile を `npm install` で更新する。
 3. 次を実行する。
 
 ```bash
@@ -70,7 +72,7 @@ npm run harness:install
 
 4. `harness/project.json` の `projectId` と `proposedProfiles` を設定し、`npm run profile:resolve` を実行する。
 
-Git root に `package.json` がない新規配置では、先に `NEW_REPOSITORY_SETUP.md` を使います。bootstrap はハーネス実行用の最小 npm manifest だけを作り、製品 stack の選択や lifecycle 承認は行いません。
+Git root に `package.json` がない新規配置では、先に `NEW_REPOSITORY_SETUP.md` を使います。この配布物を clone して新規リポジトリにする場合は、同梱のハーネス基板を使い `npm ci` します。`bootstrap --write` は既存 `package.json` を上書きしないため使いません。bootstrap は製品 stack の選択や lifecycle 承認は行いません。
 
 ## Recommended profile bundle (example)
 

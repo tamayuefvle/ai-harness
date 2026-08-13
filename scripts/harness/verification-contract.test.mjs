@@ -37,6 +37,10 @@ test("PR E2E runs only in the dedicated workflow", () => {
   assert.match(e2eWorkflow, /npm run verify:e2e/);
   assert.match(e2eWorkflow, /scripts\/harness\/ci-project-state\.sh/);
   assert.match(e2eWorkflow, /fetch-depth: 0/);
+  assert.match(e2eWorkflow, /resolution\.status === 'resolved' && Array\.isArray\(resolution\.checks\) && resolution\.checks\.includes\('e2e'\)/);
+  assert.match(e2eWorkflow, /if: \$\{\{ steps\.project-state\.outputs\.state == 'ready' && steps\.e2e-profile\.outputs\.enabled == 'true' \}\}/);
+  assert.match(e2eWorkflow, /npx playwright install --with-deps/);
+  assert.match(e2eWorkflow, /npm ci/);
 });
 
 

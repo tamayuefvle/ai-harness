@@ -1,3 +1,13 @@
+# Migration to v14.8.0
+
+## From v14.7.0
+
+Compatible upgrade. Overlay v14.8.0 **without replacing an existing application `package.json` or lockfile**. Merge `package.scripts.fragment.json` and `package.devDependencies.fragment.json`, refresh the application lockfile with `npm install`, run `npm run harness:generate`, then `npm run verify:harness`.
+
+If this repository is the harness checkout itself (no separate application manifest), keep the shipped private substrate and run `npm ci`. `profile:check` is a no-op while profile resolution remains unresolved. React Doctor and Playwright E2E stay skipped until those profiles are selected.
+
+---
+
 # Migration to v14.7.0
 
 ## From v14.6.0

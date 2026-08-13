@@ -1,4 +1,4 @@
-# Security policy — AI Development Harness v14.7.0
+# Security policy — AI Development Harness v14.8.0
 
 - Default deny for production writes, destructive operations, secret access, dependency installation, and external resource creation.
 - Human approval uses `human:<name>` records and must be reinforced by external controls such as protected branches and GitHub Environments. Local JSON alone is not a security boundary.

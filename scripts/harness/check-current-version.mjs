@@ -12,5 +12,8 @@ const expected=[
 ];
 const failures=[];
 for(const [relative,pattern] of expected){const text=fs.readFileSync(path.join(root,relative),"utf8"); if(!pattern.test(text)) failures.push(`${relative}: current-version heading is not ${version}`);}
+const packageJson=JSON.parse(fs.readFileSync(path.join(root,"package.json"),"utf8"));
+if(packageJson.version!==version) failures.push(`package.json: version is not ${version}`);
+if(packageJson.private!==true) failures.push("package.json: harness substrate must remain private");
 if(failures.length){console.error("Current release metadata drift detected:"); for(const f of failures) console.error(`- ${f}`); process.exit(1)}
 console.log(`[PASS] Current release metadata is synchronized at v${version}.`);

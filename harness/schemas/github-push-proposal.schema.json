@@ -34,14 +34,14 @@
           "type": "object",
           "required": ["status", "report"],
           "properties": { "status": { "enum": ["pending", "passed"] }, "report": { "type": ["string", "null"] } },
-          "allOf": [{ "if": { "properties": { "status": { "const": "passed" } } }, "then": { "properties": { "report": { "type": "string", "minLength": 1 } } } }],
+          "allOf": [{ "if": { "type": "object", "properties": { "status": { "const": "passed" } } }, "then": { "type": "object", "properties": { "report": { "type": "string", "minLength": 1 } } } }],
           "additionalProperties": false
         },
         "review": {
           "type": "object",
           "required": ["status", "report"],
           "properties": { "status": { "enum": ["pending", "approved"] }, "report": { "type": ["string", "null"] } },
-          "allOf": [{ "if": { "properties": { "status": { "const": "approved" } } }, "then": { "properties": { "report": { "type": "string", "minLength": 1 } } } }],
+          "allOf": [{ "if": { "type": "object", "properties": { "status": { "const": "approved" } } }, "then": { "type": "object", "properties": { "report": { "type": "string", "minLength": 1 } } } }],
           "additionalProperties": false
         }
       },

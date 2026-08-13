@@ -1,6 +1,6 @@
-# New Repository Setup — v14.7.0
+# New Repository Setup — v14.8.0
 
-> 対象: **このハーネスを Git リポジトリへ新規配置したが、Git root に `package.json` がまだ存在しない場合**。
+> 対象: **このハーネスを Git リポジトリへ新規配置したが、Git root に製品用 `package.json` がまだ存在しない場合**。配布物自身はハーネス基板の `package.json` を同梱する。
 >
 > このファイルを LLM への初期指示として渡してよい。LLM はこの手順を上から順に実施し、勝手に手順を短縮しないこと。
 
@@ -27,6 +27,16 @@ Bootstrap 完了後、`harness/project.json` は通常 `MIGRATION_PENDING` で�
 | **Legacy migration** | 既存 v11/v12 資産を一括移行する | `MIGRATION.md` の migration 手順 |
 
 Greenfield では `task:start` や実装 task を **`ACTIVE` 到達前** に開始しません。企画は `npm run product:status`、設計は `npm run design:status` で次手を確認します。設計対話の記録は `npm run ai:evaluate-stack`（Codex read-only）です。
+
+## 0.0.1 配布物に基板が既にある場合
+
+この配布物はハーネス専用の private `package.json`（version はハーネス版、現在 `14.8.0`）と `package-lock.json` を同梱する。これは製品ランタイムではない。空 root 向け `bootstrap --write` が作る `0.0.0` とは別物である。
+
+| 状況 | 手順 |
+|---|---|
+| このリポジトリを clone して新規 product の作業場所にする | `bootstrap --write` は使わない（上書き拒否）。`npm ci` → `npm run harness:generate` → `npm run verify:harness` |
+| 既存アプリケーションへ overlay する | 既存の `package.json` / lockfile を配布物で上書きしない。fragment を merge する（`README_HARNESS.md`） |
+| 空の Git root にハーネスを置き、基板ファイルを意図的に除外した | 以下の bootstrap `--write` 手順へ進む |
 
 ## 0.1 初期設定で人間が行うこと（チェックリスト）
 
@@ -101,8 +111,8 @@ for f in AGENTS.md README_HARNESS.md SECURITY.md package.scripts.fragment.json p
 ### Preflight の合格条件
 
 - 現在地が `git rev-parse --show-toplevel` と一致する。
-- `package.json` が存在しない。
-- npm/yarn/pnpm/Bun の lockfile が**1つも存在しない**。
+- `package.json` が存在しない、**または** 同梱ハーネス基板（`private: true` かつ `scripts.verify:harness` あり）だけが存在する。
+- ハーネス基板以外の製品 lockfile が混在していない。基板を使う場合は正本 `package-lock.json` が1つだけ存在する。
 - `process.release.lts` が null ではない（Node.js LTS）。
 - 上記の必須ハーネスファイルが存在する。
 - npm registry の URL を記録する。社内 mirror/proxy の場合でも、この段階では設定を変更しない。
@@ -113,7 +123,7 @@ for f in AGENTS.md README_HARNESS.md SECURITY.md package.scripts.fragment.json p
 以下なら自動修復せず、理由と検出内容をユーザーへ報告する。
 
 - Git リポジトリではない、または Git root 以外から実行している。
-- `package.json` が既にある。→ `README_HARNESS.md` の既存 repository 向け merge 手順へ切り替える。
+- `package.json` が既にある。→ 同梱ハーネス基板なら §0.0.1 の `npm ci` 経路。製品アプリケーションの manifest なら `README_HARNESS.md` の既存 repository 向け merge 手順へ切り替える。`bootstrap --write` で上書きしない。
 - `package.json` なしで lockfile だけ存在する。→ lockfile を削除せず、repository 状態を先に整理する。
 - `yarn.lock` / `pnpm-lock.yaml` / Bun lockfile がある。→ 現行 bundled harness は npm 契約なので、勝手に package manager を変更しない。
 - Node.js が LTS ではない。→ Node を自動 install せず、利用環境の version manager 等で LTS を有効化する必要があると報告する。
