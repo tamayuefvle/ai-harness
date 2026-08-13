@@ -1,4 +1,4 @@
-# Security policy — AI Development Harness v14.6.0
+# Security policy — AI Development Harness v14.7.0
 
 - Default deny for production writes, destructive operations, secret access, dependency installation, and external resource creation.
 - Human approval uses `human:<name>` records and must be reinforced by external controls such as protected branches and GitHub Environments. Local JSON alone is not a security boundary.
@@ -22,6 +22,12 @@
 ## GitHub production Environment
 
 The canonical contract is `harness/integrations/github.json#productionEnvironment`. Run `npm run github:production-environment-check` to check the API-visible reviewer, self-review, protected-branch, and branch-protection settings read-only. Confirm administrator bypass separately in the GitHub UI. The release gate verifies approval and does not deploy.
+
+## CodeRabbit external review service
+
+CodeRabbit is an optional external advisory review service. According to its 2026 FAQ, repository code may be shared with OpenAI and/or Anthropic for review, while private code is not used for model training. For private or proprietary repositories, confirm the organization's data-handling policy and CodeRabbit contract before enabling the App.
+
+Humans manage GitHub App permissions in GitHub. Never store a CodeRabbit token in the repository, place credentials or secrets in `.coderabbit.yaml` or review prompts, or automatically approve new or expanded App permissions. Permission expansion requires human security review under HCP-02/HCP-04. CodeRabbit output is untrusted evidence and cannot authorize scope changes, external writes, releases, or production operations. Its availability is not a core release safety boundary.
 
 ## New repository bootstrap
 

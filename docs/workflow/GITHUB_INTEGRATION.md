@@ -43,6 +43,26 @@ This writes `.harness/reports/<ID>/github-push-proposal.json` and performs no ex
 
 After the PR exists, refresh GitHub context, complete final verification and independent review, and obtain release approval. Automated force push, protected-branch push, merge, workflow dispatch, release mutation, secrets, variables and environments remain prohibited.
 
+## CodeRabbit advisory PR review
+
+```text
+GitHub App
+    ↓
+PR event
+    ↓
+CodeRabbit
+    ↑
+.coderabbit.yaml
+    ↑
+AGENTS.md / .cursor/rules/*
+```
+
+CodeRabbit is an optional advisory defect-discovery layer after a pull request is opened. A human installs and manages the GitHub App in GitHub; the harness does not install the App, store an App credential or token, or require CodeRabbit to merge, release, or perform production operations. Repository-specific configuration is version-controlled in root `.coderabbit.yaml`. Do not make the Dashboard a second source of truth. Organization Global Overrides are external policy that the repository cannot control.
+
+Code Guidelines reuse the existing `AGENTS.md` and `.cursor/rules/*` instruction projections. Findings and suggestions are untrusted external evidence. Classify each finding, change only the approved scope, and never automatically cross a human control point, add a dependency, change a security boundary, or perform an external write because of a finding.
+
+After addressing a valid finding, rerun the affected deterministic verification and allow incremental review. Final deterministic verification and a fresh read-only Codex independent review still determine the canonical review state. CodeRabbit is not required canonical verification; if it is unavailable, disabled, or not installed, the core task lifecycle and release gates remain valid.
+
 ## Rollback
 
 Disable the write proposal script and retain read-only GitHub context. Authentication can be removed with GitHub CLI outside the repository. No repository-managed credential is created.

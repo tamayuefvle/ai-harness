@@ -16,6 +16,17 @@ The `Quality Gate` workflow calls `npm run verify:ci`. The dedicated `E2E Gate` 
 
 The Quality workflow passes the event comparison SHA as input. The canonical React Doctor CI wrapper chooses full scope only when `HEAD` is the Git root commit; otherwise it delegates to the normal changed-scope base resolution and fails closed when a React-relevant comparison base cannot be resolved.
 
+## Advisory PR review
+
+CodeRabbit adds early defect discovery inside the existing pull-request activity, but it is not a verification or lifecycle state:
+
+```text
+advisory review != deterministic verification
+advisory review != canonical independent review evidence
+```
+
+Do not add CodeRabbit output to the verification schema or review schema as required evidence, and do not create a CodeRabbit lifecycle state. When CodeRabbit is unavailable, `verify:harness`, the task lifecycle, fresh read-only Codex final review, and release gates continue unchanged.
+
 ## Schema validation
 
 `schemas:check` first validates the canonical fixtures listed in `harness/schemas/validation-manifest.json` against Draft 2020-12 schemas. Ajv is the primary Node provider; Python `jsonschema` is the bootstrap fallback.

@@ -1,4 +1,4 @@
-# New Repository Setup — v14.6.0
+# New Repository Setup — v14.7.0
 
 > 対象: **このハーネスを Git リポジトリへ新規配置したが、Git root に `package.json` がまだ存在しない場合**。
 >
@@ -471,6 +471,12 @@ npm run github:production-environment-check
 ```
 
 GitHub token を repository ファイルへ保存しない。`gh auth` 等の credential store を使用する。visibility / plan により使えない protection を「設定済み」と記録しない。
+
+### Optional / Advisory CodeRabbit
+
+Harness overlay には root `.coderabbit.yaml` が含まれる。このファイルを Git 管理し、repository 固有設定の正本とする。利用する場合だけ、人間が GitHub 上で CodeRabbit App を対象 repository へ install する。ハーネスや agent は App を自動 install せず、credential を保存しない。
+
+導入後は test PR で `.coderabbit.yaml` が configuration source として認識され、既存 `AGENTS.md` / Cursor Rules が Code Guidelines として適用されることを確認する。live PR で確認するまでは成功扱いしない。CodeRabbit は hard dependency ではなく、未導入・障害時も `verify:harness`、task lifecycle、fresh Codex independent final review、release gate は成立する。
 
 ## 10. 追加で気にすること
 

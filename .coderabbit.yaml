@@ -1,0 +1,31 @@
+# yaml-language-server: $schema=https://coderabbit.ai/integrations/schema.v2.json
+
+# CodeRabbit is advisory and is not a lifecycle approval authority.
+reviews:
+  profile: chill
+  request_changes_workflow: false
+  review_status: true
+  auto_review:
+    enabled: true
+    auto_incremental_review: true
+    drafts: false
+  path_filters:
+    # Generated artifacts are derived from PACKAGE_MANIFEST categories, generated
+    # Cursor skills, and packaging metadata. Review canonical sources instead.
+    - "!AGENTS.md"
+    - "!**/CODEX.md"
+    - "!**/.cursor/rules/**"
+    - "!.codex/rules/guardrails.rules"
+    - "!.cursor/cli.json"
+    - "!.cursor/hooks.json"
+    - "!.cursor/skills/**/SKILL.md"
+    - "!docs/workflow/LIFECYCLE_REFERENCE.generated.md"
+    - "!harness/generated/**"
+    - "!FILE_INVENTORY.txt"
+    - "!PACKAGE_MANIFEST.json"
+
+# Code Guidelines reuse existing AGENTS.md and Cursor Rules. Do not duplicate
+# guideline filenames or policy text in path_instructions.
+knowledge_base:
+  code_guidelines:
+    enabled: true

@@ -1,3 +1,13 @@
+# Migration to v14.7.0
+
+## From v14.6.0
+
+Compatible upgrade. Overlay v14.7.0, including root `.coderabbit.yaml`, merge `package.scripts.fragment.json`, run `npm run harness:generate`, then `npm run verify:harness`.
+
+The overlay does not install or change the CodeRabbit GitHub App. A human may install the optional App in GitHub and validate it with a test PR. `.coderabbit.yaml` is the repository-specific configuration source of truth; organization Global Overrides remain external policy. Existing verification, review, evidence, and lifecycle contracts are unchanged, and CodeRabbit does not replace the fresh read-only Codex independent review.
+
+---
+
 # Migration to v14.6.0
 
 ## From v14.5.0

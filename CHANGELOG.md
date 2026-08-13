@@ -1,5 +1,11 @@
 # Changelog
 
+## v14.7.0 - 2026-08-13
+
+- Added root `.coderabbit.yaml` as the repository-specific source of truth for optional CodeRabbit auto and incremental PR reviews, excluding generated projections while retaining canonical sources.
+- Documented CodeRabbit as advisory, untrusted external evidence that cannot replace deterministic verification, fresh read-only Codex independent review, human approval, or release controls.
+- Added deterministic configuration invariants without a YAML/runtime dependency; no lifecycle, review schema, GitHub integration contract, or release behavior changed.
+
 ## v14.6.0 - 2026-08-13
 
 - Added design session artifacts (`.harness/design/DSN-*.json`) and `npm run ai:evaluate-stack` Codex read-only facilitation for stack (`PRODUCT_APPROVED`) and architecture (`STACK_APPROVED`).

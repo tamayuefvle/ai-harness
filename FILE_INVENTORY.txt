@@ -1,3 +1,4 @@
+.coderabbit.yaml
 .codex/config.toml
 .codex/hooks/pre_tool_use_policy.py
 .codex/hooks.json
@@ -39,10 +40,12 @@ docs/architecture/ADR-0004-public-instruction-boundary.md
 docs/architecture/ADR-0005-capability-layer-and-cli-github.md
 docs/architecture/ADR-0006-bootstrap-safe-ci.md
 docs/architecture/ADR-0007-full-lifecycle-and-profiles.md
+docs/architecture/ADR-0008-coderabbit-advisory-review.md
 docs/architecture/CODEX.md
 docs/architecture/baseline.md
 docs/architecture/quality-strategy.md
 docs/architecture/security-baseline.md
+docs/improvements/IMP-20260813-01.md
 docs/improvements/TEMPLATE.md
 docs/operations/.cursor/rules/operations.mdc
 docs/operations/CODEX.md
@@ -274,6 +277,7 @@ scripts/harness/check-policy-projections.mjs
 scripts/harness/check-rules.mjs
 scripts/harness/ci-project-state.sh
 scripts/harness/ci-project-state.test.mjs
+scripts/harness/coderabbit-config.test.mjs
 scripts/harness/codex-decision.mjs
 scripts/harness/codex-discover.sh
 scripts/harness/codex-evaluate-stack.sh
