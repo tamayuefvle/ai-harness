@@ -12,7 +12,7 @@
 - `verify:ci`: the non-E2E Quality Gate composition.
 - `verify:all`: `verify:ci` followed by E2E for local or single-job full verification.
 
-The `Quality Gate` workflow calls `npm run verify:ci`. The dedicated `E2E Gate` workflow installs Playwright and calls `npm run test:e2e`, so pull requests do not install browsers or execute E2E twice.
+The `Quality Gate` workflow calls `npm run verify:ci`. The dedicated `E2E Gate` workflow installs Playwright and calls `npm run verify:e2e` only when profile resolution includes the `e2e` check, so pull requests do not install browsers or execute E2E twice. Unresolved profile resolution skips `profile:check` instead of failing `verify:ci`.
 
 The Quality workflow passes the event comparison SHA as input. The canonical React Doctor CI wrapper chooses full scope only when `HEAD` is the Git root commit; otherwise it delegates to the normal changed-scope base resolution and fails closed when a React-relevant comparison base cannot be resolved.
 
@@ -47,6 +47,8 @@ Before `actions/setup-node`, npm cache resolution, `npm ci`, GitHub context coll
 | `bootstrap` | Git root commit; harness overlay markers present; no `package.json`; no npm or foreign lockfile | pass with explicit notice; Node-dependent steps skipped |
 | `ready` | `package.json` plus exactly one of `package-lock.json` or `npm-shrinkwrap.json` | cached setup, `npm ci`, and normal verification |
 | `invalid` | every other shape | fail before dependency setup |
+
+The distribution ships a private harness npm substrate so this repository itself is `ready` after the root commit. That substrate is not a product application. Overlay copies must merge `package.scripts.fragment.json` / `package.devDependencies.fragment.json` into an existing application manifest and must not overwrite it. Unresolved profile resolution skips `profile:check`; Playwright E2E and React Doctor remain off until those profiles are selected.
 
 Invalid includes a package without an npm lock, a lock without a package, Yarn/pnpm/Bun locks, both npm lockfiles, symlinked root metadata, and package metadata missing on any non-root commit. The non-root rule prevents CI bypass by deleting the application manifest and lockfile.
 

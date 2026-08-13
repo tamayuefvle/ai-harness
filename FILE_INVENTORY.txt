@@ -1,7 +1,7 @@
 .coderabbit.yaml
 .codex/config.toml
-.codex/hooks/pre_tool_use_policy.py
 .codex/hooks.json
+.codex/hooks/pre_tool_use_policy.py
 .codex/rules/guardrails.rules
 .cursor/cli.json
 .cursor/commands/develop.md
@@ -20,6 +20,7 @@
 .github/workflows/quality.yml
 .github/workflows/react-doctor.yml
 .github/workflows/release-gate.yml
+.gitignore
 .gitignore.harness-fragment
 AGENTS.md
 CHANGELOG.md
@@ -41,11 +42,13 @@ docs/architecture/ADR-0005-capability-layer-and-cli-github.md
 docs/architecture/ADR-0006-bootstrap-safe-ci.md
 docs/architecture/ADR-0007-full-lifecycle-and-profiles.md
 docs/architecture/ADR-0008-coderabbit-advisory-review.md
+docs/architecture/ADR-0009-distribution-npm-substrate.md
 docs/architecture/CODEX.md
 docs/architecture/baseline.md
 docs/architecture/quality-strategy.md
 docs/architecture/security-baseline.md
 docs/improvements/IMP-20260813-01.md
+docs/improvements/IMP-20260813-02.md
 docs/improvements/TEMPLATE.md
 docs/operations/.cursor/rules/operations.mdc
 docs/operations/CODEX.md
@@ -246,7 +249,9 @@ harness/skills/executor-fallback/SKILL.md
 harness/skills/product-discovery/SKILL.md
 harness/skills/stack-architecture/SKILL.md
 harness/templates/project.bootstrap.json
+package-lock.json
 package.devDependencies.fragment.json
+package.json
 package.scripts.fragment.json
 scripts/.cursor/rules/automation.mdc
 scripts/CODEX.md
@@ -330,6 +335,7 @@ scripts/harness/migrate-full-lifecycle.mjs
 scripts/harness/migrate-gates.mjs
 scripts/harness/migrate-gates.test.mjs
 scripts/harness/new-task.mjs
+scripts/harness/package-substrate.test.mjs
 scripts/harness/policy-lib.mjs
 scripts/harness/product-check.mjs
 scripts/harness/product-check.test.mjs
@@ -356,6 +362,7 @@ scripts/harness/rule-lib.mjs
 scripts/harness/rule-lib.test.mjs
 scripts/harness/run-harness-tests.mjs
 scripts/harness/run-profile-checks.mjs
+scripts/harness/run-profile-checks.test.mjs
 scripts/harness/runtime-doctor.mjs
 scripts/harness/runtime-doctor.test.mjs
 scripts/harness/schema-validation.test.mjs

@@ -46,7 +46,7 @@ jobs:
           const fs = require('node:fs');
           const project = JSON.parse(fs.readFileSync('harness/project.json', 'utf8'));
           const profiles = project.activeProfiles.length ? project.activeProfiles : (project.migration?.proposedProfiles || []);
-          const enabled = profiles.length === 0 || profiles.includes('quality/react-doctor');
+          const enabled = profiles.includes('quality/react-doctor');
           fs.appendFileSync(process.env.GITHUB_OUTPUT, `enabled=${enabled}\n`);
           NODE
 

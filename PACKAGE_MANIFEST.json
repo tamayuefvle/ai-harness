@@ -1,8 +1,8 @@
 {
   "schemaVersion": "2.0.0",
   "name": "ai-harness",
-  "version": "14.7.0",
-  "sourceVersion": "14.6.0",
+  "version": "14.8.0",
+  "sourceVersion": "14.7.0",
   "lifecycleModeDefault": "full",
   "bootstrap": {
     "projectStateTemplate": "harness/templates/project.bootstrap.json",
@@ -50,7 +50,10 @@
       "package.scripts.fragment.json",
       "package.devDependencies.fragment.json",
       ".gitignore.harness-fragment",
-      ".coderabbit.yaml"
+      ".coderabbit.yaml",
+      "package.json",
+      "package-lock.json",
+      ".gitignore"
     ],
     "optionalProfiles": {
       "framework/react": [
@@ -111,7 +114,8 @@
     "Cursor CLI is optional; live provider authentication and permission behavior must be verified on a workstation with the CLI installed.",
     "Cursor Hooks are defense in depth; project permissions and Git-common-dir worktree isolation remain the primary boundary.",
     "Directory-scoped generated AGENTS.md files are retired; Codex specialization uses CODEX.md while Cursor uses scoped .mdc rules.",
-    "CodeRabbit GitHub App is optional and advisory; the core lifecycle works without it, repository configuration is canonical in .coderabbit.yaml, and it does not replace Codex independent review."
+    "CodeRabbit GitHub App is optional and advisory; the core lifecycle works without it, repository configuration is canonical in .coderabbit.yaml, and it does not replace Codex independent review.",
+    "The distribution ships a private harness npm substrate (package.json + package-lock.json) so post-root CI can reach ready. Overlaying onto an existing application must merge fragments and must not overwrite that application's package metadata."
   ],
   "executionSafety": {
     "schemaVersion": "1.0.0",

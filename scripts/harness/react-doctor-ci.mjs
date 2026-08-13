@@ -12,7 +12,7 @@ export function reactDoctorProfileEnabled(repoRoot = defaultRepoRoot) {
   try {
     const project = JSON.parse(fs.readFileSync(projectPath, "utf8"));
     const configured = project.activeProfiles?.length ? project.activeProfiles : project.migration?.proposedProfiles ?? [];
-    return configured.length === 0 || configured.includes("quality/react-doctor");
+    return configured.includes("quality/react-doctor");
   } catch {
     return true;
   }

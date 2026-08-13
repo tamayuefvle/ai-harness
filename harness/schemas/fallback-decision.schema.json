@@ -78,6 +78,7 @@
   "allOf": [
     {
       "if": {
+        "type": "object",
         "properties": {
           "decision": {
             "const": "alternative_strategy"
@@ -85,6 +86,7 @@
         }
       },
       "then": {
+        "type": "object",
         "properties": {
           "materialDifference": {
             "type": "string",
@@ -103,6 +105,7 @@
     },
     {
       "if": {
+        "type": "object",
         "properties": {
           "decision": {
             "enum": [
@@ -113,6 +116,7 @@
         }
       },
       "then": {
+        "type": "object",
         "properties": {
           "humanRequest": {
             "type": "string",

@@ -4,7 +4,7 @@ import os from "node:os";
 import path from "node:path";
 import { spawnSync } from "node:child_process";
 import test from "node:test";
-import { selectCiMode } from "./react-doctor-ci.mjs";
+import { selectCiMode, reactDoctorProfileEnabled } from "./react-doctor-ci.mjs";
 
 function git(root, ...args) {
   const result = spawnSync("git", args, { cwd: root, encoding: "utf8" });
@@ -52,4 +52,19 @@ test("does not infer a root full scan from shallow history", () => {
 test("preserves changed-mode no-worktree handling for the canonical wrapper", () => {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), "react-doctor-ci-nongit-"));
   assert.deepEqual(selectCiMode(root), { mode: "changed", reason: "not-a-git-worktree" });
+});
+
+test("does not enable React Doctor until the quality profile is selected", () => {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), "react-doctor-profile-"));
+  fs.mkdirSync(path.join(root, "harness"), { recursive: true });
+  fs.writeFileSync(path.join(root, "harness/project.json"), JSON.stringify({
+    activeProfiles: [],
+    migration: { proposedProfiles: [] },
+  }));
+  assert.equal(reactDoctorProfileEnabled(root), false);
+  fs.writeFileSync(path.join(root, "harness/project.json"), JSON.stringify({
+    activeProfiles: [],
+    migration: { proposedProfiles: ["quality/react-doctor"] },
+  }));
+  assert.equal(reactDoctorProfileEnabled(root), true);
 });

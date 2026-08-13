@@ -1,5 +1,12 @@
 # Changelog
 
+## v14.8.0 - 2026-08-13
+
+- Shipped a private harness npm substrate (`package.json` + `package-lock.json`) so the distribution repository can reach CI `ready` after the root commit.
+- Overlaying onto an existing application still merges fragments and must not overwrite application package metadata.
+- `profile:check` skips unresolved resolution; E2E Playwright and React Doctor stay off until those profiles are selected.
+- Schema `if`/`then` clauses now declare `type: object` so shipped Ajv `strictTypes` can compile them (previously hidden by the Python jsonschema fallback).
+
 ## v14.7.0 - 2026-08-13
 
 - Added root `.coderabbit.yaml` as the repository-specific source of truth for optional CodeRabbit auto and incremental PR reviews, excluding generated projections while retaining canonical sources.
