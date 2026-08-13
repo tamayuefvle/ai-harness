@@ -1,8 +1,8 @@
 {
   "schemaVersion": "2.0.0",
   "name": "ai-harness",
-  "version": "14.6.0",
-  "sourceVersion": "14.5.0",
+  "version": "14.7.0",
+  "sourceVersion": "14.6.0",
   "lifecycleModeDefault": "full",
   "bootstrap": {
     "projectStateTemplate": "harness/templates/project.bootstrap.json",
@@ -49,7 +49,8 @@
       "NEW_REPOSITORY_SETUP.md",
       "package.scripts.fragment.json",
       "package.devDependencies.fragment.json",
-      ".gitignore.harness-fragment"
+      ".gitignore.harness-fragment",
+      ".coderabbit.yaml"
     ],
     "optionalProfiles": {
       "framework/react": [
@@ -109,7 +110,8 @@
     "GitHub context requires an intended HTTPS origin and reports bounded unavailability reason codes without stderr or tokens.",
     "Cursor CLI is optional; live provider authentication and permission behavior must be verified on a workstation with the CLI installed.",
     "Cursor Hooks are defense in depth; project permissions and Git-common-dir worktree isolation remain the primary boundary.",
-    "Directory-scoped generated AGENTS.md files are retired; Codex specialization uses CODEX.md while Cursor uses scoped .mdc rules."
+    "Directory-scoped generated AGENTS.md files are retired; Codex specialization uses CODEX.md while Cursor uses scoped .mdc rules.",
+    "CodeRabbit GitHub App is optional and advisory; the core lifecycle works without it, repository configuration is canonical in .coderabbit.yaml, and it does not replace Codex independent review."
   ],
   "executionSafety": {
     "schemaVersion": "1.0.0",

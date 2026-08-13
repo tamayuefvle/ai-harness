@@ -1,8 +1,8 @@
-# AI Development Harness v14.6.0
+# AI Development Harness v14.7.0
 
 ## Standalone user harness
 
-v14.6 adds **design session artifacts** (`npm run ai:evaluate-stack`, `.harness/design/DSN-*.json`) on top of the v14.5 design tiers and OUT → architecture trace.
+v14.7 adds an optional **CodeRabbit advisory PR review layer** with repository-owned `.coderabbit.yaml`. It preserves deterministic verification and the fresh read-only Codex independent final review introduced by the existing harness contract.
 
 The package ships in `MIGRATION_PENDING`. For a **new product**, run `npm run project:discover` and follow `docs/workflow/PRODUCT_DISCOVERY.md`. For **legacy migration**, follow `MIGRATION.md`. Set `projectId`, choose profiles, resolve, review baselines, approve, then advance to `ACTIVE`.
 
@@ -93,6 +93,8 @@ Web/React/Next 向けの推奨例（bootstrap には含めません）:
 3. `reviewer`: independent read-only review after verification
 
 各 `ai:*` launcher は最初に `codex:preflight` を実行します。project trust は診断のみで自動設定せず、repo-local MCP transport は完全定義のまま Chrome DevTools を disabled-by-default にします。
+
+GitHub CodeRabbit App は任意の early defect-discovery layer です。repository 設定は `.coderabbit.yaml` を正本とし、Codex reviewer や canonical verification を置換しません。運用は `docs/workflow/GITHUB_INTEGRATION.md`、data handling と権限境界は `SECURITY.md` を参照してください。
 
 GitHub の production Environment は `harness/integrations/github.json` が正本です。`npm run github:production-environment-check` で API-visible な設定を read-only 検査し、administrator bypass は UI で確認します。release gate 自体は deploy しません。
 
