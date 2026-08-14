@@ -1,8 +1,8 @@
 {
   "schemaVersion": "2.0.0",
   "name": "ai-harness",
-  "version": "14.9.1",
-  "sourceVersion": "14.9.0",
+  "version": "14.9.2",
+  "sourceVersion": "14.9.1",
   "lifecycleModeDefault": "full",
   "bootstrap": {
     "projectStateTemplate": "harness/templates/project.bootstrap.json",
@@ -115,7 +115,7 @@
     "Cursor Hooks are defense in depth; explicit non-implementer CLI roles are write-denied, while an unset or empty role identifies an interactive IDE session and project permissions remain the primary boundary.",
     "Directory-scoped generated AGENTS.md files are retired; Codex specialization uses CODEX.md while Cursor uses scoped .mdc rules.",
     "CodeRabbit GitHub App is optional and advisory; the core lifecycle works without it, repository configuration is canonical in .coderabbit.yaml, and it does not replace Codex independent review.",
-    "The distribution ships a private harness npm substrate (package.json + package-lock.json) so post-root CI can reach ready. Overlaying onto an existing application must merge fragments and must not overwrite that application's package metadata.",
+    "The distribution ships a private harness npm substrate (package.json + package-lock.json) so post-root CI can reach ready. Overlaying onto an existing application must merge fragments and must not overwrite that application's package metadata; when package.json name is not ai-harness, verify:harness checks the fragment merge instead of exact substrate identity.",
     "deployment/aws records AWS hosting intent only; it does not create an AWS account, IAM principal, cloud resource, or deployment, and it does not add AWS SDK/CLI to the harness substrate."
   ],
   "executionSafety": {

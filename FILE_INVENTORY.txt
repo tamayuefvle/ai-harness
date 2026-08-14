@@ -52,6 +52,7 @@ docs/improvements/IMP-20260813-01.md
 docs/improvements/IMP-20260813-02.md
 docs/improvements/IMP-20260813-03.md
 docs/improvements/IMP-20260814-01.md
+docs/improvements/IMP-20260814-02.md
 docs/improvements/TEMPLATE.md
 docs/operations/.cursor/rules/operations.mdc
 docs/operations/CODEX.md
@@ -282,6 +283,7 @@ scripts/harness/check-capabilities.mjs
 scripts/harness/check-capabilities.test.mjs
 scripts/harness/check-cross-contracts.mjs
 scripts/harness/check-current-version.mjs
+scripts/harness/check-current-version.test.mjs
 scripts/harness/check-instruction-graph.mjs
 scripts/harness/check-policy-projections.mjs
 scripts/harness/check-rules.mjs
@@ -340,6 +342,7 @@ scripts/harness/migrate-full-lifecycle.mjs
 scripts/harness/migrate-gates.mjs
 scripts/harness/migrate-gates.test.mjs
 scripts/harness/new-task.mjs
+scripts/harness/package-substrate.mjs
 scripts/harness/package-substrate.test.mjs
 scripts/harness/policy-lib.mjs
 scripts/harness/product-check.mjs

@@ -1,5 +1,11 @@
 # Changelog
 
+## v14.9.2 - 2026-08-14
+
+- Distinguished the shipped `ai-harness` npm substrate from product overlays by `package.json.name`.
+- Kept exact scripts, harness `devDependencies`, version, private flag, lockfile, and shrinkwrap checks for the substrate while allowing overlay package metadata and extra fields.
+- Kept harness document headings synchronized to the harness version in both modes and added overlay regression fixtures.
+
 ## v14.9.1 - 2026-08-14
 
 - Allowed interactive Cursor IDE sessions with an unset or empty `HARNESS_CURSOR_ROLE` to write approved repository paths, including `docs/product/*` during discovery.

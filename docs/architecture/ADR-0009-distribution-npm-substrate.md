@@ -19,6 +19,8 @@ Overlay policy:
 - Existing application: merge fragments; do not overwrite `package.json` or the application lockfile.
 - Clone of this repository as a new workspace: keep the substrate and run `npm ci`. Do not run `bootstrap --write`.
 
+For verification, `package.json.name === "ai-harness"` identifies the distribution substrate and keeps the exact identity contract. Any other package name identifies a product overlay: `verify:harness` requires every fragment script and harness `devDependency` unchanged, permits product additions and independent package metadata, and still checks harness document headings against `PACKAGE_MANIFEST.json`.
+
 `profile:check` skips unresolved resolution. Playwright E2E and React Doctor run only when those profiles are selected. Empty profile lists no longer default-enable React Doctor. Shipping Ajv makes it the primary `schemas:check` provider; schema `if`/`then` clauses that use `properties` declare `type: object` so Ajv `strictTypes` can compile them.
 
 This does not relax ADR-0006's fail-closed states. npm remains the harness CI package manager.

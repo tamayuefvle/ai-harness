@@ -1,3 +1,11 @@
+# Migration to v14.9.2
+
+## From v14.9.1
+
+Compatible overlay. Overlay v14.9.2, merge `package.scripts.fragment.json` and `package.devDependencies.fragment.json` if needed, then run `npm run harness:generate` and `npm run verify:harness`. After a clone takes product package metadata, change `package.json.name` away from `ai-harness`; `verify:harness` then checks the fragment merge instead of exact substrate identity. Do not replace an application `package.json`.
+
+---
+
 # Migration to v14.9.1
 
 ## From v14.9.0

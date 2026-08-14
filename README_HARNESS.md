@@ -1,10 +1,12 @@
-# AI Development Harness v14.9.1
+# AI Development Harness v14.9.2
 
 ## Standalone user harness
 
 v14.9 adds `deployment/aws` as a selectable hosting profile. It does not create AWS resources or deploy; humans operate AWS. See `docs/operations/aws-deployment.md`.
 
 v14.8 ships a **private harness npm substrate** (`package.json` + `package-lock.json`) so post-root CI can enter `ready` and run `verify:harness`. This is not a product application runtime and does not select a product stack. Overlaying onto an existing application must merge the package fragments and must not overwrite that application's package metadata.
+
+Product overlays keep every fragment script and harness `devDependency`; once they own application package metadata, they must change `package.json.name` away from `ai-harness` so `verify:harness` applies the fragment-merge contract.
 
 v14.7 added an optional CodeRabbit advisory PR review layer with repository-owned `.coderabbit.yaml`.
 
