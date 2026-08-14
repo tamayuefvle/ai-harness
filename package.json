@@ -1,6 +1,6 @@
 {
   "name": "ai-harness",
-  "version": "14.9.2",
+  "version": "14.9.3",
   "private": true,
   "description": "Harness npm substrate for verification scripts. This is not a product application runtime.",
   "scripts": {

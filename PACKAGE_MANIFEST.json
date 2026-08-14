@@ -1,8 +1,8 @@
 {
   "schemaVersion": "2.0.0",
   "name": "ai-harness",
-  "version": "14.9.2",
-  "sourceVersion": "14.9.1",
+  "version": "14.9.3",
+  "sourceVersion": "14.9.2",
   "lifecycleModeDefault": "full",
   "bootstrap": {
     "projectStateTemplate": "harness/templates/project.bootstrap.json",

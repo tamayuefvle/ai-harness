@@ -6,6 +6,7 @@ import { fileURLToPath } from "node:url";
 import test from "node:test";
 import { designProgress, setDesignTier, validateArchitectureDocuments, validateStackDocuments } from "./design-lib.mjs";
 import { runArchitectureCheck } from "./architecture-check.mjs";
+import { writePlanningDocs } from "./planning-doc-fixtures.mjs";
 import { runStackCheck } from "./stack-check.mjs";
 import { runProjectGate } from "./project-gate.mjs";
 
@@ -47,12 +48,13 @@ function fixtureProject(state = "PRODUCT_APPROVED", { designTier = "full", disco
     path.join(root, "harness/profiles/registry.json"),
     fs.readFileSync(path.join(harnessRoot, "harness/profiles/registry.json"), "utf8"),
   );
-  for (const file of ["technology-options.md", "technology-decision.md"]) {
-    fs.copyFileSync(path.join(harnessRoot, "docs/product", file), path.join(root, "docs/product", file));
-  }
-  for (const file of ["baseline.md", "security-baseline.md", "quality-strategy.md"]) {
-    fs.copyFileSync(path.join(harnessRoot, "docs/architecture", file), path.join(root, "docs/architecture", file));
-  }
+  writePlanningDocs(root, [
+    "docs/product/technology-options.md",
+    "docs/product/technology-decision.md",
+    "docs/architecture/baseline.md",
+    "docs/architecture/security-baseline.md",
+    "docs/architecture/quality-strategy.md",
+  ]);
   fs.writeFileSync(
     path.join(root, "docs/product/outcomes.md"),
     `# Outcomes\n\n## Success metrics\n\n| ID | Metric | Target | Measurement |\n|---|---|---|---|\n| OUT-001 | Time to triage | under 5 minutes | weekly sample |\n`,

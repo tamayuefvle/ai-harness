@@ -1,4 +1,4 @@
-# AI Development Harness v14.9.2
+# AI Development Harness v14.9.3
 
 ## Standalone user harness
 

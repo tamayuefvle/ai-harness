@@ -1,3 +1,11 @@
+# Migration to v14.9.3
+
+## From v14.9.2
+
+Compatible overlay. Overlay v14.9.3, merge fragments if needed, then run `npm run harness:generate` and `npm run verify:harness`. Planning and profile harness tests now use isolated fixtures, so filled product documents and resolved profiles no longer fail `verify:harness`.
+
+---
+
 # Migration to v14.9.2
 
 ## From v14.9.1

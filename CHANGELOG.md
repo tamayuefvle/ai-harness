@@ -1,5 +1,10 @@
 # Changelog
 
+## v14.9.3 - 2026-08-14
+
+- Isolated planning and profile harness tests from the live product documents and resolved profile state.
+- Product overlays can fill `docs/product/*` and resolve profiles without making `verify:harness` depend on the shipped templates remaining in place.
+
 ## v14.9.2 - 2026-08-14
 
 - Distinguished the shipped `ai-harness` npm substrate from product overlays by `package.json.name`.

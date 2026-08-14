@@ -6,6 +6,7 @@ import { fileURLToPath } from "node:url";
 import test from "node:test";
 import { runDiscoverDryRun } from "./ai-discover.mjs";
 import { createDiscoverySession, loadDiscoverySession, sessionPath } from "./discovery-session-lib.mjs";
+import { writePlanningDocs } from "./planning-doc-fixtures.mjs";
 import { validateDiscoverySet } from "./product-lib.mjs";
 
 const harnessRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
@@ -33,9 +34,12 @@ function fixtureDiscoveryProject(tier = "full") {
   for (const file of ["product-discovery.json", "product-signal-feedback.json"]) {
     fs.copyFileSync(path.join(harnessRoot, "harness/contracts", file), path.join(root, "harness/contracts", file));
   }
-  for (const file of ["problem.md", "users.md", "outcomes.md", "requirements.md"]) {
-    fs.copyFileSync(path.join(harnessRoot, "docs/product", file), path.join(root, "docs/product", file));
-  }
+  writePlanningDocs(root, [
+    "docs/product/problem.md",
+    "docs/product/users.md",
+    "docs/product/outcomes.md",
+    "docs/product/requirements.md",
+  ]);
   return root;
 }
 

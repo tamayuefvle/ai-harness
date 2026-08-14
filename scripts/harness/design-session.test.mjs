@@ -13,6 +13,7 @@ import {
   loadDesignSession,
   saveDesignSession,
 } from "./design-session-lib.mjs";
+import { writePlanningDocs } from "./planning-doc-fixtures.mjs";
 
 const harnessRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
 
@@ -51,12 +52,14 @@ function fixtureDesignProject(state = "PRODUCT_APPROVED") {
   for (const file of ["technology-evaluation.md", "architecture-baseline.md"]) {
     fs.copyFileSync(path.join(harnessRoot, "harness/prompts", file), path.join(root, "harness/prompts", file));
   }
-  for (const file of ["technology-options.md", "technology-decision.md", "outcomes.md"]) {
-    fs.copyFileSync(path.join(harnessRoot, "docs/product", file), path.join(root, "docs/product", file));
-  }
-  for (const file of ["baseline.md", "security-baseline.md", "quality-strategy.md"]) {
-    fs.copyFileSync(path.join(harnessRoot, "docs/architecture", file), path.join(root, "docs/architecture", file));
-  }
+  writePlanningDocs(root, [
+    "docs/product/technology-options.md",
+    "docs/product/technology-decision.md",
+    "docs/product/outcomes.md",
+    "docs/architecture/baseline.md",
+    "docs/architecture/security-baseline.md",
+    "docs/architecture/quality-strategy.md",
+  ]);
   return root;
 }
 

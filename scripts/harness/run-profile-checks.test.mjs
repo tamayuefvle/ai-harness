@@ -10,7 +10,16 @@ import { writeJsonAtomic } from "./full-lifecycle-lib.mjs";
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
 
 test("profile:check skips unresolved resolution without requiring a registry digest", () => {
-  const outcome = runProfileChecks(repoRoot);
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), "profile-check-unresolved-"));
+  fs.mkdirSync(path.join(dir, "harness/generated"), { recursive: true });
+  writeJsonAtomic(path.join(dir, "harness/project.json"), {
+    profileResolutionPath: "harness/generated/profile-resolution.json",
+  });
+  writeJsonAtomic(
+    path.join(dir, "harness/generated/profile-resolution.json"),
+    JSON.parse(fs.readFileSync(path.join(repoRoot, "harness/schema-fixtures/profile-resolution.unresolved.json"), "utf8")),
+  );
+  const outcome = runProfileChecks(dir);
   assert.equal(outcome.status, "skipped");
   assert.match(outcome.reason, /unresolved/);
 });

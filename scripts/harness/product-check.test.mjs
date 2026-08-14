@@ -5,6 +5,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import test from "node:test";
 import { discoveryProgress, validateDiscoverySet, validateProductDocument } from "./product-lib.mjs";
+import { planningDocTemplate, writePlanningDocs } from "./planning-doc-fixtures.mjs";
 import { runProductCheck } from "./product-check.mjs";
 import { runProjectDiscover } from "./project-discover.mjs";
 import { runProjectGate } from "./project-gate.mjs";
@@ -45,9 +46,13 @@ function fixtureProject(state = "MIGRATION_PENDING", tier = "full") {
     path.join(root, "harness/contracts/product-signal-feedback.json"),
     fs.readFileSync(path.join(harnessRoot, "harness/contracts/product-signal-feedback.json"), "utf8"),
   );
-  for (const file of ["problem.md", "users.md", "outcomes.md", "requirements.md", "idea-backlog.md"]) {
-    fs.copyFileSync(path.join(harnessRoot, "docs/product", file), path.join(root, "docs/product", file));
-  }
+  writePlanningDocs(root, [
+    "docs/product/problem.md",
+    "docs/product/users.md",
+    "docs/product/outcomes.md",
+    "docs/product/requirements.md",
+    "docs/product/idea-backlog.md",
+  ]);
   return root;
 }
 
@@ -161,7 +166,7 @@ function writeLiteDiscovery(root) {
 }
 
 test("validateProductDocument rejects template placeholders", () => {
-  const content = fs.readFileSync(path.join(harnessRoot, "docs/product/problem.md"), "utf8");
+  const content = planningDocTemplate("docs/product/problem.md");
   const contract = JSON.parse(fs.readFileSync(path.join(harnessRoot, "harness/contracts/product-discovery.json"), "utf8"));
   const result = validateProductDocument("docs/product/problem.md", content, contract.tiers.full);
   assert.ok(result.errors.length > 0);
