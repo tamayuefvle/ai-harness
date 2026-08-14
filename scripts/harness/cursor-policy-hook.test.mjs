@@ -92,3 +92,17 @@ test("Cursor policy hook denies writes from whitespace-only or unknown explicit 
 test("Cursor policy hook still allows canonical harness rule source edits", () => {
   assert.deepEqual(invoke({ tool_name: "Write", tool_input: { path: "harness/rules/product.md", contents: "x" } }, { omitRole: true }), {});
 });
+
+test("Cursor policy hook denies when the policy loader fails because the project hook is fail-closed", () => {
+  const result = spawnSync(process.execPath, [hook], {
+    cwd: repoRoot,
+    input: JSON.stringify({ tool_name: "Write", tool_input: { path: "src/a.ts", contents: "x" } }),
+    encoding: "utf8",
+    env: { ...process.env, HARNESS_REPO_ROOT: path.join(repoRoot, "missing-policy-root") },
+    timeout: 5000,
+  });
+  assert.equal(result.status, 0, result.stderr);
+  const body = JSON.parse(result.stdout.trim());
+  assert.equal(body.permission, "deny");
+  assert.match(body.reason, /configured fail-closed/);
+});

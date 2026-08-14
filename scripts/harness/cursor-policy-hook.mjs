@@ -42,4 +42,4 @@ async function main(){
   process.stdout.write("{}\n");
   await new Promise(r=>setTimeout(r,60));
 }
-main().catch(async()=>{deny("Cursor policy hook failed; project permissions remain the primary hard boundary."); await new Promise(r=>setTimeout(r,60));});
+main().catch(async()=>{deny("Cursor policy hook failed; denying because the project hook is configured fail-closed."); await new Promise(r=>setTimeout(r,60));});

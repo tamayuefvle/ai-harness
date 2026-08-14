@@ -44,6 +44,7 @@ docs/architecture/ADR-0007-full-lifecycle-and-profiles.md
 docs/architecture/ADR-0008-coderabbit-advisory-review.md
 docs/architecture/ADR-0009-distribution-npm-substrate.md
 docs/architecture/ADR-0010-aws-deployment-profile.md
+docs/architecture/ADR-0011-provider-instruction-and-hook-trust-boundaries.md
 docs/architecture/CODEX.md
 docs/architecture/baseline.md
 docs/architecture/quality-strategy.md
@@ -54,6 +55,7 @@ docs/improvements/IMP-20260813-03.md
 docs/improvements/IMP-20260814-01.md
 docs/improvements/IMP-20260814-02.md
 docs/improvements/IMP-20260814-03.md
+docs/improvements/IMP-20260814-04.md
 docs/improvements/TEMPLATE.md
 docs/operations/.cursor/rules/operations.mdc
 docs/operations/CODEX.md
@@ -255,6 +257,16 @@ harness/schemas/verification.schema.json
 harness/skills/executor-fallback/SKILL.md
 harness/skills/product-discovery/SKILL.md
 harness/skills/stack-architecture/SKILL.md
+harness/templates/planning/architecture/baseline.md
+harness/templates/planning/architecture/quality-strategy.md
+harness/templates/planning/architecture/security-baseline.md
+harness/templates/planning/product/idea-backlog.md
+harness/templates/planning/product/outcomes.md
+harness/templates/planning/product/problem.md
+harness/templates/planning/product/requirements.md
+harness/templates/planning/product/technology-decision.md
+harness/templates/planning/product/technology-options.md
+harness/templates/planning/product/users.md
 harness/templates/project.bootstrap.json
 package-lock.json
 package.devDependencies.fragment.json
@@ -286,6 +298,7 @@ scripts/harness/check-cross-contracts.mjs
 scripts/harness/check-current-version.mjs
 scripts/harness/check-current-version.test.mjs
 scripts/harness/check-instruction-graph.mjs
+scripts/harness/check-instruction-graph.test.mjs
 scripts/harness/check-policy-projections.mjs
 scripts/harness/check-rules.mjs
 scripts/harness/ci-project-state.sh
@@ -295,6 +308,8 @@ scripts/harness/codex-decision.mjs
 scripts/harness/codex-discover.sh
 scripts/harness/codex-evaluate-stack.sh
 scripts/harness/codex-fallback-diagnose.sh
+scripts/harness/codex-hooks-list.mjs
+scripts/harness/codex-hooks-list.test.mjs
 scripts/harness/codex-implement.sh
 scripts/harness/codex-preflight.mjs
 scripts/harness/codex-preflight.test.mjs
@@ -348,6 +363,7 @@ scripts/harness/package-substrate.test.mjs
 scripts/harness/planning-doc-fixtures.mjs
 scripts/harness/planning-doc-fixtures.test.mjs
 scripts/harness/policy-lib.mjs
+scripts/harness/policy-lib.test.mjs
 scripts/harness/product-check.mjs
 scripts/harness/product-check.test.mjs
 scripts/harness/product-lib.mjs

@@ -1,4 +1,4 @@
-# AI Development Harness v14.9.3
+# AI Development Harness v14.9.4
 
 ## Standalone user harness
 
@@ -48,8 +48,9 @@ harness/rules/manifest.json
 
 ここから次を同時生成します。
 
-- 階層化された `AGENTS.md`
-- 階層化された `.cursor/rules/*.mdc`
+- shared root `AGENTS.md`
+- directory-specific `CODEX.md`
+- scoped `.cursor/rules/*.mdc`
 
 生成先を直接編集すると同期検査が失敗します。
 
@@ -100,7 +101,7 @@ AWS に出す場合は `deployment/vercel` の代わりに `deployment/aws` を�
 2. `implementer`: conditional one-AC workspace-write implementation
 3. `reviewer`: independent read-only review after verification
 
-各 `ai:*` launcher は最初に `codex:preflight` を実行します。project trust は診断のみで自動設定せず、repo-local MCP transport は完全定義のまま Chrome DevTools を disabled-by-default にします。
+各 `ai:*` launcher は最初に `codex:preflight` を実行します。preflight は repo-local config が effective であることと、`hooks/list` によって project hook が discovered / enabled / trusted であることを確認します。project/hook trust は人間判断であり、診断は read-only で自動設定しません。repo-local MCP transport は完全定義のまま Chrome DevTools を disabled-by-default にします。
 
 GitHub CodeRabbit App は任意の early defect-discovery layer です。repository 設定は `.coderabbit.yaml` を正本とし、Codex reviewer や canonical verification を置換しません。運用は `docs/workflow/GITHUB_INTEGRATION.md`、data handling と権限境界は `SECURITY.md` を参照してください。
 

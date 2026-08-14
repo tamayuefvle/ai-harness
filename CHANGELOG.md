@@ -1,5 +1,13 @@
 # Changelog
 
+## v14.9.4 - 2026-08-14
+
+- Removed retired nested `AGENTS.md` routing references from canonical rules and regenerated provider-specific projections.
+- Added a deterministic stale nested-AGENTS check against canonical rule sources.
+- Extended `codex:preflight` with a read-only `hooks/list` check that project hooks are discovered, enabled, and trusted.
+- Configured Cursor security-critical `preToolUse` hooks as `failClosed: true`.
+- Moved planning seed documents to canonical copies under `harness/templates/planning/*`.
+
 ## v14.9.3 - 2026-08-14
 
 - Isolated planning and profile harness tests from the live product documents and resolved profile state.

@@ -1,3 +1,28 @@
+# Migration to v14.9.4
+
+## From v14.9.3
+
+Compatible overlay. Overlay v14.9.4, then run:
+
+```bash
+npm run harness:generate
+npm run verify:harness
+```
+
+If you use Codex delegated `ai:*` commands, also run:
+
+```bash
+npm run codex:preflight
+```
+
+If hook trust is pending, open Codex `/hooks` and have a human review the current project hook definition. Do not write user trust files or bypass hook trust.
+
+Cursor `preToolUse` is now fail-closed. A hook crash, timeout, or invalid response blocks the action; that is expected.
+
+Planning seeds now live under `harness/templates/planning`. Existing filled `docs/product/*` and `docs/architecture/*` documents are mutable project state and are not overwritten.
+
+---
+
 # Migration to v14.9.3
 
 ## From v14.9.2
