@@ -2,34 +2,77 @@
 
 ## v14 provider projection and Cursor transport
 
-Shared policy is generated only to root `AGENTS.md`. Directory specialization is generated to `CODEX.md` for Codex and scoped `.cursor/rules/*.mdc` for Cursor, avoiding duplicate Cursor context. The source remains `harness/rules/*` plus its manifest.
+Shared policy is generated only to root `AGENTS.md`. Directory-specific nested `AGENTS.md` is not generated. Directory specialization is generated to `CODEX.md` for Codex and scoped `.cursor/rules/*.mdc` for Cursor, avoiding duplicate Cursor context. The source remains `harness/rules/*` plus its manifest.
 
-Cursor IDE and Cursor CLI are transports of one logical Cursor executor and share one bounded-strategy budget. `npm run cursor:preflight` checks the optional CLI and committed policy projections. An interactive Cursor IDE session has no `HARNESS_CURSOR_ROLE` and may write approved repository paths; during `DISCOVERY`, Cursor Agent mode writes the facilitated result to `docs/product/*`. Cursor Plan mode is a separate Cursor product read-only mode and cannot be used when the agent must write files. An explicit CLI read-only/reviewer role cannot write, while CLI implementer execution is confined to a linked worktree under the Git common directory, uses no auto-apply, and leaves the diff for human/agent inspection. Cursor Hooks are defense in depth; generated instruction projections and dangerous commands remain denied, and project permissions, worktree isolation, authorization, and human control points remain authoritative.
+Cursor IDE and Cursor CLI are transports of one logical Cursor executor and share one bounded-strategy budget. `npm run cursor:preflight` checks the optional CLI and committed policy projections. An interactive Cursor IDE session has no `HARNESS_CURSOR_ROLE` and may write approved repository paths; during `DISCOVERY`, Cursor Agent mode writes the facilitated result to `docs/product/*`. Cursor Plan mode is a separate Cursor product read-only mode and cannot be used when the agent must write files. An explicit CLI read-only/reviewer role cannot write, while CLI implementer execution is confined to a linked worktree under the Git common directory, uses no auto-apply, and leaves the diff for human/agent inspection. Cursor Hooks are deterministic policy gates for generated-instruction and dangerous-operation denials and are configured fail-closed. Complementary layers remain sandbox, approval controls, worktree isolation, authorization, and human control points.
 
 ## Instruction architecture
 
-ルート `AGENTS.md` は司令塔です。詳細ルールを保持せず、依頼と対象パスを分類して下位roleへ分岐します。
+ルート `AGENTS.md` は shared global policy です。詳細ルールを保持せず、依頼と対象パスを分類して provider-specific instruction へ分岐します。directory-specific nested `AGENTS.md` は生成しません。
 
-Codexは、Gitルートから現在の作業ディレクトリまでの `AGENTS.md` をinstruction chainとして読みます。深い階層の内容ほど対象に具体的です。
+Codex は次を読みます。
 
-Cursorでは、ルート `AGENTS.md` を司令塔として使い、各ディレクトリの `.cursor/rules` を下位roleの実行規約として自動attachさせます。下位 `AGENTS.md` とCursor Rulesは同じcanonical sourceから生成します。
+```text
+root AGENTS.md
++
+project_doc_fallback_filenames=["CODEX.md"]
++
+nearest CODEX.md
+```
+
+Cursor は次を使います。
+
+```text
+root AGENTS.md
++
+target glob に一致する scoped .cursor/rules/*.mdc
+```
+
+Codex / Cursor の projection はいずれも `harness/rules/*` から生成します。
 
 ## Example routes
+
+### Specs
 
 ```text
 docs/specs/PF-001/plan.md
 ├─ AGENTS.md
-├─ docs/AGENTS.md
-└─ docs/specs/AGENTS.md
+├─ docs/CODEX.md
+└─ docs/specs/CODEX.md
+Cursor:
+docs/.cursor/rules/00-docs-router.mdc
++
+docs/specs/.cursor/rules/spec-gates.mdc
+```
 
+### Application
+
+```text
 src/components/ProjectCard.tsx
 ├─ AGENTS.md
-├─ src/AGENTS.md
-└─ src/components/AGENTS.md
+└─ src/CODEX.md
+```
 
+Cursor:
+
+```text
+src/.cursor/rules/application.mdc
+```
+
+profile-selected 時。
+
+### E2E
+
+```text
 e2e/portfolio.spec.ts
 ├─ AGENTS.md
-└─ e2e/AGENTS.md
+└─ e2e/CODEX.md
+```
+
+Cursor:
+
+```text
+e2e/.cursor/rules/e2e.mdc
 ```
 
 経路確認:
@@ -62,7 +105,7 @@ npm run harness:route -- src/components/ProjectCard.tsx
 ## Recommended task flow
 
 1. ルート司令塔で依頼を分類する。
-2. 対象経路の下位roleを読む。
+2. 対象経路の provider-specific role を読む。
 3. `npm run task:new -- PF-001-slug "Title"` でactive specを作る。
 4. product / specs / architectureの必要経路で設計を固める。
 5. 独立branch / worktreeで実装し、implementation reportへ`test_discipline`証拠を記録する。

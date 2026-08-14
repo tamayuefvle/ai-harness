@@ -49,7 +49,7 @@ export function buildPolicyOutputs(repoRoot) {
         preToolUse: [{
           command: "node scripts/harness/cursor-policy-hook.mjs",
           matcher: "Shell|Write|StrReplace|Delete|CallMcpTool",
-          failClosed: false,
+          failClosed: true,
           timeout: 10,
         }],
       },

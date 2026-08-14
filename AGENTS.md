@@ -4,7 +4,7 @@
 
 ## Mission
 
-このリポジトリでは、企画・仕様・設計・実装・検証・リリース・運用を追跡可能な工程で進めます。ルートの役割は詳細規約を抱えることではありません。作業を分類し、適切な下位 `AGENTS.md` へ導き、工程ゲートと全体安全境界を守ることです。
+このリポジトリでは、企画・仕様・設計・実装・検証・リリース・運用を追跡可能な工程で進めます。ルートの役割は詳細規約を抱えることではありません。作業を分類し、対象パスの provider-specific instruction（Codex は `CODEX.md`、Cursor は scoped `.mdc`）へ導き、工程ゲートと全体安全境界を守ることです。
 
 ## Authority
 
@@ -13,7 +13,7 @@
 1. 現在の明示的なユーザー指示
 2. `docs/specs/_active.md` が指す active spec（設定されている場合）
 3. active spec の acceptance criteria
-4. 対象ファイルまでの `AGENTS.md` instruction chain
+4. root `AGENTS.md` と対象パスの provider-specific instruction chain
 5. 採用済み ADR
 6. 既存コードから推測した慣習
 
@@ -24,7 +24,7 @@
 作業開始時に、次の順序で判断します。
 
 1. 依頼の成果物と変更対象を特定する。
-2. 対象パスに最も近い `docs/*` またはドメイン `AGENTS.md` へ進む（詳細 routing は各 router rule を参照）。
+2. 対象パスの router rule に従い、該当ドメインの provider-specific instruction へ進む（詳細 routing は各 router rule を参照）。
 3. root `AGENTS.md` と、対象パスまでの provider-specific instruction（Codex は `CODEX.md`、Cursor は scoped `.mdc`）を読む。
 4. 複数領域にまたがる場合は、各経路の指示をすべて適用する。
 5. 規約が衝突した場合は、対象に最も近い下位指示を採用し、衝突を報告する。

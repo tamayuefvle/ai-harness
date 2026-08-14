@@ -1,8 +1,8 @@
 {
   "schemaVersion": "2.0.0",
   "name": "ai-harness",
-  "version": "14.9.3",
-  "sourceVersion": "14.9.2",
+  "version": "14.9.4",
+  "sourceVersion": "14.9.3",
   "lifecycleModeDefault": "full",
   "bootstrap": {
     "projectStateTemplate": "harness/templates/project.bootstrap.json",
@@ -109,11 +109,12 @@
     "Local human approval records require protected branches and external environment controls.",
     "Production release workflow verifies approval but does not deploy by itself.",
     "New-repository bootstrap creates only the harness npm substrate and does not approve a product stack or lifecycle transition.",
-    "Codex project trust is user-scoped and is never auto-written; codex:preflight must pass before delegated ai:* commands.",
+    "Codex project trust is user-scoped and is never auto-written; codex:preflight must confirm effective repo-local config plus current project hook discovered, enabled, and trusted before delegated ai:* commands.",
     "GitHub context requires an intended HTTPS origin and reports bounded unavailability reason codes without stderr or tokens.",
     "Cursor CLI is optional; live provider authentication and permission behavior must be verified on a workstation with the CLI installed.",
-    "Cursor Hooks are defense in depth; explicit non-implementer CLI roles are write-denied, while an unset or empty role identifies an interactive IDE session and project permissions remain the primary boundary.",
+    "Cursor security-critical preToolUse hooks are fail-closed. Complementary layered controls are CLI permissions, IDE approvals, sandbox/worktree isolation, and hook policy; explicit non-implementer CLI roles are write-denied, while an unset or empty role identifies an interactive IDE session.",
     "Directory-scoped generated AGENTS.md files are retired; Codex specialization uses CODEX.md while Cursor uses scoped .mdc rules.",
+    "Planning seed documents have canonical copies under harness/templates/planning; harness tests read those templates directly while live docs/product and docs/architecture files remain mutable project state after bootstrap.",
     "CodeRabbit GitHub App is optional and advisory; the core lifecycle works without it, repository configuration is canonical in .coderabbit.yaml, and it does not replace Codex independent review.",
     "The distribution ships a private harness npm substrate (package.json + package-lock.json) so post-root CI can reach ready. Overlaying onto an existing application must merge fragments and must not overwrite that application's package metadata; when package.json name is not ai-harness, verify:harness checks the fragment merge instead of exact substrate identity.",
     "deployment/aws records AWS hosting intent only; it does not create an AWS account, IAM principal, cloud resource, or deployment, and it does not add AWS SDK/CLI to the harness substrate."
@@ -155,7 +156,7 @@
     "optional": true,
     "logicalExecutor": "cursor",
     "transport": "cursor-cli",
-    "primarySafetyBoundary": "project permissions plus harness-managed Git-common-dir worktree isolation",
+    "primarySafetyBoundary": "layered project permissions, fail-closed policy hook, approval, and harness-managed Git-common-dir worktree isolation",
     "autoApply": false,
     "acpEnabledByDefault": false
   }

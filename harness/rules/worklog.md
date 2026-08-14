@@ -13,7 +13,7 @@
 - Never record secrets, tokens, personal data, raw external tool output, or generated report bodies.
 - Evidence paths must be existing repository-relative files. `.harness/reports/` remains the evidence source; worklog entries reference evidence rather than duplicating it.
 - Actor, task ID, verification value, length, control characters, Markdown/HTML structure, secret-like values, and paths are validated by the CLI.
-- Generated `docs/worklog/AGENTS.md` and Cursor rules must not be edited directly.
+- Generated `docs/worklog/CODEX.md` and Cursor rules must not be edited directly.
 
 ## Correction contract
 

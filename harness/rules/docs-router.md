@@ -6,11 +6,11 @@
 
 ## Route
 
-- プロダクトの目的、対象者、価値、情報構造: `product/AGENTS.md`
-- active task、要求、受入条件、計画、レビュー証拠: `specs/AGENTS.md`
-- 技術選定、依存、設計上のトレードオフ: `architecture/AGENTS.md`
-- デプロイ、運用、障害対応、Definition of Done: `operations/AGENTS.md`
-- 作業履歴、過去判断、セッション継続: `worklog/AGENTS.md`
+- プロダクトの目的、対象者、価値、情報構造: `product/CODEX.md` / `product/.cursor/rules/product.mdc`
+- active task、要求、受入条件、計画、レビュー証拠: `specs/CODEX.md` / `specs/.cursor/rules/spec-gates.mdc`
+- 技術選定、依存、設計上のトレードオフ: `architecture/CODEX.md` / `architecture/.cursor/rules/architecture.mdc`
+- デプロイ、運用、障害対応、Definition of Done: `operations/CODEX.md` / `operations/.cursor/rules/operations.mdc`
+- 作業履歴、過去判断、セッション継続: `worklog/CODEX.md` / `worklog/.cursor/rules/worklog.mdc`
 - Cursor / Codex の役割分担やhandoff: `workflow/`。ルートの指示と矛盾させない。
 
 ## Documentation contract
