@@ -16,7 +16,7 @@ Allowed fixed commands are `git rev-parse`, `git remote get-url origin`, `gh --v
 
 ## Write path
 
-Only the packager may prepare a push proposal. After approved plan and recorded implementation evidence, a clean feature branch may be proposed for its initial push and PR creation so remote checks can run. Final release still requires verification and independent review. `scripts/github/prepare-push.mjs` performs no external write and execution requires explicit human approval. Never automate protected-branch push, force push, merge, workflow dispatch, release mutation, secret, variable or environment changes.
+Only the packager may prepare a push proposal. After an approved Design Baseline and recorded implementation evidence, a clean feature branch may be proposed for its initial push and PR creation so remote checks can run. Final release still requires verification and independent review. `scripts/github/prepare-push.mjs` performs no external write and execution requires explicit human approval. Never automate protected-branch push, force push, merge, workflow dispatch, release mutation, secret, variable or environment changes.
 
 ## Canonical sources
 

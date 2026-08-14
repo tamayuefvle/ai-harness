@@ -54,7 +54,7 @@ function fixture() {
   run.integrityHash=computeRunIntegrity(run); return {dir,run};
 }
 
-test("resume uses persisted canonical state, not chat memory, and rejects stale plan", () => {
+test("resume uses persisted canonical state, not chat memory, and rejects stale design", () => {
   const {dir,run}=fixture();
   assert.equal(validateResume(dir,run),true);
   const gate=JSON.parse(fs.readFileSync(path.join(dir,"docs/specs/DEV-001-example/gate.json"),"utf8")); gate.designApproval.contractHash="b".repeat(64); fs.writeFileSync(path.join(dir,"docs/specs/DEV-001-example/gate.json"),JSON.stringify(gate));

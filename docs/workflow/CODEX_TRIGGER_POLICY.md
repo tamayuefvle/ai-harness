@@ -8,7 +8,7 @@ Cursor is the interactive orchestrator. Codex is used as a bounded specialist so
 Planning: Cursor + human
   └─ optional Codex read-only planning/research
 Design: Cursor + human
-  └─ optional Codex researcher / stack-architecture facilitation
+  └─ optional Codex researcher / design facilitation
 Development: Cursor or bounded Codex implementer
 Verification: deterministic commands
 Independent review: separate Codex reviewer when required

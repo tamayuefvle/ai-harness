@@ -108,7 +108,7 @@
     "preconditions": [
       "checkpoint-integrity-valid",
       "lifecycle-state-compatible",
-      "approved-plan-digest-current",
+      "approved-design-digest-current",
       "invariant-manifest-digest-current",
       "required-operation-approval-valid",
       "ambiguous-external-write-reconciled"
