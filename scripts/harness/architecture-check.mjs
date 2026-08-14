@@ -12,7 +12,7 @@ export function runArchitectureCheck(repoRoot = canonicalRoot, options = {}) {
   if (!project && !options.strict) {
     throw new Error("harness/project.json is missing.");
   }
-  if (["MIGRATION_PENDING", "DISCOVERY", "PRODUCT_APPROVED"].includes(project?.state) && !options.forGate && !options.strict) {
+  if (["MIGRATION_PENDING", "PLANNING"].includes(project?.state) && !options.forGate && !options.strict) {
     return { status: "skipped", reason: project.state };
   }
   const result = validateArchitectureDocuments(repoRoot);

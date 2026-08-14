@@ -5,8 +5,8 @@
   "required": [
     "schemaVersion",
     "taskId",
-    "specApproval",
-    "planApproval",
+    "scopeApproval",
+    "designApproval",
     "implementation",
     "verification",
     "review",
@@ -18,23 +18,27 @@
       "type": "string"
     },
     "schemaVersion": {
-      "const": "1.1.0"
+      "const": "2.0.0"
     },
     "taskId": {
       "type": "string",
       "pattern": "^[A-Z][A-Z0-9]*-[0-9]{3,}(?:-[a-z0-9][a-z0-9-]*)?$",
       "$comment": "taskId.pattern is generated from harness/contracts/task-id.json; run npm run harness:generate"
     },
-    "specApproval": {
+    "scopeApproval": {
       "$ref": "#/$defs/approval"
     },
-    "planApproval": {
+    "designApproval": {
       "allOf": [
         {
           "$ref": "#/$defs/approval"
         },
         {
           "type": "object",
+          "required": [
+            "baselineSha",
+            "designDocument"
+          ],
           "properties": {
             "baselineSha": {
               "type": [
@@ -42,6 +46,13 @@
                 "null"
               ],
               "pattern": "^[0-9a-f]{40}$"
+            },
+            "designDocument": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "pattern": "^docs/specs/[A-Za-z0-9._-]+/(design|plan)\\.md$"
             }
           }
         },
@@ -60,6 +71,10 @@
               "baselineSha": {
                 "type": "string",
                 "pattern": "^[0-9a-f]{40}$"
+              },
+              "designDocument": {
+                "type": "string",
+                "pattern": "^docs/specs/[A-Za-z0-9._-]+/(design|plan)\\.md$"
               }
             }
           }
@@ -73,7 +88,8 @@
         "reportPath",
         "reportSha256",
         "changeFingerprint",
-        "recordedAt"
+        "recordedAt",
+        "designBaselineHash"
       ],
       "properties": {
         "status": {
@@ -101,6 +117,9 @@
             "null"
           ],
           "format": "date-time"
+        },
+        "designBaselineHash": {
+          "$ref": "#/$defs/nullableDigest"
         }
       },
       "additionalProperties": false
@@ -400,7 +419,7 @@
             "properties": {
               "approvedBy": {
                 "type": "string",
-                "minLength": 1
+                "pattern": "^human:[^\\s]+$"
               },
               "approvedAt": {
                 "type": "string",

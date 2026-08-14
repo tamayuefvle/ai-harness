@@ -33,8 +33,8 @@ const readIfExists = (name) => {
 
 const brief = readIfExists("brief.md");
 const acceptance = readIfExists("acceptance.md");
-const plan = readIfExists("plan.md");
-const combined = `${brief}\n${acceptance}\n${plan}`;
+const design = readIfExists("design.md") || readIfExists("plan.md");
+const combined = `${brief}\n${acceptance}\n${design}`;
 
 const pathMatches = [...combined.matchAll(/`([^`\n]+\.[a-zA-Z0-9]+)`/g)]
   .map((match) => match[1])
@@ -81,9 +81,9 @@ const reasons = [];
 let command = null;
 
 if (phase === "research") {
-  if (!["SPEC_READY", "PLAN_READY"].includes(status)) {
+  if (status !== "DESIGNING") {
     decision = "blocked";
-    reasons.push(`Research is expected from SPEC_READY; current status is ${status}.`);
+    reasons.push(`Design research is expected from DESIGNING; current status is ${status}.`);
   } else {
     const score =
       (uniquePaths.length >= 5 ? 2 : 0) +
@@ -106,9 +106,9 @@ if (phase === "research") {
 }
 
 if (phase === "implementation") {
-  if (!["PLAN_READY", "IMPLEMENTING"].includes(status)) {
+  if (status !== "DEVELOPING") {
     decision = "blocked";
-    reasons.push(`Implementation requires PLAN_READY or IMPLEMENTING; current status is ${status}.`);
+    reasons.push(`Implementation requires DEVELOPING; current status is ${status}.`);
   } else {
     const score =
       (uniquePaths.length >= 5 ? 2 : 0) +
@@ -125,10 +125,10 @@ if (phase === "implementation") {
       reasons.push("Cross-file or cross-role consistency is likely required.");
     } else {
       decision = "cursor_preferred";
-      reasons.push("The planned change appears local enough for Cursor.");
+      reasons.push("The designed change appears local enough for Cursor.");
     }
 
-    reasons.push(`${uniquePaths.length} planned file path(s), ${roots.size} role root(s).`);
+    reasons.push(`${uniquePaths.length} designed file path(s), ${roots.size} role root(s).`);
     command = decision === "recommended" ? "npm run ai:implement -- AC-xxx" : null;
   }
 }

@@ -71,7 +71,7 @@ export function assertProjectAllowsDelivery(repoRoot = canonicalRoot) {
   if (project.state !== "ACTIVE") {
     throw new Error(
       `Full lifecycle mode blocks delivery tasks while project state is ${project.state}. ` +
-      "Complete product discovery first (npm run project:discover, fill docs/product/*, npm run project:gate -- --to PRODUCT_APPROVED ...), " +
+      "Complete planning and design first (npm run project:plan, publish docs/product/*, record planning/design gates), " +
       "then stack/architecture approval until ACTIVE.",
     );
   }

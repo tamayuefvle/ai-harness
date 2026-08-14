@@ -55,8 +55,8 @@ export function readProject(repoRoot) {
 }
 
 export function getDiscoveryTier(project, overrideTier = null) {
-  const tier = overrideTier ?? project?.discoveryTier ?? "full";
-  if (!["lite", "full"].includes(tier)) throw new Error(`Unsupported discovery tier: ${tier}`);
+  const tier = overrideTier ?? project?.planningTier ?? project?.discoveryTier ?? "full";
+  if (!["lite", "full"].includes(tier)) throw new Error(`Unsupported planning tier: ${tier}`);
   return tier;
 }
 
@@ -437,15 +437,15 @@ export function discoveryProgress(repoRoot) {
     return {
       state,
       projectId: project.projectId,
-      discoveryTier: tier,
-      nextAction: "npm run project:discover [--tier lite|full]",
+      planningTier: tier,
+      nextAction: "npm run project:plan -- --tier lite|full",
       blockers: [],
       sections: [],
-      note: "Choose greenfield discovery or complete migration path before delivery tasks.",
+      note: "Choose greenfield planning or complete the migration path before delivery tasks.",
     };
   }
 
-  if (state === "DISCOVERY") {
+  if (state === "PLANNING") {
     const check = validateDiscoverySet(repoRoot, { tier });
     for (const relative of DISCOVERY_DOCUMENTS) {
       const docErrors = check.errors.filter((error) => error.startsWith(relative));
@@ -466,18 +466,18 @@ export function discoveryProgress(repoRoot) {
       if (!nextAction) nextAction = "Fix idea/outcome/decision traceability in requirements and decisions/";
     }
     if (check.ok) {
-      nextAction = `npm run product:check && npm run project:gate -- --to PRODUCT_APPROVED --actor human:<name> --reason "..."`;
+      nextAction = `npm run product:check && npm run project:gate -- --gate planning --actor human:<name> --reason "..." && npm run project:advance -- --to DESIGNING`;
     }
-    return { state, projectId: project.projectId, discoveryTier: tier, nextAction, blockers, sections };
+    return { state, projectId: project.projectId, planningTier: tier, nextAction, blockers, sections };
   }
 
   return {
     state,
     projectId: project.projectId,
-    discoveryTier: tier,
-    nextAction: state === "PRODUCT_APPROVED"
-      ? "npm run design:status — continue stack selection (docs/workflow/STACK_ARCHITECTURE.md)"
-      : "See docs/workflow/PRODUCT_DISCOVERY.md, STACK_ARCHITECTURE.md, and FULL_LIFECYCLE.md",
+    planningTier: tier,
+    nextAction: state === "DESIGNING"
+      ? "npm run design:status — continue project design"
+      : "See docs/workflow/PLANNING.md, DESIGN.md, and FULL_LIFECYCLE.md",
     blockers,
     sections,
   };
@@ -485,5 +485,5 @@ export function discoveryProgress(repoRoot) {
 
 export function productCheckApplicable(project) {
   if (!project) return false;
-  return ["DISCOVERY", "PRODUCT_APPROVED", "STACK_APPROVED", "ARCHITECTURE_APPROVED", "ACTIVE"].includes(project.state);
+  return ["PLANNING", "DESIGNING", "ACTIVE"].includes(project.state);
 }

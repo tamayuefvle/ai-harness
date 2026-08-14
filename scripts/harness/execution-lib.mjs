@@ -2,7 +2,7 @@ import crypto from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
 import { schemaFor, validateAgainstSchema } from "./artifact-validator.mjs";
-import { parseAllowedPaths } from "./lifecycle-gates.mjs";
+import { parseAllowedPaths, designDocumentPath } from "./lifecycle-gates.mjs";
 
 export function readJson(file) {
   return JSON.parse(fs.readFileSync(file, "utf8"));
@@ -142,7 +142,7 @@ export function assertCurrentLifecycleBinding(repoRoot, run) {
     const active = parseActiveTask(repoRoot);
     if (active.activeSpec !== run.lifecycleRef.id || active.status !== run.lifecycleRef.state) throw new Error(`Lifecycle state changed since checkpoint: ${run.lifecycleRef.id}/${run.lifecycleRef.state} -> ${active.activeSpec}/${active.status}`);
     const gate = readJson(path.join(repoRoot, "docs/specs", run.lifecycleRef.id, "gate.json"));
-    if (gate.planApproval?.status !== "approved" || gate.planApproval.contractHash !== run.approvedPlanDigest) throw new Error("Approved plan digest is stale or no longer approved.");
+    if (gate.designApproval?.status !== "approved" || gate.designApproval.contractHash !== run.approvedDesignDigest) throw new Error("Approved design digest is stale or no longer approved.");
     return true;
   }
   throw new Error(`Runtime CLI does not yet derive canonical approval binding for lifecycle kind ${run.lifecycleRef.kind}.`);
@@ -167,11 +167,11 @@ export function deriveScopeConditions(repoRoot, run) {
   const target = run.pendingOperation?.target ?? "";
   const isExternalTarget = /^[a-z][a-z0-9+.-]*:/i.test(target);
   if (isExternalTarget) return ["work-scope-match"];
-  const planFile = path.join(repoRoot, "docs/specs", run.lifecycleRef.id, "plan.md");
-  if (!fs.existsSync(planFile) || fs.lstatSync(planFile).isSymbolicLink()) throw new Error("Approved plan.md is required to derive work-scope evidence.");
+  const planFile = designDocumentPath(repoRoot, run.lifecycleRef.id);
+  if (!fs.existsSync(planFile) || fs.lstatSync(planFile).isSymbolicLink()) throw new Error("Approved design document is required to derive work-scope evidence.");
   const allowed = parseAllowedPaths(fs.readFileSync(planFile, "utf8"));
   if (!targetWithinApprovedScope(target, allowed, run.lifecycleRef.id)) {
-    throw new Error(`Pending operation target is outside approved plan scope: ${target}`);
+    throw new Error(`Pending operation target is outside approved design scope: ${target}`);
   }
   return ["work-scope-match", "approved-path-match"];
 }

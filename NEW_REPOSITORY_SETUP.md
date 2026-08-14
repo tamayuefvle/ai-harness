@@ -1,4 +1,4 @@
-# New Repository Setup — v14.9.4
+# New Repository Setup — v15.0.0
 
 > 対象: **このハーネスを Git リポジトリへ新規配置したが、Git root に製品用 `package.json` がまだ存在しない場合**。配布物自身はハーネス基板の `package.json` を同梱する。
 >
@@ -23,14 +23,14 @@ Bootstrap 完了後、`harness/project.json` は通常 `MIGRATION_PENDING` で�
 
 | Path | いつ使うか | 最初のコマンド |
 |---|---|---|
-| **Greenfield product** | 新規 product を企画から作る | `npm run project:discover [--tier lite\|full]` → `docs/workflow/PRODUCT_DISCOVERY.md` → `docs/workflow/STACK_ARCHITECTURE.md` |
+| **Greenfield product** | 新規 product を企画から作る | `npm run project:plan [--tier lite\|full]` → `docs/workflow/PLANNING.md` → `docs/workflow/DESIGN.md` |
 | **Legacy migration** | 既存 v11/v12 資産を一括移行する | `MIGRATION.md` の migration 手順 |
 
 Greenfield では `task:start` や実装 task を **`ACTIVE` 到達前** に開始しません。企画は `npm run product:status`、設計は `npm run design:status` で次手を確認します。設計対話の記録は `npm run ai:evaluate-stack`（Codex read-only）です。
 
 ## 0.0.1 配布物に基板が既にある場合
 
-この配布物はハーネス専用の private `package.json`（version はハーネス版、現在 `14.9.4`）と `package-lock.json` を同梱する。これは製品ランタイムではない。空 root 向け `bootstrap --write` が作る `0.0.0` とは別物である。新規 product として clone した直後はこの基板を維持できるが、製品 metadata を引き取るときは `package.json.name` を変更する。その後も `verify:harness` は fragment merge を検査するハーネス gate である。
+この配布物はハーネス専用の private `package.json`（version はハーネス版、現在 `15.0.0`）と `package-lock.json` を同梱する。これは製品ランタイムではない。空 root 向け `bootstrap --write` が作る `0.0.0` とは別物である。新規 product として clone した直後はこの基板を維持できるが、製品 metadata を引き取るときは `package.json.name` を変更する。その後も `verify:harness` は fragment merge を検査するハーネス gate である。
 
 | 状況 | 手順 |
 |---|---|
@@ -62,7 +62,7 @@ LLM は次を**自動完了扱いしない**。未完了なら案内して一時
 
 | # | 人間操作 | LLM が聞いてよいこと | 勝手にしてはいけないこと | 扱い |
 |---|---|---|---|---|
-| 7 | Codex project / hook trust | project trust、current project hook trust、hook enable するか／Codex 未使用で not applicable とするか | user trust settings への直接書込み、trust 流用・捏造、hook trust bypass | `project_config_not_effective` / `project_hook_not_trusted` / `project_hook_disabled` / `project_hooks_not_discovered` / `hook_status_unavailable` / `project_hook_definition_mismatch` なら §5.1 を出して**一時停止**。ユーザーが「未使用／not applicable」と答えたら §6 以降へ続行可。`ai:*` 前は PASS 必須 |
+| 7 | Codex project / hook trust | project と現在の project hook を trust するか／Codex 未使用で not applicable とするか | user trust 設定への直接書込み、trust 流用・捏造、hook trust bypass | trust/effective-config/hook-status FAIL なら §5.1 を出して**一時停止**。ユーザーが「未使用／not applicable」と答えたら §6 以降へ続行可。`ai:*` 前は PASS 必須 |
 | 8 | GitHub HTTPS origin 確定 | 意図した HTTPS URL の提示依頼 | URL / owner/repo の推測による `git remote add` | §5.2 テンプレで**停止して案内** |
 | 9 | `gh` 認証 | `gh auth login` 等の案内（token は要求しない） | token の表示・repo 保存・commit | origin 問題と分離して**停止して案内** |
 | 10 | 初回 push 判断 | push してよいか（origin/auth 確立後） | 明示依頼なしの push、force push | **完了報告に残す**／依頼時のみ実行 |
@@ -79,7 +79,7 @@ AWS アカウント・IAM・CLI は bootstrap 対象外。`deployment/aws` を�
 | 14 | 製品依存・`create-*` CLI 等の許可 | foundation 内で追加してよいか | bootstrap 中の製品依存追加、無断 `create-*` / curl-pipe-shell | foundation 内で都度確認 |
 | 15 | Cursor 側確認 | rules / React Doctor plugin 等の確認依頼 | 生成済み rules の直接編集 | **完了報告に残す** |
 
-**混同禁止:** bootstrap 成功条件（`package.json` + 単一 npm lockfile + `verify:harness` PASS + hooks）と、Codex delegated `ai:*` 前の追加条件（project trust / effective config / hook discovery / hook enabled / hook current definition trusted）は別である。後者の FAIL だけで前者を失敗扱いにしない。Codex を使わない場合は `not applicable` が可能。ただし後から `ai:*` を使う前には必須。詳細は §11。
+**混同禁止:** bootstrap 成功条件（`package.json` + 単一 npm lockfile + `verify:harness` PASS + hooks）と、`ai:*` 前必須条件（Codex project / hook trust と effective config PASS）は別である。後者の FAIL だけで前者を失敗扱いにしない。詳細は §11。
 
 ## 1. 最初に読むファイル
 
@@ -241,80 +241,72 @@ git diff --check
 - `verify:harness` が PASS する。
 - `core.hooksPath` が `.githooks`。
 - Codex CLI 未導入だけを理由とする doctor warning は記録してよいが、その他の FAIL を無視しない。
-- `harness:doctor` / `codex:preflight` が `project_config_not_effective`、`project_hook_not_trusted`、`project_hook_disabled`、`project_hooks_not_discovered`、`hook_status_unavailable`、または linked worktree の `project_hook_definition_mismatch` で FAIL した場合は、自動修復せず **§5.1 の人間操作案内をユーザーへ提示して一時停止**する。ユーザーが「Codex 未使用なので not applicable」と答えた場合に限り、trust 未確立のまま §6 以降（lifecycle 確認・完了報告）へ進んでよい。`ai:*` は PASS するまで使わない。
+- `harness:doctor` / `codex:preflight` が `project_config_not_effective`、`project_hook_not_trusted`、`project_hook_disabled`、`project_hooks_not_discovered`、`hook_status_unavailable` で FAIL した場合は、自動修復せず **§5.1 の人間操作案内をユーザーへ提示して一時停止**する。ユーザーが「Codex 未使用なので not applicable」と答えた場合に限り、trust 未確立のまま §6 以降（lifecycle 確認・完了報告）へ進んでよい。`ai:*` は PASS するまで使わない。
 - この段階ではアプリケーションがまだないため、`verify:all`、build、E2E、React Doctor full scan を無理に成功させようとしない。
 
 `verify:harness` が FAIL したら、製品開発へ進まず、原因を修正または報告する。
 
-### 5.1 Codex を使う場合は project / hook trust を確立する
+### 5.1 Codex を使う場合は project / hook trust と effective config を確立する
 
-`ai:research` / `ai:implement` / `ai:review` を使用する場合、ファイル存在だけでは不十分。Codex は未信頼 project の repo-local `.codex/config.toml` を無効化し、project safety hook も discovered / enabled / trusted でなければ delegated `ai:*` を許可しない。次を実行する。
+`ai:research` / `ai:implement` / `ai:review` を使用する場合、ファイル存在だけでは不十分。Codex は未信頼 project の repo-local config を有効化せず、非managed project hook は現在の定義を人間が trust するまで実行しないため、次を実行する。
 
 ```bash
 npm run codex:preflight
 ```
 
-#### Codex 利用者向け flow
+preflight は user config を直接解析・変更せず、Codex の effective config と `codex app-server` の read-only `hooks/list` を使って現在状態を確認する。PASS 条件は少なくとも次のとおり。
 
-1. repository root で Codex を対話起動する
-2. project trust prompt があれば人間が判断する
-3. Codex 内で `/hooks` を開く
-4. repository の現在の hook definition を確認する
-5. untrusted / disabled なら人間が trust / enable を判断する
-6. `npm run codex:preflight`
-7. PASS 後のみ `ai:*` を利用する
-
-禁止:
-
-- user trust 設定の手書き
-- 別 repository の trust 流用
-- LLM による trust 設定書込み
-- hook trust bypass（`--dangerously-bypass-hook-trust`）を通常運用にする
+- repo-local `.codex/config.toml` が effective。
+- `chrome_devtools` MCP が存在し disabled-by-default。
+- repository の `.codex/hooks.json` が Codex に発見されている。
+- project hook が enabled。
+- unmanaged project hook の現在の定義が `trusted`。
 
 #### LLM の停止と人間操作案内
 
-次の reasonCode（または doctor が同等の FAIL）のとき、LLM は user-level trust file を**読まない・書かない・推測で捏造しない**。案内を出して一時停止し、(A) trust/enable 完了後の再 preflight PASS、または (B) Codex 未使用の `not applicable` を待つ。
+trust / hook status 関連の FAIL では次を守る。
 
-- `project_config_not_effective`: repository root で Codex を対話起動し、project trust を人間が判断する。
-- `project_hook_not_trusted`: `/hooks` で現在の定義をレビューし、人間が trust を判断する。
-- `project_hook_disabled`: `/hooks` で対象 hook を確認し、人間が enable を判断する。
-- `project_hooks_not_discovered`: `.codex/hooks.json`、Codex version、project trust、`/hooks` discovery state を確認する。
-- `project_hook_definition_mismatch`: linked worktree で root checkout 側 `.codex/hooks.json` と current worktree 側が異なる。root checkout 側を同期してから再確認する。
-- `hook_status_unavailable`: Codex app-server の hook status を取得できない。status を検証できるまで fail-closed。
-- `config_invalid_transport`: partial CLI override で逃げない。complete MCP transport table / Codex version/config を確認する。詳細は `docs/workflow/MCP_SETUP.md`。
+1. `~/.codex/config.toml` 等の user-level trust を**読まない・書かない・推測で捏造しない**。
+2. hook trust を通常運用で bypass しない。
+3. 下の案内をユーザーへ出し、次のいずれかの回答を待つ。
+   - (A) 人間が project / hook trust を確認した → `npm run codex:preflight` を再実行し PASS を確認。
+   - (B) Codex を当面使わない → 項目を `not applicable` と記録し、§6 以降へ続行可。ただし `ai:*` は禁止。
+4. PASS になるまで `ai:research` / `ai:implement` / `ai:review` を使わない。
 
-ユーザーへ提示すべき案内（そのまま使える文面）:
+ユーザーへ提示すべき案内:
 
 ```text
-Codex の project / hook trust が未確立です（reasonCode を報告に記載）。
+Codex の project / hook trust checkpoint が未完了です（reasonCode: <reasonCode>）。
 これは人間のセキュリティ判断です。LLM/ハーネスは自動では trust しません。
 
-【選択してください】
-(A) Codex / ai:* を使う → 下の手順を実施する
-(B) 当面 Codex を使わない → この項目を not applicable とし、bootstrap の残工程（lifecycle 確認・完了報告）へ進めてよい
-    ※ 後から ai:* を使う前には必ず (A) に戻る
+(A) Codex / ai:* を使う
+  1. repository root で Codex を対話起動する
+  2. project trust を求められた場合は内容を確認して自分で判断する
+  3. Codex 内で `/hooks` を開き、repository の現在の hook 定義を確認する
+  4. 未trust / disabled なら内容を確認した人間だけが trust / enable を選択する
+  5. `npm run codex:preflight` を再実行し PASS を確認する
 
-【(A) 人間が行うこと】
-1. この repository の Git root で Codex を対話起動する
-   例: リポジトリ根で `codex`
-2. Codex が project trust を尋ねたら、この repository を信頼するか自分で判断する
-3. Codex 内で /hooks を開き、現在の project hook definition を確認する
-4. untrusted / disabled なら、人間が trust / enable を判断する
-5. 同じ terminal で次を再実行する
-   npm run codex:preflight
-6. PASS になるまで ai:research / ai:implement / ai:review を使わない
+(B) 当面 Codex を使わない
+  この checkpoint を not applicable とし bootstrap の残工程へ進む。ai:* は使わない。
 
-【やってはいけないこと】
-- ~/.codex/config.toml や user trust file へ trust を手書き・コピーして「直した」ことにする
-- 別 repository の trust 設定を流用する
-- LLM に user config の書込みを依頼する
-- --dangerously-bypass-hook-trust を通常運用にする
+禁止:
+- user trust 設定を手書き・コピーして直したことにする
+- 別 repository の trust を流用する
+- LLM に trust 設定を書かせる
+- hook trust bypass を通常運用の解決策にする
 ```
 
-#### その他の判定
+#### reasonCode の扱い
 
-- 成功時、`chrome_devtools` は Codex の effective config に存在し、**disabled-by-default** でなければならない。ブラウザ証拠は別の明示 workflow で扱う。
-- project/hook trust はマシン／ユーザー単位であり、repository 配布物には含まれない。新しい clone・別ユーザー・別ホストでは、同じ人間操作が再必要になる。
+- `project_config_not_effective`: Codex を repository root で対話起動し、project trust を人間が判断する。
+- `project_hook_not_trusted`: `/hooks` で現在の project hook 定義をレビューし、人間が trust を判断する。
+- `project_hook_disabled`: `/hooks` で意図した project hook か確認し、人間が enable を判断する。
+- `project_hooks_not_discovered`: `.codex/hooks.json`、Codex version、project trust、`/hooks` の発見状態を確認する。
+- `project_hook_definition_mismatch`: linked worktree で Codex が root checkout 側 `.codex/hooks.json` を使っているが、現在worktreeの定義と一致しない。root checkout側を同期してから再確認する。
+- `hook_status_unavailable`: Codex app-server の hook status を取得できていない。Codex の導入・version・実行状態を修正し、状態を検証できるまで fail-closed とする。
+- `config_invalid_transport`: partial override で回避せず、完全な MCP transport table と Codex version/config を確認する。詳細は `docs/workflow/MCP_SETUP.md`。
+
+trust はマシン／ユーザー単位であり repository 配布物には含まれない。新しい clone・別ユーザー・別ホストでは再確認が必要である。
 
 選択肢 (B) または当初から Codex CLI を使わない運用なら、この項目は `not applicable` として記録できる。ただし後から `ai:*` を使う前には必須。
 
@@ -383,7 +375,7 @@ cat harness/generated/profile-resolution.json
 
 - `docs/product/vision.md`
 - `docs/product/scope.md`
-- `docs/product/technology-decision.md`
+- `docs/architecture/technology-decision.md`
 - `docs/architecture/baseline.md`
 - `harness/generated/profile-resolution.json`
 
@@ -582,4 +574,4 @@ Next recommended action:
 
 **成功条件（bootstrap）:** `package.json` と単一 npm lockfile が確立し、`verify:harness` が PASS し、Git hook が有効で、project state / profile / 次の承認事項が明示されていること。製品 stack の無承認導入は成功条件に含まれない。
 
-**成功条件に含めないもの:** Codex trust の PASS。これは `ai:*` 利用前の必須条件であり、Codex 未使用の bootstrap 成功条件には含めない。
+**成功条件に含めないもの:** Codex project / hook trust の PASS。これは `ai:*` 利用前の必須条件であり、Codex 未使用の bootstrap 成功条件には含めない。

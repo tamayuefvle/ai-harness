@@ -7,6 +7,7 @@
     "projectId",
     "lifecycleMode",
     "state",
+    "phaseGates",
     "pendingApproval",
     "decisionRefs",
     "activeProfiles",
@@ -16,7 +17,7 @@
   ],
   "properties": {
     "schemaVersion": {
-      "const": "1.0.0"
+      "const": "2.0.0"
     },
     "projectId": {
       "type": "string",
@@ -31,13 +32,35 @@
     "state": {
       "enum": [
         "MIGRATION_PENDING",
-        "DISCOVERY",
-        "PRODUCT_APPROVED",
-        "STACK_APPROVED",
-        "ARCHITECTURE_APPROVED",
+        "PLANNING",
+        "DESIGNING",
         "ACTIVE",
         "RETIRED"
       ]
+    },
+    "phaseGates": {
+      "type": "object",
+      "required": [
+        "planning",
+        "stack",
+        "architecture",
+        "design"
+      ],
+      "properties": {
+        "planning": {
+          "$ref": "#/$defs/approvalGate"
+        },
+        "stack": {
+          "$ref": "#/$defs/approvalGate"
+        },
+        "architecture": {
+          "$ref": "#/$defs/approvalGate"
+        },
+        "design": {
+          "$ref": "#/$defs/approvalGate"
+        }
+      },
+      "additionalProperties": false
     },
     "pendingApproval": {
       "type": [
@@ -104,6 +127,12 @@
         "null"
       ]
     },
+    "planningTier": {
+      "enum": [
+        "lite",
+        "full"
+      ]
+    },
     "discoveryTier": {
       "enum": [
         "lite",
@@ -115,6 +144,10 @@
         "lite",
         "full"
       ]
+    },
+    "activePlanningSession": {
+      "type": "string",
+      "pattern": "^DISC-[0-9]{8}-[a-z0-9]{6}$"
     },
     "activeDiscoverySession": {
       "type": "string",
@@ -131,6 +164,9 @@
       ],
       "properties": {
         "fromVersion": {
+          "type": "string"
+        },
+        "fromState": {
           "type": "string"
         },
         "proposedProfiles": {
@@ -160,8 +196,7 @@
           "to",
           "actor",
           "reason",
-          "at",
-          "contractHash"
+          "at"
         ],
         "properties": {
           "from": {
@@ -187,6 +222,84 @@
         },
         "additionalProperties": false
       }
+    }
+  },
+  "$defs": {
+    "approvalGate": {
+      "type": "object",
+      "required": [
+        "status",
+        "approvedBy",
+        "approvedAt",
+        "reason",
+        "contractHash"
+      ],
+      "properties": {
+        "status": {
+          "enum": [
+            "pending",
+            "approved"
+          ]
+        },
+        "approvedBy": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "approvedAt": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        },
+        "reason": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "contractHash": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      },
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "approved"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "approvedBy": {
+                "type": "string",
+                "pattern": "^human:.+"
+              },
+              "approvedAt": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "reason": {
+                "type": "string",
+                "minLength": 1
+              },
+              "contractHash": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{64}$"
+              }
+            }
+          }
+        }
+      ]
     }
   },
   "additionalProperties": false

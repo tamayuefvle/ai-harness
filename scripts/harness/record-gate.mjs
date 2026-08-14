@@ -1,6 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { requireHuman } from "./full-lifecycle-lib.mjs";
 import {
   assertCommit,
   assertNoUncommittedImplementationChanges,
@@ -15,18 +16,23 @@ import {
   git,
   loadGate,
   nowIso,
-  planContractHash,
+  designContractHash,
+  designDocumentPath,
   reactDoctorRequired,
   readActive,
+  resetDownstream,
   resolveEvidence,
   saveGate,
-  specContractHash,
+  scopeContractHash,
+  assertScopeReadyContent,
+  assertDesignReadyContent,
   validateTransition,
   verifyEvidence,
 } from "./lifecycle-gates.mjs";
 
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
-const [action, ...raw] = process.argv.slice(2);
+const [rawAction, ...raw] = process.argv.slice(2);
+const action = ({ "approve-spec": "confirm-scope", "approve-plan": "approve-design" })[rawAction] ?? rawAction;
 
 function parseArgs(items) {
   const out = {};
@@ -77,34 +83,49 @@ try {
   const actor = requireText(args, "by");
   const reason = requireText(args, "reason");
 
-  if (action === "approve-spec") {
-    if (active.status !== "IDEA") throw new Error("Specification approval is only valid in IDEA.");
-    gate.specApproval = { status: "approved", approvedBy: actor, approvedAt: nowIso(), reason, contractHash: specContractHash(repoRoot, active.activeSpec) };
+  if (action === "confirm-scope") {
+    requireHuman(actor);
+    if (active.status !== "DESIGNING") throw new Error("Scope confirmation is only valid in DESIGNING.");
+    assertScopeReadyContent(repoRoot, active.activeSpec);
+    gate.scopeApproval = { status: "approved", approvedBy: actor, approvedAt: nowIso(), reason, contractHash: scopeContractHash(repoRoot, active.activeSpec) };
+    // Scope changes invalidate the design baseline and all downstream evidence.
+    gate.designApproval = { status: "pending", approvedBy: null, approvedAt: null, reason: null, contractHash: null, baselineSha: null, designDocument: null };
+    resetDownstream(gate, "implementation");
     history(gate, action, actor, reason);
-  } else if (action === "approve-plan") {
-    if (active.status !== "SPEC_READY") throw new Error("Plan approval is only valid in SPEC_READY.");
+  } else if (action === "approve-design") {
+    requireHuman(actor);
+    if (active.status !== "DESIGNING") throw new Error("Design approval is only valid in DESIGNING.");
+    assertScopeReadyContent(repoRoot, active.activeSpec);
+    assertDesignReadyContent(repoRoot, active.activeSpec);
+    if (gate.scopeApproval.status !== "approved" || gate.scopeApproval.contractHash !== scopeContractHash(repoRoot, active.activeSpec)) {
+      throw new Error("A fresh scope confirmation is required before design approval.");
+    }
     const baselineSha = args["base-sha"] || currentHead(repoRoot);
     assertCommit(repoRoot, baselineSha);
-    gate.planApproval = { status: "approved", approvedBy: actor, approvedAt: nowIso(), reason, contractHash: planContractHash(repoRoot, active.activeSpec), baselineSha };
+    const designDocument = path.relative(repoRoot, designDocumentPath(repoRoot, active.activeSpec)).replaceAll("\\", "/");
+    gate.designApproval = { status: "approved", approvedBy: actor, approvedAt: nowIso(), reason, contractHash: designContractHash(repoRoot, active.activeSpec), baselineSha, designDocument };
+    resetDownstream(gate, "implementation");
     history(gate, action, actor, reason);
   } else if (action === "record-implementation") {
-    if (active.status !== "IMPLEMENTING") throw new Error("Implementation evidence is only valid in IMPLEMENTING.");
-    validateTransition(repoRoot, active.activeSpec, "PLAN_READY", "IMPLEMENTING");
+    if (active.status !== "DEVELOPING") throw new Error("Implementation evidence is only valid in DEVELOPING.");
+    validateTransition(repoRoot, active.activeSpec, "DESIGNING", "DEVELOPING");
     if (git(repoRoot, ["status", "--porcelain"])) throw new Error("Worktree must be clean before recording implementation evidence.");
     const report = resolveEvidence(repoRoot, requireText(args, "report"));
     const derived = deriveImplementationEvidence(repoRoot, report.path, active.activeSpec);
+    if (derived.report.design_baseline_hash !== gate.designApproval.contractHash) throw new Error("Implementation report design_baseline_hash does not match the approved design baseline.");
     assertOptional(args, "status", derived.status);
     gate.implementation = {
       status: derived.status,
       reportPath: report.path,
       reportSha256: report.sha256,
-      changeFingerprint: fingerprintChanges(repoRoot, gate.planApproval.baselineSha, active.activeSpec),
+      changeFingerprint: fingerprintChanges(repoRoot, gate.designApproval.baselineSha, active.activeSpec),
+      designBaselineHash: derived.report.design_baseline_hash,
       recordedAt: nowIso(),
     };
     history(gate, action, actor, reason);
   } else if (action === "record-verification") {
     if (active.status !== "VERIFYING") throw new Error("Verification evidence is only valid in VERIFYING.");
-    validateTransition(repoRoot, active.activeSpec, "IMPLEMENTING", "VERIFYING");
+    validateTransition(repoRoot, active.activeSpec, "DEVELOPING", "VERIFYING");
     assertNoUncommittedImplementationChanges(repoRoot, active.activeSpec);
     const report = resolveEvidence(repoRoot, requireText(args, "report"));
     const derived = deriveVerificationEvidence(repoRoot, report.path, active.activeSpec);
@@ -116,7 +137,7 @@ try {
     const github = resolveEvidence(repoRoot, requireText(args, "github-context"));
     deriveGitHubEvidence(repoRoot, github.path, active.activeSpec, derived.headSha, { requirePassing: derived.status === "passed" });
 
-    const files = changedFiles(repoRoot, gate.planApproval.baselineSha, active.activeSpec);
+    const files = changedFiles(repoRoot, gate.designApproval.baselineSha, active.activeSpec);
     const reactRequired = reactDoctorRequired(repoRoot, files);
     const react = args["react-doctor"] ? resolveEvidence(repoRoot, args["react-doctor"]) : null;
     if (reactRequired && !react && derived.status === "passed") throw new Error("--react-doctor is required for passing React-relevant changes.");
@@ -137,8 +158,8 @@ try {
     };
     history(gate, action, actor, reason);
   } else if (action === "record-review") {
-    if (active.status !== "REVIEW_READY") throw new Error("Review evidence is only valid in REVIEW_READY.");
-    validateTransition(repoRoot, active.activeSpec, "VERIFYING", "REVIEW_READY");
+    if (active.status !== "REVIEWING") throw new Error("Review evidence is only valid in REVIEWING.");
+    validateTransition(repoRoot, active.activeSpec, "VERIFYING", "REVIEWING");
     assertNoUncommittedImplementationChanges(repoRoot, active.activeSpec);
     const report = resolveEvidence(repoRoot, requireText(args, "report"));
     const derived = deriveReviewEvidence(repoRoot, report.path, active.activeSpec, gate.verification.headSha, {
@@ -168,8 +189,9 @@ try {
     };
     history(gate, action, actor, reason);
   } else if (action === "approve-release") {
-    if (active.status !== "REVIEW_READY") throw new Error("Release approval is only valid in REVIEW_READY.");
-    validateTransition(repoRoot, active.activeSpec, "VERIFYING", "REVIEW_READY");
+    requireHuman(actor);
+    if (active.status !== "REVIEWING") throw new Error("Release approval is only valid in REVIEWING.");
+    validateTransition(repoRoot, active.activeSpec, "VERIFYING", "REVIEWING");
     assertNoUncommittedImplementationChanges(repoRoot, active.activeSpec);
     if (!new Set(["preview", "production"]).has(args.mode)) throw new Error("--mode must be preview or production.");
     verifyEvidence(repoRoot, gate.review.reportPath, gate.review.reportSha256, "Review");
@@ -183,7 +205,7 @@ try {
     gate.releaseApproval = { status: "approved", approvedBy: actor, approvedAt: nowIso(), reason, contractHash: gate.review.reportSha256, mode: args.mode };
     history(gate, action, actor, reason);
   } else {
-    throw new Error("Action must be approve-spec, approve-plan, record-implementation, record-verification, record-review, or approve-release.");
+    throw new Error("Action must be confirm-scope, approve-design, record-implementation, record-verification, record-review, or approve-release.");
   }
 
   saveGate(gatePath, gate);

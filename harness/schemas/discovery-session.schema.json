@@ -6,7 +6,7 @@
     "schemaVersion",
     "sessionId",
     "projectId",
-    "discoveryTier",
+    "planningTier",
     "phase",
     "startedAt",
     "updatedAt",
@@ -16,7 +16,7 @@
   ],
   "properties": {
     "schemaVersion": {
-      "const": "1.0.0"
+      "const": "2.0.0"
     },
     "sessionId": {
       "type": "string",
@@ -25,12 +25,6 @@
     "projectId": {
       "type": "string",
       "minLength": 1
-    },
-    "discoveryTier": {
-      "enum": [
-        "lite",
-        "full"
-      ]
     },
     "phase": {
       "enum": [
@@ -139,6 +133,12 @@
         "errors"
       ],
       "additionalProperties": false
+    },
+    "planningTier": {
+      "enum": [
+        "lite",
+        "full"
+      ]
     }
   },
   "additionalProperties": false

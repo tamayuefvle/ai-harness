@@ -2,120 +2,60 @@
 
 ## Overview
 
-Cursorはオーケストレーター、Codexは限定された専門agentとして扱います。
+Cursor is the interactive orchestrator. Codex is used as a bounded specialist so planning/design conversations remain focused and implementation/review responsibilities stay separated.
 
 ```text
-企画: Cursor
-  ↓
-設計前調査: Codex researcher（必要時）
-  ↓
-設計確定: Cursor + human
-  ↓
-実装: Cursor または Codex implementer
-  ↓
-検証: deterministic commands
-  ↓
-独立レビュー: Codex reviewer（原則必須）
-  ↓
-Preview / release: Cursor + CI + human
+Planning: Cursor + human
+  └─ optional Codex read-only planning/research
+Design: Cursor + human
+  └─ optional Codex researcher / design facilitation
+Development: Cursor or bounded Codex implementer
+Verification: deterministic commands
+Independent review: separate Codex reviewer when required
+Release / operations: Cursor + CI + human control points
 ```
 
-## Trigger 1: researcher
+Every `ai:*` launcher remains subject to Codex preflight, sandbox/tool restrictions, repository policy, and lifecycle state.
 
-### Timing
+## Researcher
 
-`SPEC_READY`から設計へ進む前。
+Use during task `DESIGNING` when repository-wide investigation would improve the design, for example multi-module impact, reuse discovery, ADR/dependency/external-service decisions, or unclear ownership.
 
-### Required or recommended when
+Boundary:
 
-- 変更候補が5file以上
-- 2role以上へまたがる
-- 新規routeやServer/Client boundaryがある
-- ADR、dependency、外部service判断がある
-- 影響範囲が不明
-- 既存部品の再利用調査が必要
+- fresh/ephemeral context;
+- read-only;
+- no dependency installation;
+- no production edits;
+- evidence report under `.harness/reports/<TASK>/research.json`.
 
-### Execution boundary
+Research output is input to `design.md` and `test-plan.md`; it is not itself approval.
 
-- new ephemeral session
-- read-only sandbox
-- no file edit
-- no dependency installation
-- report: `.harness/reports/<TASK>/research.json`
+## Implementer
 
-### Output use
+Use only in task `DEVELOPING` after a fresh human `designApproval` exists and the target acceptance criterion is explicit.
 
-Cursorがreportを読み、verified factとrecommendationを分け、
-`plan.md`と`test-plan.md`へ必要部分だけ反映します。
+Suitable work includes cross-file implementation whose behavior and allowed paths are already fixed. Cursor remains preferable for tightly interactive visual tuning or very local edits, but either executor must obey the same Design Baseline.
 
-## Trigger 2: implementer
+Boundary:
 
-### Timing
+- workspace-write only within authorized paths;
+- one bounded AC/work unit per invocation;
+- no commit, push, PR, deploy, secret access, or dependency change without a separate authorized path;
+- implementation report must contain the approved `design_baseline_hash`.
 
-`PLAN_READY`または`IMPLEMENTING`。
+## Reviewer
 
-### Required conditions
+Run after verification and before release judgment for runtime/config/test/user-visible changes unless the documented review policy permits omission.
 
-- target AC is explicit
-- active plan and test-plan exist
-- feature branch
-- Codex decision is `recommended`
-- no production, dependency, secret, destructive operation
-- no simultaneous editing in the same worktree
+Boundary:
 
-### Suitable tasks
+- independent from the implementer session;
+- read-only;
+- assess diff + approved design + acceptance + verification evidence;
+- report under `.harness/reports/<TASK>/review.json`.
 
-- type + data + UI + testの一貫変更
-- 5file以上の横断実装
-- 複数roleにまたがる機械的・構造的変更
-- repository横断のfailure修正
-- 仕様と設計が十分に固定された変更
-
-### Cursor-preferred tasks
-
-- copy、色、余白、animation、responsive微調整
-- browserを見ながら反復するUI
-- 1〜3fileの局所変更
-- 未確定の仕様を含む変更
-
-### Execution boundary
-
-- new ephemeral session
-- workspace-write sandbox
-- one AC per invocation
-- no commit, push, PR, deploy, dependency
-- report: `.harness/reports/<TASK>/implementation-AC-xxx.json`
-
-完了後、Cursorは実diffを確認し、テストを再実行します。
-
-## Trigger 3: reviewer
-
-### Timing
-
-検証後、release判断前。
-
-### Policy
-
-runtime、config、test、user-visible behaviorに影響する変更は原則必須です。
-
-省略可能:
-
-- typoのみ
-- commentのみ
-- internal Markdownのみ
-
-省略理由を`delegation.md`へ残します。
-
-### Execution boundary
-
-- implementerとは別のnew ephemeral session
-- read-only sandbox
-- diff + active spec + ACを評価
-- report: `.harness/reports/<TASK>/review.json`
-
-## Decision command
-
-Cursor内部で次を使用します。
+## Decision helper
 
 ```bash
 npm run ai:decide -- research
@@ -123,4 +63,4 @@ npm run ai:decide -- implementation
 npm run ai:decide -- review
 ```
 
-これは最終判断ではなくdeterministicな補助判定です。Cursorはspecと実際の状況も確認します。
+The decision helper is deterministic routing support, not authority to bypass lifecycle, design approval, human control points, or verification.

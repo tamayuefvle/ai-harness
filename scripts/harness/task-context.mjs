@@ -23,13 +23,11 @@ const result = {
     activeSpec === "none"
       ? "Start a new task or answer without changing the repository."
       : {
-          IDEA: "Complete brief.md and acceptance.md, then obtain human confirmation.",
-          SPEC_READY: "Complete plan.md and test-plan.md, plus any required ADR.",
-          PLAN_READY: "Implement one acceptance criterion at a time.",
-          IMPLEMENTING: "Finish scoped implementation and enter verification.",
-          VERIFYING: "Run required checks and record evidence.",
-          REVIEW_READY: "Resolve review findings and prepare Preview.",
-          DEPLOY_READY: "Obtain explicit human production approval or complete the task.",
+          DESIGNING: "Refine brief/acceptance/design/test-plan, confirm scope, then approve the design baseline.",
+          DEVELOPING: "Implement only the approved design baseline and record implementation evidence.",
+          VERIFYING: "Run required checks and record evidence bound to the verified HEAD.",
+          REVIEWING: "Perform independent review; resolve findings without silently changing design.",
+          DEPLOY_READY: "Use the existing release/operations gates or complete the task when appropriate.",
         }[status] ?? "Inspect the active spec and status.",
 };
 

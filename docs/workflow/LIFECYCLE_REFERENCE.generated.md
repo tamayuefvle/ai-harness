@@ -5,34 +5,31 @@
 
 ## project
 
-- Initial: `DISCOVERY`
-- Active: `MIGRATION_PENDING` → `DISCOVERY` → `PRODUCT_APPROVED` → `STACK_APPROVED` → `ARCHITECTURE_APPROVED` → `ACTIVE`
+- Initial: `PLANNING`
+- Active: `MIGRATION_PENDING` → `PLANNING` → `DESIGNING` → `ACTIVE`
 - Terminal: `RETIRED`
 
 | From | To | Approval | Required documents |
 |---|---|---|---|
-| `MIGRATION_PENDING` | `DISCOVERY` | none | — |
-| `MIGRATION_PENDING` | `ACTIVE` | human | `docs/product/vision.md`<br>`docs/product/scope.md`<br>`docs/product/technology-decision.md`<br>`docs/architecture/ADR-0001-stack.md`<br>`docs/architecture/baseline.md` |
-| `DISCOVERY` | `PRODUCT_APPROVED` | human | `docs/product/problem.md`<br>`docs/product/users.md`<br>`docs/product/outcomes.md`<br>`docs/product/requirements.md` |
-| `PRODUCT_APPROVED` | `STACK_APPROVED` | human | `docs/product/technology-options.md`<br>`docs/product/technology-decision.md` |
-| `STACK_APPROVED` | `ARCHITECTURE_APPROVED` | human | `docs/architecture/baseline.md`<br>`docs/architecture/security-baseline.md`<br>`docs/architecture/quality-strategy.md` |
-| `ARCHITECTURE_APPROVED` | `ACTIVE` | human | `harness/generated/profile-resolution.json` |
+| `MIGRATION_PENDING` | `PLANNING` | none | — |
+| `MIGRATION_PENDING` | `ACTIVE` | human | `docs/product/vision.md`<br>`docs/product/scope.md`<br>`docs/architecture/technology-decision.md`<br>`docs/architecture/ADR-0001-stack.md`<br>`docs/architecture/baseline.md` |
+| `PLANNING` | `DESIGNING` | gate:planning | `docs/product/problem.md`<br>`docs/product/users.md`<br>`docs/product/outcomes.md`<br>`docs/product/requirements.md` |
+| `DESIGNING` | `PLANNING` | human | — |
+| `DESIGNING` | `ACTIVE` | gate:design | `docs/architecture/technology-options.md`<br>`docs/architecture/technology-decision.md`<br>`docs/architecture/baseline.md`<br>`docs/architecture/security-baseline.md`<br>`docs/architecture/quality-strategy.md`<br>`harness/generated/profile-resolution.json` |
 | `ACTIVE` | `RETIRED` | human | `docs/operations/retirement-plan.md` |
 
 ## task
 
-- Initial: `IDEA`
-- Active: `IDEA` → `SPEC_READY` → `PLAN_READY` → `IMPLEMENTING` → `VERIFYING` → `REVIEW_READY` → `DEPLOY_READY`
+- Initial: `DESIGNING`
+- Active: `DESIGNING` → `DEVELOPING` → `VERIFYING` → `REVIEWING` → `DEPLOY_READY`
 - Terminal: `DONE`
 
 | From | To | Approval | Required documents |
 |---|---|---|---|
-| `IDEA` | `SPEC_READY` | human | `docs/specs/{{TASK_ID}}/brief.md`<br>`docs/specs/{{TASK_ID}}/acceptance.md` |
-| `SPEC_READY` | `PLAN_READY` | human | `docs/specs/{{TASK_ID}}/plan.md`<br>`docs/specs/{{TASK_ID}}/test-plan.md` |
-| `PLAN_READY` | `IMPLEMENTING` | none | — |
-| `IMPLEMENTING` | `VERIFYING` | none | — |
-| `VERIFYING` | `REVIEW_READY` | none | — |
-| `REVIEW_READY` | `DEPLOY_READY` | human | — |
+| `DESIGNING` | `DEVELOPING` | gate:design | `docs/specs/{{TASK_ID}}/brief.md`<br>`docs/specs/{{TASK_ID}}/acceptance.md`<br>`docs/specs/{{TASK_ID}}/design.md`<br>`docs/specs/{{TASK_ID}}/test-plan.md` |
+| `DEVELOPING` | `VERIFYING` | none | — |
+| `VERIFYING` | `REVIEWING` | none | — |
+| `REVIEWING` | `DEPLOY_READY` | gate:release | — |
 | `DEPLOY_READY` | `DONE` | none | — |
 
 ## release

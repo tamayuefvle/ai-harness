@@ -13,11 +13,11 @@ alwaysApply: true
 
 ## Route
 
-- プロダクトの目的、対象者、価値、情報構造: `product/CODEX.md` / `product/.cursor/rules/product.mdc`
-- active task、要求、受入条件、計画、レビュー証拠: `specs/CODEX.md` / `specs/.cursor/rules/spec-gates.mdc`
-- 技術選定、依存、設計上のトレードオフ: `architecture/CODEX.md` / `architecture/.cursor/rules/architecture.mdc`
-- デプロイ、運用、障害対応、Definition of Done: `operations/CODEX.md` / `operations/.cursor/rules/operations.mdc`
-- 作業履歴、過去判断、セッション継続: `worklog/CODEX.md` / `worklog/.cursor/rules/worklog.mdc`
+- プロダクトの目的、対象者、価値、情報構造: `product/CODEX.md`（Codex） / `product/.cursor/rules/product.mdc`（Cursor）
+- active task、要求、受入条件、計画、レビュー証拠: `specs/CODEX.md`（Codex） / `specs/.cursor/rules/spec-gates.mdc`（Cursor）
+- 技術選定、依存、設計上のトレードオフ: `architecture/CODEX.md`（Codex） / `architecture/.cursor/rules/architecture.mdc`（Cursor）
+- デプロイ、運用、障害対応、Definition of Done: `operations/CODEX.md`（Codex） / `operations/.cursor/rules/operations.mdc`（Cursor）
+- 作業履歴、過去判断、セッション継続: `worklog/CODEX.md`（Codex） / `worklog/.cursor/rules/worklog.mdc`（Cursor）
 - Cursor / Codex の役割分担やhandoff: `workflow/`。ルートの指示と矛盾させない。
 
 ## Documentation contract

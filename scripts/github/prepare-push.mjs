@@ -19,13 +19,13 @@ try {
   assertTaskId(task, "--task");
   const active = readActive(root);
   if (active.activeSpec !== task) throw new Error(`Active task mismatch: ${active.activeSpec} != ${task}`);
-  if (!new Set(["IMPLEMENTING", "VERIFYING", "REVIEW_READY", "DEPLOY_READY"]).has(active.status)) throw new Error(`Push proposal is not allowed from ${active.status}`);
+  if (!new Set(["DEVELOPING", "VERIFYING", "REVIEWING", "DEPLOY_READY"]).has(active.status)) throw new Error(`Push proposal is not allowed from ${active.status}`);
   const { gate } = loadGate(root, task);
   if (gate.implementation.status !== "passed") throw new Error("Passed implementation evidence is required before push proposal");
   verifyEvidence(root, gate.implementation.reportPath, gate.implementation.reportSha256, "Implementation");
   const implementation = deriveImplementationEvidence(root, gate.implementation.reportPath, task);
   if (implementation.status !== "passed" || implementation.status !== gate.implementation.status) throw new Error("Implementation report does not support a passed push proposal");
-  if (fingerprintChanges(root, gate.planApproval.baselineSha, task) !== gate.implementation.changeFingerprint) throw new Error("Implementation change set differs from recorded evidence");
+  if (fingerprintChanges(root, gate.designApproval.baselineSha, task) !== gate.implementation.changeFingerprint) throw new Error("Implementation change set differs from recorded evidence");
 
   const remote = run("git", "remote", "get-url", "origin");
   const branch = run("git", "branch", "--show-current");

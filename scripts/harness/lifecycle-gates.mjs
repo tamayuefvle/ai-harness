@@ -103,16 +103,26 @@ export function readActive(repoRoot) {
 
 export function specPaths(repoRoot, taskId) {
   const specDir = path.join(repoRoot, "docs/specs", taskId);
+  const design = path.join(specDir, "design.md");
+  const legacyPlan = path.join(specDir, "plan.md");
   return {
     specDir,
     gatePath: path.join(specDir, "gate.json"),
     brief: path.join(specDir, "brief.md"),
     acceptance: path.join(specDir, "acceptance.md"),
-    plan: path.join(specDir, "plan.md"),
+    design,
+    legacyPlan,
     testPlan: path.join(specDir, "test-plan.md"),
     review: path.join(specDir, "review.md"),
     delegation: path.join(specDir, "delegation.md"),
   };
+}
+
+export function designDocumentPath(repoRoot, taskId) {
+  const p = specPaths(repoRoot, taskId);
+  if (fs.existsSync(p.design)) return p.design;
+  if (fs.existsSync(p.legacyPlan)) return p.legacyPlan;
+  return p.design;
 }
 
 export function loadGate(repoRoot, taskId) {
@@ -146,15 +156,19 @@ export function hashFiles(files) {
   return hash.digest("hex");
 }
 
-export function specContractHash(repoRoot, taskId) {
+export function scopeContractHash(repoRoot, taskId) {
   const p = specPaths(repoRoot, taskId);
   return hashFiles([p.brief, p.acceptance]);
 }
 
-export function planContractHash(repoRoot, taskId) {
+export function designContractHash(repoRoot, taskId) {
   const p = specPaths(repoRoot, taskId);
-  return hashFiles([p.brief, p.acceptance, p.plan, p.testPlan]);
+  return hashFiles([p.brief, p.acceptance, designDocumentPath(repoRoot, taskId), p.testPlan]);
 }
+
+// Compatibility exports for v14 migration tooling. New code must use scope/design terminology.
+export const specContractHash = scopeContractHash;
+export const planContractHash = designContractHash;
 
 export function parseAllowedPaths(planText) {
   const match = planText.match(/### Allowed paths\s*\n([\s\S]*?)(?=\n### |\n## |$)/i);
@@ -174,6 +188,7 @@ function isLifecycleMetadata(file, taskId) {
   return new Set([
     `docs/specs/${taskId}/gate.json`,
     `docs/specs/${taskId}/gate.v1.0.0.backup.json`,
+    `docs/specs/${taskId}/gate.v1.1.0.backup.json`,
     `docs/specs/${taskId}/review.md`,
     `docs/specs/${taskId}/delegation.md`,
     `docs/specs/${taskId}/DONE.md`,
@@ -213,9 +228,9 @@ export function fingerprintChanges(repoRoot, baselineSha, taskId = null) {
 }
 
 export function assertAllowedChanges(repoRoot, taskId, baselineSha) {
-  const p = specPaths(repoRoot, taskId);
-  const allowed = parseAllowedPaths(fs.readFileSync(p.plan, "utf8"));
-  if (allowed.length === 0) throw new Error("plan.md must contain at least one bullet under '### Allowed paths'.");
+  const designFile = designDocumentPath(repoRoot, taskId);
+  const allowed = parseAllowedPaths(fs.readFileSync(designFile, "utf8"));
+  if (allowed.length === 0) throw new Error(`${path.basename(designFile)} must contain at least one bullet under '### Allowed paths'.`);
   const files = changedFiles(repoRoot, baselineSha, taskId);
   if (files.length === 0) throw new Error("No implementation changes found from the approved baseline.");
   const violations = files.filter((file) => !allowed.some((entry) => file === entry || file.startsWith(`${entry.replace(/\/$/, "")}/`)));
@@ -318,7 +333,7 @@ export function assertMustAcceptanceComplete(repoRoot, taskId) {
   if (incomplete.length) throw new Error(`Must acceptance criteria lack completed status/evidence: ${incomplete.map((r) => r[0]).join(", ")}`);
 }
 
-export function assertSpecReadyContent(repoRoot, taskId) {
+export function assertScopeReadyContent(repoRoot, taskId) {
   const p = specPaths(repoRoot, taskId);
   for (const file of [p.brief, p.acceptance]) {
     const text = fs.readFileSync(file, "utf8");
@@ -330,10 +345,11 @@ export function assertSpecReadyContent(repoRoot, taskId) {
   }
 }
 
-export function assertPlanReadyContent(repoRoot, taskId) {
-  const p = specPaths(repoRoot, taskId);
-  const plan = fs.readFileSync(p.plan, "utf8");
-  const testPlan = fs.readFileSync(p.testPlan, "utf8");
+export function assertDesignReadyContent(repoRoot, taskId) {
+  const designFile = designDocumentPath(repoRoot, taskId);
+  if (!fs.existsSync(designFile)) throw new Error(`Missing design contract: docs/specs/${taskId}/design.md`);
+  const design = fs.readFileSync(designFile, "utf8");
+  const testPlan = fs.readFileSync(specPaths(repoRoot, taskId).testPlan, "utf8");
   const required = [
     /equivalent\/overlapping\/reusable\/unrelated/i,
     /reuse\/extend\/replace\/create/i,
@@ -343,19 +359,25 @@ export function assertPlanReadyContent(repoRoot, taskId) {
     /## Test approach/i,
     /## Rollback/i,
   ];
-  for (const pattern of required) if (!pattern.test(plan)) throw new Error(`plan.md is missing required contract section: ${pattern}`);
-  if (parseAllowedPaths(plan).length === 0) throw new Error("plan.md Allowed paths must contain at least one bullet.");
+  for (const pattern of required) if (!pattern.test(design)) throw new Error(`${path.basename(designFile)} is missing required contract section: ${pattern}`);
+  if (parseAllowedPaths(design).length === 0) throw new Error(`${path.basename(designFile)} Allowed paths must contain at least one bullet.`);
   if (!/AC-\d+/i.test(testPlan)) throw new Error("test-plan.md must map verification to acceptance criteria.");
 }
 
+// Compatibility aliases for code that still imports v14 names.
+export const assertSpecReadyContent = assertScopeReadyContent;
+export const assertPlanReadyContent = assertDesignReadyContent;
+
 function assertApprovedContracts(repoRoot, taskId, gate) {
-  if (gate.specApproval.status !== "approved" || gate.specApproval.contractHash !== specContractHash(repoRoot, taskId)) {
-    throw new Error("Approved specification is stale or missing.");
+  if (gate.scopeApproval.status !== "approved" || gate.scopeApproval.contractHash !== scopeContractHash(repoRoot, taskId)) {
+    throw new Error("Approved scope is stale or missing.");
   }
-  if (gate.planApproval.status !== "approved" || gate.planApproval.contractHash !== planContractHash(repoRoot, taskId)) {
-    throw new Error("Approved plan is stale or missing.");
+  if (gate.designApproval.status !== "approved" || gate.designApproval.contractHash !== designContractHash(repoRoot, taskId)) {
+    throw new Error("Approved design baseline is stale or missing.");
   }
-  assertCommit(repoRoot, gate.planApproval.baselineSha);
+  const expectedDocument = path.relative(repoRoot, designDocumentPath(repoRoot, taskId)).replaceAll("\\", "/");
+  if (gate.designApproval.designDocument !== expectedDocument) throw new Error("Approved design document changed or legacy compatibility path no longer matches.");
+  assertCommit(repoRoot, gate.designApproval.baselineSha);
 }
 
 export function reactDoctorRequired(repoRoot, files) {
@@ -369,35 +391,29 @@ function assertDerivedGateValue(actual, expected, label) {
 
 export function validateTransition(repoRoot, taskId, current, requested) {
   const { gate } = loadGate(repoRoot, taskId);
-  if (requested === "SPEC_READY") {
-    assertSpecReadyContent(repoRoot, taskId);
-    if (gate.specApproval.status !== "approved") throw new Error("Specification approval is required.");
-    if (gate.specApproval.contractHash !== specContractHash(repoRoot, taskId)) throw new Error("Specification changed after approval.");
-  } else if (requested === "PLAN_READY") {
-    assertSpecReadyContent(repoRoot, taskId);
-    assertPlanReadyContent(repoRoot, taskId);
-    assertApprovedContracts(repoRoot, taskId, gate);
-  } else if (requested === "IMPLEMENTING") {
-    assertSpecReadyContent(repoRoot, taskId);
-    assertPlanReadyContent(repoRoot, taskId);
+  if (requested === "DEVELOPING") {
+    assertScopeReadyContent(repoRoot, taskId);
+    assertDesignReadyContent(repoRoot, taskId);
     assertApprovedContracts(repoRoot, taskId, gate);
     const branch = currentBranch(repoRoot);
-    if (!branch || ["main", "master"].includes(branch)) throw new Error("Implementation requires a non-protected feature branch.");
+    if (!branch || ["main", "master"].includes(branch)) throw new Error("Development requires a non-protected feature branch.");
   } else if (requested === "VERIFYING") {
     assertApprovedContracts(repoRoot, taskId, gate);
     assertNoUncommittedImplementationChanges(repoRoot, taskId);
     verifyEvidence(repoRoot, gate.implementation.reportPath, gate.implementation.reportSha256, "Implementation");
     const implementation = deriveImplementationEvidence(repoRoot, gate.implementation.reportPath, taskId);
     assertDerivedGateValue(gate.implementation.status, implementation.status, "Implementation status");
+    assertDerivedGateValue(gate.implementation.designBaselineHash, implementation.report.design_baseline_hash, "Implementation design baseline");
+    if (implementation.report.design_baseline_hash !== gate.designApproval.contractHash) throw new Error("Implementation report is not bound to the approved design baseline.");
     if (implementation.status !== "passed") throw new Error("Passed implementation evidence is required.");
-    const files = assertAllowedChanges(repoRoot, taskId, gate.planApproval.baselineSha);
-    const currentFingerprint = fingerprintChanges(repoRoot, gate.planApproval.baselineSha, taskId);
+    const files = assertAllowedChanges(repoRoot, taskId, gate.designApproval.baselineSha);
+    const currentFingerprint = fingerprintChanges(repoRoot, gate.designApproval.baselineSha, taskId);
     if (currentFingerprint !== gate.implementation.changeFingerprint) throw new Error("Implementation change set differs from recorded evidence.");
     if (reactDoctorRequired(repoRoot, files) && !gate.verification.reactDoctorPath && gate.verification.status !== "pending") {
       throw new Error("React Doctor evidence is required for React-relevant changes.");
     }
-  } else if (requested === "REVIEW_READY") {
-    validateTransition(repoRoot, taskId, "IMPLEMENTING", "VERIFYING");
+  } else if (requested === "REVIEWING") {
+    validateTransition(repoRoot, taskId, "DEVELOPING", "VERIFYING");
     assertApprovedContracts(repoRoot, taskId, gate);
     assertNoUncommittedImplementationChanges(repoRoot, taskId);
     verifyEvidence(repoRoot, gate.verification.reportPath, gate.verification.reportSha256, "Verification");
@@ -409,7 +425,7 @@ export function validateTransition(repoRoot, taskId, current, requested) {
     if (verification.status !== "passed") throw new Error("Passed verification evidence is required.");
     verifyEvidence(repoRoot, gate.verification.githubContextPath, gate.verification.githubContextSha256, "GitHub context");
     deriveGitHubEvidence(repoRoot, gate.verification.githubContextPath, taskId, verification.headSha, { requirePassing: true });
-    const files = changedFiles(repoRoot, gate.planApproval.baselineSha, taskId);
+    const files = changedFiles(repoRoot, gate.designApproval.baselineSha, taskId);
     const needsReactDoctor = reactDoctorRequired(repoRoot, files);
     if (needsReactDoctor && !gate.verification.reactDoctorPath) throw new Error("React Doctor evidence is required for React-relevant changes.");
     if (gate.verification.reactDoctorPath) {
@@ -417,9 +433,9 @@ export function validateTransition(repoRoot, taskId, current, requested) {
       deriveReactDoctorEvidence(repoRoot, gate.verification.reactDoctorPath, taskId, verification.headSha, { requirePassing: true });
     }
     if (currentHead(repoRoot) !== verification.headSha) throw new Error("Repository HEAD changed after verification evidence was recorded.");
-    if (fingerprintChanges(repoRoot, gate.planApproval.baselineSha, taskId) !== gate.implementation.changeFingerprint) throw new Error("Implementation changed after verification.");
+    if (fingerprintChanges(repoRoot, gate.designApproval.baselineSha, taskId) !== gate.implementation.changeFingerprint) throw new Error("Implementation changed after verification.");
   } else if (requested === "DEPLOY_READY") {
-    validateTransition(repoRoot, taskId, "VERIFYING", "REVIEW_READY");
+    validateTransition(repoRoot, taskId, "VERIFYING", "REVIEWING");
     assertApprovedContracts(repoRoot, taskId, gate);
     assertNoUncommittedImplementationChanges(repoRoot, taskId);
     verifyEvidence(repoRoot, gate.review.reportPath, gate.review.reportSha256, "Review");
@@ -446,12 +462,10 @@ export function validateTransition(repoRoot, taskId, current, requested) {
 export function validateCompletion(repoRoot, taskId) {
   const { gate } = loadGate(repoRoot, taskId);
   assertMustAcceptanceComplete(repoRoot, taskId);
-  validateTransition(repoRoot, taskId, "IDEA", "SPEC_READY");
-  validateTransition(repoRoot, taskId, "SPEC_READY", "PLAN_READY");
-  validateTransition(repoRoot, taskId, "PLAN_READY", "IMPLEMENTING");
-  validateTransition(repoRoot, taskId, "IMPLEMENTING", "VERIFYING");
-  validateTransition(repoRoot, taskId, "VERIFYING", "REVIEW_READY");
-  validateTransition(repoRoot, taskId, "REVIEW_READY", "DEPLOY_READY");
+  validateTransition(repoRoot, taskId, "DESIGNING", "DEVELOPING");
+  validateTransition(repoRoot, taskId, "DEVELOPING", "VERIFYING");
+  validateTransition(repoRoot, taskId, "VERIFYING", "REVIEWING");
+  validateTransition(repoRoot, taskId, "REVIEWING", "DEPLOY_READY");
   return gate;
 }
 
@@ -459,7 +473,7 @@ export function resetDownstream(gate, from) {
   const order = ["implementation", "verification", "review", "releaseApproval"];
   const start = order.indexOf(from);
   for (const key of order.slice(Math.max(start, 0))) {
-    if (key === "implementation") gate.implementation = { status: "pending", reportPath: null, reportSha256: null, changeFingerprint: null, recordedAt: null };
+    if (key === "implementation") gate.implementation = { status: "pending", reportPath: null, reportSha256: null, changeFingerprint: null, designBaselineHash: null, recordedAt: null };
     if (key === "verification") gate.verification = { status: "pending", reportPath: null, reportSha256: null, githubContextPath: null, githubContextSha256: null, reactDoctorPath: null, reactDoctorSha256: null, previewStatus: "pending", rollbackConfirmed: false, headSha: null, recordedAt: null };
     if (key === "review") gate.review = { status: "pending", verdict: null, reportPath: null, reportSha256: null, p0: 0, p1: 0, p2: 0, acceptedP2Evidence: [], recordedAt: null };
     if (key === "releaseApproval") gate.releaseApproval = { status: "pending", approvedBy: null, approvedAt: null, reason: null, contractHash: null, mode: null };

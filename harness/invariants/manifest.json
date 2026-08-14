@@ -27,7 +27,7 @@
       "id": "INV-GOAL-INTEGRITY",
       "category": "goal-integrity",
       "severity": "critical",
-      "statement": "The approved active specification, acceptance criteria, and approved plan digest must not be materially changed during an execution run without re-approval.",
+      "statement": "The approved active specification, acceptance criteria, and approved design digest must not be materially changed during an execution run without re-approval.",
       "nonOverridable": true,
       "verification": {
         "method": "approved-contract-digest-check",

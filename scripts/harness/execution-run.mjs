@@ -5,7 +5,7 @@ import { fileURLToPath } from "node:url";
 import { assertTaskId } from "./task-id.mjs";
 import { appendEvent, assertLatestOperationApprovalFile, assertRunIntegrity, authorizePendingOperation, capabilityIndex, computeRunIntegrity, loadContracts, parseActiveTask, readEvents, readJson, resolveRunArtifact, sha256File, validateExecutionRun, validateOperationApproval, validateResume } from "./execution-lib.mjs";
 import { assertProjectAllowsDelivery } from "./full-lifecycle-lib.mjs";
-import { resolveRepositoryFile } from "./lifecycle-gates.mjs";
+import { designDocumentPath, resolveRepositoryFile } from "./lifecycle-gates.mjs";
 
 export const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
 const roles = new Set(["orchestrator","researcher","planner","architect","implementer","verifier","reviewer","system-adapter","packager"]);
@@ -60,11 +60,11 @@ export function startRun(repoRoot = root, options = {}) {
   const role = options.role ?? "implementer";
   if (!roles.has(role)) throw new Error(`Unknown execution role: ${role}`);
   if (task === "none" || active.activeSpec !== task) throw new Error(`Execution run must bind to the active task (${active.activeSpec}).`);
-  if (!new Set(["PLAN_READY","IMPLEMENTING","VERIFYING","REVIEW_READY","DEPLOY_READY"]).has(active.status)) throw new Error(`Task state ${active.status} is not execution-ready.`);
+  if (!new Set(["DEVELOPING","VERIFYING","REVIEWING","DEPLOY_READY"]).has(active.status)) throw new Error(`Task state ${active.status} is not execution-ready.`);
   const gate = readJson(path.join(repoRoot, "docs/specs", task, "gate.json"));
-  if (gate.planApproval?.status !== "approved" || !/^[a-f0-9]{64}$/.test(gate.planApproval?.contractHash ?? "")) throw new Error("Approved plan contract hash is required before starting an execution run.");
+  if (gate.designApproval?.status !== "approved" || !/^[a-f0-9]{64}$/.test(gate.designApproval?.contractHash ?? "")) throw new Error("Approved design contract hash is required before starting an execution run.");
   const createdAt = now();
-  const run = { schemaVersion:"1.0.0", runId:`RUN-${stamp()}-${random8()}`, lifecycleRef:{kind:"task",id:task,state:active.status}, state:"RUNNING", actorRole:role, approvedPlanDigest:gate.planApproval.contractHash, invariantManifestDigest:sha256File(path.join(repoRoot,"harness/invariants/manifest.json")), pendingOperation:null, completedOperationIds:[], artifactRefs:[`docs/specs/${task}/plan.md`], evidenceRefs:[], approvalRefs:[], resumeCursor:options.resumeCursor ?? "start", idempotencyKey:null, stateVersion:1, integrityHash:"0".repeat(64), stopReason:null, createdAt, updatedAt:createdAt };
+  const run = { schemaVersion:"1.0.0", runId:`RUN-${stamp()}-${random8()}`, lifecycleRef:{kind:"task",id:task,state:active.status}, state:"RUNNING", actorRole:role, approvedDesignDigest:gate.designApproval.contractHash, invariantManifestDigest:sha256File(path.join(repoRoot,"harness/invariants/manifest.json")), pendingOperation:null, completedOperationIds:[], artifactRefs:[path.relative(repoRoot, designDocumentPath(repoRoot, task)).replaceAll("\\", "/")], evidenceRefs:[], approvalRefs:[], resumeCursor:options.resumeCursor ?? "start", idempotencyKey:null, stateVersion:1, integrityHash:"0".repeat(64), stopReason:null, createdAt, updatedAt:createdAt };
   run.integrityHash = computeRunIntegrity(run);
   validateExecutionRun(run);
   const runStore = path.join(repoRoot, ".harness", "runs", task);
@@ -77,7 +77,7 @@ export function startRun(repoRoot = root, options = {}) {
   }
   const file = path.join(runStore, `${run.runId}.json`);
   fs.writeFileSync(file, `${JSON.stringify(run,null,2)}\n`, { flag:"wx" });
-  appendEvent(file, eventBase(run,"run-started",role,{artifactRef:`docs/specs/${task}/plan.md`,digest:run.approvedPlanDigest}));
+  appendEvent(file, eventBase(run,"run-started",role,{artifactRef:path.relative(repoRoot, designDocumentPath(repoRoot, task)).replaceAll("\\", "/"),digest:run.approvedDesignDigest}));
   return { file, run };
 }
 

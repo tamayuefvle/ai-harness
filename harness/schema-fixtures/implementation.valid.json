@@ -1,6 +1,7 @@
 {
   "task_id": "PF-001-example",
   "acceptance_id": "AC-001",
+  "design_baseline_hash": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
   "status": "implemented",
   "summary": "Implemented the accepted slice.",
   "files_changed": [

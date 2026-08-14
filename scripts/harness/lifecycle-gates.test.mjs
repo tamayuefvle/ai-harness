@@ -34,7 +34,7 @@ function tempRepo() {
 }
 
 test("DONE is a terminal outcome, not an active state", () => {
-  assert.deepEqual(ACTIVE_STATES, ["IDEA", "SPEC_READY", "PLAN_READY", "IMPLEMENTING", "VERIFYING", "REVIEW_READY", "DEPLOY_READY"]);
+  assert.deepEqual(ACTIVE_STATES, ["DESIGNING", "DEVELOPING", "VERIFYING", "REVIEWING", "DEPLOY_READY"]);
 });
 
 test("repository path normalization rejects traversal", () => {
@@ -78,7 +78,7 @@ test("evidence resolver rejects reports reached through a symlinked parent direc
 
 test("saveGate refuses schema-invalid lifecycle state", () => {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), "save-gate-"));
-  assert.throws(() => saveGate(path.join(root, "gate.json"), { schemaVersion: "1.1.0" }), /Lifecycle gate failed JSON Schema validation/);
+  assert.throws(() => saveGate(path.join(root, "gate.json"), { schemaVersion: "2.0.0" }), /Lifecycle gate failed JSON Schema validation/);
   assert.equal(fs.existsSync(path.join(root, "gate.json")), false);
 });
 
@@ -86,7 +86,7 @@ test("approved gate records require complete human approval metadata", () => {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), "approval-gate-"));
   const gate = JSON.parse(fs.readFileSync(new URL("../../docs/specs/TEMPLATE/gate.json", import.meta.url), "utf8"));
   gate.taskId = "PF-001-example";
-  gate.specApproval = { status: "approved", approvedBy: null, approvedAt: null, reason: null, contractHash: "0".repeat(64) };
+  gate.scopeApproval = { status: "approved", approvedBy: null, approvedAt: null, reason: null, contractHash: "0".repeat(64) };
   assert.throws(() => saveGate(path.join(root, "gate.json"), gate), /approvedBy|approvedAt|reason/);
 });
 
@@ -142,7 +142,7 @@ test("active spec pointer commits do not change the implementation fingerprint",
   fs.mkdirSync(path.join(root, "docs/specs"), { recursive: true });
   fs.writeFileSync(
     path.join(root, "docs/specs/_active.md"),
-    "---\nactive_spec: PF-001-example\nstatus: IMPLEMENTING\n---\n",
+    "---\nactive_spec: PF-001-example\nstatus: DEVELOPING\n---\n",
   );
   execFileSync("git", ["add", "docs/specs/_active.md"], { cwd: root });
   execFileSync("git", ["commit", "-m", "advance active status"], { cwd: root, stdio: "ignore" });
@@ -182,6 +182,7 @@ function lifecycleFixture() {
     task_id: taskId,
     acceptance_id: "AC-001",
     status: "implemented",
+    design_baseline_hash: planContractHash(root, taskId),
     summary: "Implemented",
     files_changed: [{ path: "src/example.ts", change: "added" }],
     commands_run: [{ command: "node --test", result: "pass", notes: "passed" }],
@@ -245,14 +246,14 @@ function lifecycleFixture() {
   const github = resolveEvidence(root, `.harness/reports/${taskId}/github-context.json`);
   const review = resolveEvidence(root, `.harness/reports/${taskId}/review.json`);
   const gate = {
-    schemaVersion: "1.1.0",
+    schemaVersion: "2.0.0",
     taskId,
-    specApproval: { status: "approved", approvedBy: "human", approvedAt: "2026-08-05T00:00:00.000Z", reason: "approved", contractHash: specContractHash(root, taskId) },
-    planApproval: { status: "approved", approvedBy: "human", approvedAt: "2026-08-05T00:00:00.000Z", reason: "approved", contractHash: planContractHash(root, taskId), baselineSha: baseline },
-    implementation: { status: "passed", reportPath: implementation.path, reportSha256: implementation.sha256, changeFingerprint: fingerprintChanges(root, baseline, taskId), recordedAt: "2026-08-05T00:00:00.000Z" },
+    scopeApproval: { status: "approved", approvedBy: "human:test", approvedAt: "2026-08-05T00:00:00.000Z", reason: "approved", contractHash: specContractHash(root, taskId) },
+    designApproval: { status: "approved", approvedBy: "human:test", approvedAt: "2026-08-05T00:00:00.000Z", reason: "approved", contractHash: planContractHash(root, taskId), baselineSha: baseline, designDocument: `docs/specs/${taskId}/plan.md` },
+    implementation: { status: "passed", reportPath: implementation.path, reportSha256: implementation.sha256, changeFingerprint: fingerprintChanges(root, baseline, taskId), designBaselineHash: planContractHash(root, taskId), recordedAt: "2026-08-05T00:00:00.000Z" },
     verification: { status: "passed", reportPath: verification.path, reportSha256: verification.sha256, githubContextPath: github.path, githubContextSha256: github.sha256, reactDoctorPath: null, reactDoctorSha256: null, previewStatus: "passed", rollbackConfirmed: true, headSha: head, recordedAt: "2026-08-05T00:00:00.000Z" },
     review: { status: "completed", verdict: "approved", reportPath: review.path, reportSha256: review.sha256, p0: 0, p1: 0, p2: 0, acceptedP2Evidence: [], recordedAt: "2026-08-05T00:00:00.000Z" },
-    releaseApproval: { status: "approved", approvedBy: "human", approvedAt: "2026-08-05T00:00:00.000Z", reason: "release", contractHash: review.sha256, mode: "preview" },
+    releaseApproval: { status: "approved", approvedBy: "human:test", approvedAt: "2026-08-05T00:00:00.000Z", reason: "release", contractHash: review.sha256, mode: "preview" },
     history: [],
   };
   writeJson(path.join(specDir, "gate.json"), gate);
@@ -261,9 +262,9 @@ function lifecycleFixture() {
 
 test("verification is bound to the exact observed HEAD", () => {
   const { root, taskId } = lifecycleFixture();
-  validateTransition(root, taskId, "VERIFYING", "REVIEW_READY");
+  validateTransition(root, taskId, "VERIFYING", "REVIEWING");
   execFileSync("git", ["commit", "--allow-empty", "-m", "post verification"], { cwd: root, stdio: "ignore" });
-  assert.throws(() => validateTransition(root, taskId, "VERIFYING", "REVIEW_READY"), /HEAD changed after verification/);
+  assert.throws(() => validateTransition(root, taskId, "VERIFYING", "REVIEWING"), /HEAD changed after verification/);
 });
 
 test("completion revalidates all downstream evidence digests", () => {
@@ -428,13 +429,13 @@ test("completion requires verification evidence in the independent review", () =
 test("review transition replays implementation evidence before accepting verification", () => {
   const { root, taskId, reportDir } = lifecycleFixture();
   fs.writeFileSync(path.join(reportDir, "implementation.json"), "not-json\n");
-  assert.throws(() => validateTransition(root, taskId, "VERIFYING", "REVIEW_READY"), /Implementation evidence changed after recording/);
+  assert.throws(() => validateTransition(root, taskId, "VERIFYING", "REVIEWING"), /Implementation evidence changed after recording/);
 });
 
 test("deploy transition replays verification evidence before accepting review", () => {
   const { root, taskId, reportDir } = lifecycleFixture();
   fs.appendFileSync(path.join(reportDir, "verification.json"), "\n");
-  assert.throws(() => validateTransition(root, taskId, "REVIEW_READY", "DEPLOY_READY"), /Verification evidence changed after recording/);
+  assert.throws(() => validateTransition(root, taskId, "REVIEWING", "DEPLOY_READY"), /Verification evidence changed after recording/);
 });
 
 test("completion requires GitHub context in the independent review", () => {

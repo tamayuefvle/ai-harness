@@ -25,16 +25,16 @@ test("generated Cursor fallback Skill is synchronized from the canonical skill",
   assert.match(outputs.get(rel),/ai:fallback-diagnose/); assert.match(outputs.get(rel),/Do not return automatically to Cursor/i);
 });
 
-test("fallback handoff binds active task, approved plan digest, git head, and failure evidence",()=>{
+test("fallback handoff binds active task, approved design digest, git head, and failure evidence",()=>{
   const dir=fs.mkdtempSync(path.join(os.tmpdir(),"fallback-v131-"));
   fs.mkdirSync(path.join(dir,"docs/specs/DEV-001-example"),{recursive:true}); fs.mkdirSync(path.join(dir,"harness/execution"),{recursive:true});
-  fs.writeFileSync(path.join(dir,"docs/specs/_active.md"),"---\nactive_spec: DEV-001-example\nstatus: IMPLEMENTING\n---\n");
-  fs.writeFileSync(path.join(dir,"docs/specs/DEV-001-example/gate.json"),JSON.stringify({planApproval:{status:"approved",contractHash:"a".repeat(64)}}));
+  fs.writeFileSync(path.join(dir,"docs/specs/_active.md"),"---\nactive_spec: DEV-001-example\nstatus: DEVELOPING\n---\n");
+  fs.writeFileSync(path.join(dir,"docs/specs/DEV-001-example/gate.json"),JSON.stringify({designApproval:{status:"approved",contractHash:"a".repeat(64)}}));
   fs.writeFileSync(path.join(dir,"harness/execution/manifest.json"),fs.readFileSync(path.join(root,"harness/execution/manifest.json")));
   fs.mkdirSync(path.join(dir,".harness/reports/DEV-001-example"),{recursive:true}); fs.writeFileSync(path.join(dir,".harness/reports/DEV-001-example/build.log"),"failed\n");
   execFileSync("git",["init","-q"],{cwd:dir}); execFileSync("git",["config","user.email","test@example.invalid"],{cwd:dir}); execFileSync("git",["config","user.name","Harness Test"],{cwd:dir}); fs.writeFileSync(path.join(dir,"x.txt"),"x\n"); execFileSync("git",["add","x.txt"],{cwd:dir}); execFileSync("git",["commit","-qm","base"],{cwd:dir});
   const h=createHandoff(dir,{acceptanceId:"AC-001",failedGoal:"fix",strategyId:"cursor-1",strategySummary:"one bounded strategy",failureClass:"build",failureSignature:"E_BUILD",commandsExecuted:["npm test"],changedArtifactRefs:[],evidenceRefs:[".harness/reports/DEV-001-example/build.log"],cursorDiagnosis:"failed",prohibitedRepeats:["same build strategy"]});
-  assert.equal(h.taskId,"DEV-001-example"); assert.equal(h.approvedPlanDigest,"a".repeat(64)); assert.match(h.head,/^[a-f0-9]{40}$/); assert.equal(h.sourceExecutor,"cursor"); assert.equal(h.targetExecutor,"codex-cli");
+  assert.equal(h.taskId,"DEV-001-example"); assert.equal(h.approvedDesignDigest,"a".repeat(64)); assert.match(h.head,/^[a-f0-9]{40}$/); assert.equal(h.sourceExecutor,"cursor"); assert.equal(h.targetExecutor,"codex-cli");
   assert.throws(()=>createHandoff(dir,{acceptanceId:"AC-001",failedGoal:"fix",strategyId:"x",strategySummary:"x",failureClass:"x",failureSignature:"x",cursorDiagnosis:"x",evidenceRefs:[],prohibitedRepeats:["x"]}),/failure evidence/);
 });
 
@@ -44,10 +44,10 @@ test("fallback decision allows only a materially different strategy or human esc
   assert.throws(()=>assertFallbackDecision({handoffId:"FBH-x",handoffDigest:"d",decision:"alternative_strategy",repeatStrategy:false,materialDifference:"npm install",alternativeStrategy:"npm install"},h,"d"),/repeats a prohibited/);
 });
 
-test("fallback implementation is bound to the exact handoff, approved plan, HEAD, and workspace digest",()=>{
+test("fallback implementation is bound to the exact handoff, approved design, HEAD, and workspace digest",()=>{
   const dir=fs.mkdtempSync(path.join(os.tmpdir(),"fallback-bind-v131-"));
   fs.mkdirSync(path.join(dir,"docs/specs/DEV-001-example"),{recursive:true}); fs.mkdirSync(path.join(dir,"harness/execution"),{recursive:true}); fs.mkdirSync(path.join(dir,".harness/reports/DEV-001-example/fallback"),{recursive:true});
-  fs.writeFileSync(path.join(dir,"docs/specs/_active.md"),"---\nactive_spec: DEV-001-example\nstatus: IMPLEMENTING\n---\n"); fs.writeFileSync(path.join(dir,"docs/specs/DEV-001-example/gate.json"),JSON.stringify({planApproval:{status:"approved",contractHash:"a".repeat(64)}})); fs.writeFileSync(path.join(dir,"harness/execution/manifest.json"),fs.readFileSync(path.join(root,"harness/execution/manifest.json")));
+  fs.writeFileSync(path.join(dir,"docs/specs/_active.md"),"---\nactive_spec: DEV-001-example\nstatus: DEVELOPING\n---\n"); fs.writeFileSync(path.join(dir,"docs/specs/DEV-001-example/gate.json"),JSON.stringify({designApproval:{status:"approved",contractHash:"a".repeat(64)}})); fs.writeFileSync(path.join(dir,"harness/execution/manifest.json"),fs.readFileSync(path.join(root,"harness/execution/manifest.json")));
   execFileSync("git",["init","-q"],{cwd:dir}); execFileSync("git",["config","user.email","test@example.invalid"],{cwd:dir}); execFileSync("git",["config","user.name","Harness Test"],{cwd:dir}); fs.writeFileSync(path.join(dir,"x.txt"),"x\n"); execFileSync("git",["add","x.txt"],{cwd:dir}); execFileSync("git",["commit","-qm","base"],{cwd:dir});
   const evidence=".harness/reports/DEV-001-example/build.log"; fs.writeFileSync(path.join(dir,evidence),"failed\n");
   const h=createHandoff(dir,{acceptanceId:"AC-001",failedGoal:"fix",strategyId:"cursor-1",strategySummary:"bounded",failureClass:"build",failureSignature:"E",commandsExecuted:[],changedArtifactRefs:[],evidenceRefs:[evidence],cursorDiagnosis:"failed",prohibitedRepeats:["same"]});
@@ -61,7 +61,7 @@ test("fallback implementation is bound to the exact handoff, approved plan, HEAD
 test("fallback forbids re-diagnosis and a second Codex implementation for the same handoff",()=>{
   const dir=fs.mkdtempSync(path.join(os.tmpdir(),"fallback-once-v131-"));
   fs.mkdirSync(path.join(dir,"docs/specs/DEV-001-example"),{recursive:true}); fs.mkdirSync(path.join(dir,"harness/execution"),{recursive:true}); fs.mkdirSync(path.join(dir,".harness/reports/DEV-001-example/fallback"),{recursive:true});
-  fs.writeFileSync(path.join(dir,"docs/specs/_active.md"),"---\nactive_spec: DEV-001-example\nstatus: IMPLEMENTING\n---\n"); fs.writeFileSync(path.join(dir,"docs/specs/DEV-001-example/gate.json"),JSON.stringify({planApproval:{status:"approved",contractHash:"a".repeat(64)}})); fs.writeFileSync(path.join(dir,"harness/execution/manifest.json"),fs.readFileSync(path.join(root,"harness/execution/manifest.json")));
+  fs.writeFileSync(path.join(dir,"docs/specs/_active.md"),"---\nactive_spec: DEV-001-example\nstatus: DEVELOPING\n---\n"); fs.writeFileSync(path.join(dir,"docs/specs/DEV-001-example/gate.json"),JSON.stringify({designApproval:{status:"approved",contractHash:"a".repeat(64)}})); fs.writeFileSync(path.join(dir,"harness/execution/manifest.json"),fs.readFileSync(path.join(root,"harness/execution/manifest.json")));
   execFileSync("git",["init","-q"],{cwd:dir}); execFileSync("git",["config","user.email","test@example.invalid"],{cwd:dir}); execFileSync("git",["config","user.name","Harness Test"],{cwd:dir}); fs.writeFileSync(path.join(dir,"x.txt"),"x\n"); execFileSync("git",["add","x.txt"],{cwd:dir}); execFileSync("git",["commit","-qm","base"],{cwd:dir});
   const evidence=".harness/reports/DEV-001-example/build.log"; fs.writeFileSync(path.join(dir,evidence),"failed\n");
   const h=createHandoff(dir,{acceptanceId:"AC-001",failedGoal:"fix",strategyId:"cursor-1",strategySummary:"bounded",failureClass:"build",failureSignature:"E",commandsExecuted:[],changedArtifactRefs:[],evidenceRefs:[evidence],cursorDiagnosis:"failed",prohibitedRepeats:["same"]});
@@ -79,7 +79,7 @@ test("fallback forbids re-diagnosis and a second Codex implementation for the sa
 test("failed diagnosis claim still consumes the diagnosis budget",()=>{
   const dir=fs.mkdtempSync(path.join(os.tmpdir(),"fallback-claim-v131-"));
   fs.mkdirSync(path.join(dir,"docs/specs/DEV-001-example"),{recursive:true}); fs.mkdirSync(path.join(dir,"harness/execution"),{recursive:true}); fs.mkdirSync(path.join(dir,".harness/reports/DEV-001-example/fallback"),{recursive:true});
-  fs.writeFileSync(path.join(dir,"docs/specs/_active.md"),"---\nactive_spec: DEV-001-example\nstatus: IMPLEMENTING\n---\n"); fs.writeFileSync(path.join(dir,"docs/specs/DEV-001-example/gate.json"),JSON.stringify({planApproval:{status:"approved",contractHash:"a".repeat(64)}})); fs.writeFileSync(path.join(dir,"harness/execution/manifest.json"),fs.readFileSync(path.join(root,"harness/execution/manifest.json")));
+  fs.writeFileSync(path.join(dir,"docs/specs/_active.md"),"---\nactive_spec: DEV-001-example\nstatus: DEVELOPING\n---\n"); fs.writeFileSync(path.join(dir,"docs/specs/DEV-001-example/gate.json"),JSON.stringify({designApproval:{status:"approved",contractHash:"a".repeat(64)}})); fs.writeFileSync(path.join(dir,"harness/execution/manifest.json"),fs.readFileSync(path.join(root,"harness/execution/manifest.json")));
   execFileSync("git",["init","-q"],{cwd:dir}); execFileSync("git",["config","user.email","test@example.invalid"],{cwd:dir}); execFileSync("git",["config","user.name","Harness Test"],{cwd:dir}); fs.writeFileSync(path.join(dir,"x.txt"),"x\n"); execFileSync("git",["add","x.txt"],{cwd:dir}); execFileSync("git",["commit","-qm","base"],{cwd:dir});
   const evidence=".harness/reports/DEV-001-example/build.log"; fs.writeFileSync(path.join(dir,evidence),"failed\n");
   const h=createHandoff(dir,{acceptanceId:"AC-001",failedGoal:"fix",strategyId:"cursor-1",strategySummary:"bounded",failureClass:"build",failureSignature:"E",commandsExecuted:[],changedArtifactRefs:[],evidenceRefs:[evidence],cursorDiagnosis:"failed",prohibitedRepeats:["same"]});
@@ -91,7 +91,7 @@ test("failed diagnosis claim still consumes the diagnosis budget",()=>{
 test("concurrent diagnosis claims fail closed under exclusive ledger lock", async () => {
   const dir=fs.mkdtempSync(path.join(os.tmpdir(),"fallback-lock-v131-"));
   fs.mkdirSync(path.join(dir,"docs/specs/DEV-001-example"),{recursive:true}); fs.mkdirSync(path.join(dir,"harness/execution"),{recursive:true}); fs.mkdirSync(path.join(dir,".harness/reports/DEV-001-example/fallback"),{recursive:true});
-  fs.writeFileSync(path.join(dir,"docs/specs/_active.md"),"---\nactive_spec: DEV-001-example\nstatus: IMPLEMENTING\n---\n"); fs.writeFileSync(path.join(dir,"docs/specs/DEV-001-example/gate.json"),JSON.stringify({planApproval:{status:"approved",contractHash:"a".repeat(64)}})); fs.writeFileSync(path.join(dir,"harness/execution/manifest.json"),fs.readFileSync(path.join(root,"harness/execution/manifest.json")));
+  fs.writeFileSync(path.join(dir,"docs/specs/_active.md"),"---\nactive_spec: DEV-001-example\nstatus: DEVELOPING\n---\n"); fs.writeFileSync(path.join(dir,"docs/specs/DEV-001-example/gate.json"),JSON.stringify({designApproval:{status:"approved",contractHash:"a".repeat(64)}})); fs.writeFileSync(path.join(dir,"harness/execution/manifest.json"),fs.readFileSync(path.join(root,"harness/execution/manifest.json")));
   execFileSync("git",["init","-q"],{cwd:dir}); execFileSync("git",["config","user.email","test@example.invalid"],{cwd:dir}); execFileSync("git",["config","user.name","Harness Test"],{cwd:dir}); fs.writeFileSync(path.join(dir,"x.txt"),"x\n"); execFileSync("git",["add","x.txt"],{cwd:dir}); execFileSync("git",["commit","-qm","base"],{cwd:dir});
   const evidence=".harness/reports/DEV-001-example/build.log"; fs.writeFileSync(path.join(dir,evidence),"failed\n");
   const h=createHandoff(dir,{acceptanceId:"AC-001",failedGoal:"fix",strategyId:"cursor-1",strategySummary:"bounded",failureClass:"build",failureSignature:"E",commandsExecuted:[],changedArtifactRefs:[],evidenceRefs:[evidence],cursorDiagnosis:"failed",prohibitedRepeats:["same"]});

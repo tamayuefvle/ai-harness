@@ -1,16 +1,49 @@
 {
-  "schemaVersion": "1.0.0",
+  "schemaVersion": "2.0.0",
   "projectId": "change-me",
   "lifecycleMode": "full",
   "state": "MIGRATION_PENDING",
+  "planningTier": "full",
+  "designTier": "full",
+  "phaseGates": {
+    "planning": {
+      "status": "pending",
+      "approvedBy": null,
+      "approvedAt": null,
+      "reason": null,
+      "contractHash": null
+    },
+    "stack": {
+      "status": "pending",
+      "approvedBy": null,
+      "approvedAt": null,
+      "reason": null,
+      "contractHash": null
+    },
+    "architecture": {
+      "status": "pending",
+      "approvedBy": null,
+      "approvedAt": null,
+      "reason": null,
+      "contractHash": null
+    },
+    "design": {
+      "status": "pending",
+      "approvedBy": null,
+      "approvedAt": null,
+      "reason": null,
+      "contractHash": null
+    }
+  },
   "pendingApproval": null,
   "decisionRefs": [],
   "activeProfiles": [],
   "profileResolutionPath": "harness/generated/profile-resolution.json",
   "migration": {
-    "fromVersion": "11.0.0",
+    "fromVersion": "14.9.4",
+    "fromState": "MIGRATION_PENDING",
     "proposedProfiles": [],
-    "notes": "Set projectId, choose proposedProfiles, resolve profiles, review baselines, then approve migration."
+    "notes": "Set projectId, choose planning/design tiers, then enter PLANNING or migrate an existing approved delivery baseline."
   },
   "history": []
 }

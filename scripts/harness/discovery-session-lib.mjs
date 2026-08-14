@@ -22,8 +22,8 @@ export function sessionPath(repoRoot, sessionId) {
 export function assertDiscoveryState(repoRoot) {
   const project = readProject(repoRoot);
   if (!project) throw new Error("harness/project.json is missing.");
-  if (project.state !== "DISCOVERY") {
-    throw new Error(`ai:discover requires project state DISCOVERY (current: ${project.state}). Run npm run project:discover first.`);
+  if (project.state !== "PLANNING") {
+    throw new Error(`ai:plan requires project state PLANNING (current: ${project.state}). Run npm run project:plan first.`);
   }
   return project;
 }
@@ -33,10 +33,10 @@ export function createDiscoverySession(repoRoot, options = {}) {
   const sessionId = options.sessionId ?? newSessionId();
   const now = utcTimestamp();
   const session = {
-    schemaVersion: "1.0.0",
+    schemaVersion: "2.0.0",
     sessionId,
     projectId: project.projectId,
-    discoveryTier: project.discoveryTier ?? "full",
+    planningTier: project.planningTier ?? project.discoveryTier ?? "full",
     phase: options.phase ?? inferPhase(repoRoot),
     startedAt: now,
     updatedAt: now,
@@ -78,7 +78,7 @@ export function applyDiscoveryTurn(session, turnPayload) {
     role: "agent",
     summary: turnPayload.rationale,
     question: turnPayload.suggestedQuestion,
-    targetDocument: turnPayload.targetDocument,
+    ...(turnPayload.targetDocument ? { targetDocument: turnPayload.targetDocument } : {}),
   });
   session.openQuestions = turnPayload.openQuestions ?? [];
   if (turnPayload.fabricationRisk === "high") {
@@ -93,7 +93,7 @@ export function applyDiscoveryTurn(session, turnPayload) {
 
 export function inferPhase(repoRoot) {
   const progress = discoveryProgress(repoRoot);
-  if (progress.state !== "DISCOVERY") return "problem";
+  if (progress.state !== "PLANNING") return "problem";
   const incomplete = progress.sections?.find((section) => section.status !== "ready");
   if (!incomplete) return "review";
   if (incomplete.file.includes("problem")) return "problem";
@@ -105,17 +105,17 @@ export function inferPhase(repoRoot) {
 
 export function buildDiscoveryPrompt(repoRoot, session) {
   const status = discoveryProgress(repoRoot);
-  const promptPath = path.join(repoRoot, "harness/prompts/product-discovery.md");
+  const promptPath = path.join(repoRoot, "harness/prompts/planning.md");
   const base = fs.readFileSync(promptPath, "utf8");
   return `${base}
 
 Session: ${session.sessionId}
 Project: ${session.projectId}
-Discovery tier: ${session.discoveryTier}
+Planning tier: ${session.planningTier}
 Current phase: ${session.phase}
 Product status:
 ${JSON.stringify(status, null, 2)}
 
-Return one discovery turn using harness/schemas/discovery-turn.schema.json.
-Ask exactly one question. Update one target document per turn. Do not invent user research or market facts.`;
+Return one planning turn using harness/schemas/discovery-turn.schema.json.
+Conversation-first: explore freely without editing canonical docs. Only when the user asks to publish/checkpoint, select one targetDocument for the proposed update. Do not invent user research or market facts.`;
 }

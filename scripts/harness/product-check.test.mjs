@@ -21,16 +21,17 @@ function fixtureProject(state = "MIGRATION_PENDING", tier = "full") {
   fs.writeFileSync(
     path.join(root, "harness/project.json"),
     `${JSON.stringify({
-      schemaVersion: "1.0.0",
+      schemaVersion: "2.0.0",
       projectId: "demo-app",
       lifecycleMode: "full",
       state,
-      discoveryTier: tier,
+      planningTier: tier,
+      phaseGates: Object.fromEntries(["planning","stack","architecture","design"].map((name)=>[name,{status:"pending",approvedBy:null,approvedAt:null,reason:null,contractHash:null}])) ,
       pendingApproval: null,
       decisionRefs: [],
       activeProfiles: [],
       profileResolutionPath: null,
-      migration: state === "MIGRATION_PENDING" ? { fromVersion: "11.0.0", proposedProfiles: [] } : null,
+      migration: state === "MIGRATION_PENDING" ? { fromVersion: "14.9.4", fromState: "MIGRATION_PENDING", proposedProfiles: [], notes: "test" } : null,
       history: [],
     }, null, 2)}\n`,
   );
@@ -173,21 +174,21 @@ test("validateProductDocument rejects template placeholders", () => {
 });
 
 test("validateDiscoverySet accepts full tier with traceability", () => {
-  const root = fixtureProject("DISCOVERY", "full");
+  const root = fixtureProject("PLANNING", "full");
   writeFullDiscovery(root);
   const result = validateDiscoverySet(root);
   assert.equal(result.ok, true, result.errors.join("; "));
 });
 
 test("validateDiscoverySet accepts lite tier with reduced sections", () => {
-  const root = fixtureProject("DISCOVERY", "lite");
+  const root = fixtureProject("PLANNING", "lite");
   writeLiteDiscovery(root);
   const result = validateDiscoverySet(root);
   assert.equal(result.ok, true, result.errors.join("; "));
 });
 
 test("validateDiscoverySet rejects Must without OUT reference", () => {
-  const root = fixtureProject("DISCOVERY", "lite");
+  const root = fixtureProject("PLANNING", "lite");
   writeLiteDiscovery(root);
   fs.writeFileSync(path.join(root, "docs/product/requirements.md"), `# Requirements\n\n## Must\n\n- Missing outcome link\n`);
   const result = validateDiscoverySet(root);
@@ -195,7 +196,7 @@ test("validateDiscoverySet rejects Must without OUT reference", () => {
 });
 
 test("validateDiscoverySet requires promoted idea trace", () => {
-  const root = fixtureProject("DISCOVERY", "lite");
+  const root = fixtureProject("PLANNING", "lite");
   writeLiteDiscovery(root);
   fs.writeFileSync(
     path.join(root, "docs/product/idea-backlog.md"),
@@ -211,21 +212,21 @@ test("runProductCheck skips MIGRATION_PENDING by default", () => {
   assert.equal(outcome.status, "skipped");
 });
 
-test("runProjectDiscover sets discovery tier", () => {
+test("runProjectDiscover sets planning tier", () => {
   const root = fixtureProject("MIGRATION_PENDING");
   const result = runProjectDiscover(root, { id: "demo-app", tier: "lite" });
-  assert.equal(result.discoveryTier, "lite");
+  assert.equal(result.planningTier, "lite");
 });
 
-test("project:gate accepts full discovery when semantic contract passes", () => {
-  const root = fixtureProject("DISCOVERY", "full");
+test("project:gate accepts full planning when semantic contract passes", () => {
+  const root = fixtureProject("PLANNING", "full");
   writeFullDiscovery(root);
-  const gate = runProjectGate(root, { to: "PRODUCT_APPROVED", actor: "human:qa", reason: "test" });
-  assert.equal(gate.to, "PRODUCT_APPROVED");
+  const gate = runProjectGate(root, { gate: "planning", actor: "human:qa", reason: "test" });
+  assert.equal(gate.gate, "planning");
 });
 
 test("validateDiscoverySet rejects fabrication claims without citation", () => {
-  const root = fixtureProject("DISCOVERY", "lite");
+  const root = fixtureProject("PLANNING", "lite");
   writeLiteDiscovery(root);
   fs.writeFileSync(
     path.join(root, "docs/product/problem.md"),
@@ -236,7 +237,7 @@ test("validateDiscoverySet rejects fabrication claims without citation", () => {
 });
 
 test("validateDiscoverySet rejects unvalidated assumption on Must item", () => {
-  const root = fixtureProject("DISCOVERY", "full");
+  const root = fixtureProject("PLANNING", "full");
   writeFullDiscovery(root);
   fs.writeFileSync(
     path.join(root, "docs/product/requirements.md"),
@@ -251,12 +252,12 @@ test("validateDiscoverySet rejects unvalidated assumption on Must item", () => {
 });
 
 test("validateDiscoverySet validates signal feedback links", () => {
-  const root = fixtureProject("DISCOVERY", "lite");
+  const root = fixtureProject("PLANNING", "lite");
   writeLiteDiscovery(root);
   fs.mkdirSync(path.join(root, "docs/operations/signals"), { recursive: true });
   fs.writeFileSync(
     path.join(root, "docs/operations/signals/SIG-2026-08-12-demo.json"),
-    `${JSON.stringify({ schemaVersion: "1.0.0", signalId: "SIG-2026-08-12-demo", type: "user-feedback", source: "support", observedAt: "2026-08-12T00:00:00.000Z", summary: "Users ask for export", severity: "medium", evidence: [], containsSecrets: false }, null, 2)}\n`,
+    `${JSON.stringify({ schemaVersion: "2.0.0", signalId: "SIG-2026-08-12-demo", type: "user-feedback", source: "support", observedAt: "2026-08-12T00:00:00.000Z", summary: "Users ask for export", severity: "medium", evidence: [], containsSecrets: false }, null, 2)}\n`,
   );
   fs.writeFileSync(
     path.join(root, "docs/product/signal-feedback.md"),
@@ -266,8 +267,8 @@ test("validateDiscoverySet validates signal feedback links", () => {
   assert.equal(result.ok, true, result.errors.join("; "));
 });
 
-test("discoveryProgress exposes discovery tier", () => {
+test("discoveryProgress exposes planning tier", () => {
   const root = fixtureProject("MIGRATION_PENDING", "lite");
   const report = discoveryProgress(root);
-  assert.match(report.nextAction, /project:discover/);
+  assert.match(report.nextAction, /project:plan/);
 });

@@ -1,6 +1,6 @@
 {
   "name": "ai-harness",
-  "version": "14.9.4",
+  "version": "15.0.0",
   "private": true,
   "description": "Harness npm substrate for verification scripts. This is not a product application runtime.",
   "scripts": {
@@ -101,7 +101,10 @@
     "test:harness:full-lifecycle": "node --test scripts/harness/full-lifecycle.test.mjs",
     "release:verify": "node scripts/harness/release-gate-verify.mjs",
     "cursor:preflight": "node scripts/harness/cursor-preflight.mjs",
-    "cursor:exec": "node scripts/harness/cursor-exec.mjs"
+    "cursor:exec": "node scripts/harness/cursor-exec.mjs",
+    "project:plan": "node scripts/harness/project-discover.mjs",
+    "ai:plan": "bash scripts/harness/codex-discover.sh",
+    "project:migrate-v15": "node scripts/harness/migrate-v15.mjs"
   },
   "devDependencies": {
     "ajv": "^8.17.1",

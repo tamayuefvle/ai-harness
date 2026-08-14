@@ -15,8 +15,8 @@ export function runStackCheck(repoRoot = canonicalRoot, options = {}) {
   if (project?.state === "MIGRATION_PENDING" && !options.forGate && !options.strict) {
     return { status: "skipped", reason: "MIGRATION_PENDING" };
   }
-  if (project?.state === "DISCOVERY" && !options.forGate && !options.strict) {
-    return { status: "skipped", reason: "DISCOVERY" };
+  if (project?.state === "PLANNING" && !options.forGate && !options.strict) {
+    return { status: "skipped", reason: "PLANNING" };
   }
   const result = validateStackDocuments(repoRoot);
   if (result.ok) return { status: "passed", warnings: result.warnings };

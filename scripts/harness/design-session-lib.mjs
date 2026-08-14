@@ -6,10 +6,10 @@ import { designProgress, getDesignTier, validateArchitectureDocuments, validateS
 import { readProject } from "./product-lib.mjs";
 import { canonicalRoot, writeJsonAtomic } from "./full-lifecycle-lib.mjs";
 
-export const DESIGN_SESSION_STATES = Object.freeze(["PRODUCT_APPROVED", "STACK_APPROVED"]);
+export const DESIGN_SESSION_STATES = Object.freeze(["DESIGNING"]);
 export const DESIGN_SESSION_ID_PATTERN = /^DSN-[0-9]{8}-[a-z0-9]{6}$/;
 export const DESIGN_PHASES = Object.freeze(["stack-options", "stack-decision", "architecture", "review"]);
-export const DESIGN_TARGET_PATTERN = /^docs\/(product\/technology-(options|decision)|architecture\/(baseline|security-baseline|quality-strategy))\.md$/;
+export const DESIGN_TARGET_PATTERN = /^docs\/architecture\/(technology-(options|decision)|baseline|security-baseline|quality-strategy)\.md$/;
 export const DESIGN_FABRICATION_RISK = Object.freeze(["none", "low", "high"]);
 
 export function designSessionDir(repoRoot = canonicalRoot) {
@@ -47,9 +47,11 @@ export function assertDesignTurn(turn) {
   if (!DESIGN_PHASES.includes(turn.phase)) {
     throw new Error(`Invalid design turn phase: ${turn.phase}`);
   }
-  if (typeof turn.targetDocument !== "string" || !DESIGN_TARGET_PATTERN.test(turn.targetDocument)) {
+  if (turn.targetDocument !== null && (typeof turn.targetDocument !== "string" || !DESIGN_TARGET_PATTERN.test(turn.targetDocument))) {
     throw new Error(`Invalid design turn targetDocument: ${turn.targetDocument}`);
   }
+  if (turn.mode === "publish" && !turn.targetDocument) throw new Error("Publish design turn requires targetDocument.");
+  if (!["explore", "refine", "publish"].includes(turn.mode)) throw new Error(`Invalid design turn mode: ${turn.mode}`);
   if (typeof turn.suggestedQuestion !== "string" || !turn.suggestedQuestion.trim()) {
     throw new Error("Design turn suggestedQuestion is required.");
   }
@@ -69,7 +71,7 @@ export function assertDesignSession(session) {
   if (!session || typeof session !== "object" || Array.isArray(session)) {
     throw new Error("Design session is missing.");
   }
-  if (session.schemaVersion !== "1.0.0") {
+  if (session.schemaVersion !== "2.0.0") {
     throw new Error(`Unsupported design session schemaVersion: ${session.schemaVersion}`);
   }
   assertDesignSessionId(session.sessionId);
@@ -96,7 +98,7 @@ export function assertDesignSessionState(repoRoot) {
   if (!project) throw new Error("harness/project.json is missing.");
   if (!DESIGN_SESSION_STATES.includes(project.state)) {
     throw new Error(
-      `ai:evaluate-stack requires PRODUCT_APPROVED or STACK_APPROVED (current: ${project.state}). Finish product discovery first; do not use task ai:research for project design.`,
+      `ai:design requires project state DESIGNING (current: ${project.state}). Finish planning first; task-level design starts only after ACTIVE.`,
     );
   }
   return project;
@@ -104,16 +106,14 @@ export function assertDesignSessionState(repoRoot) {
 
 export function inferDesignPhase(repoRoot) {
   const progress = designProgress(repoRoot);
-  if (progress.state === "PRODUCT_APPROVED") {
+  if (progress.phase === "stack") {
     const blockers = progress.blockers ?? [];
     if (blockers.some((error) => error.includes("technology-options"))) return "stack-options";
     if (blockers.some((error) => error.includes("technology-decision"))) return "stack-decision";
-    return progress.blockers?.length ? "stack-decision" : "review";
+    return "review";
   }
-  if (progress.state === "STACK_APPROVED") {
-    return progress.blockers?.length ? "architecture" : "review";
-  }
-  return "stack-options";
+  if (["architecture", "profile-resolution"].includes(progress.phase)) return "architecture";
+  return "review";
 }
 
 export function createDesignSession(repoRoot, options = {}) {
@@ -125,7 +125,7 @@ export function createDesignSession(repoRoot, options = {}) {
   }
   const now = utcTimestamp();
   const session = {
-    schemaVersion: "1.0.0",
+    schemaVersion: "2.0.0",
     sessionId,
     projectId: project.projectId,
     designTier: getDesignTier(project),
@@ -160,15 +160,15 @@ export function applyDesignTurn(session, turnPayload) {
     role: "agent",
     summary: turnPayload.rationale,
     question: turnPayload.suggestedQuestion,
-    targetDocument: turnPayload.targetDocument,
+    ...(turnPayload.targetDocument ? { targetDocument: turnPayload.targetDocument } : {}),
   });
   session.openQuestions = turnPayload.openQuestions ?? [];
   return session;
 }
 
 export function snapshotDesignCheck(repoRoot) {
-  const project = readProject(repoRoot);
-  if (project?.state === "STACK_APPROVED") {
+  const progress = designProgress(repoRoot);
+  if (["architecture", "profile-resolution", "design-review", "design-approved"].includes(progress.phase)) {
     const result = validateArchitectureDocuments(repoRoot);
     return { kind: "architecture", ok: result.ok, errors: result.errors };
   }
@@ -185,11 +185,12 @@ export function finalizeDesignSession(repoRoot, sessionId) {
 
 export function buildDesignPrompt(repoRoot, session) {
   const project = readProject(repoRoot);
-  const promptName = project?.state === "STACK_APPROVED"
+  const progress = designProgress(repoRoot);
+  const promptName = ["architecture", "profile-resolution", "design-review", "design-approved"].includes(progress.phase)
     ? "architecture-baseline.md"
     : "technology-evaluation.md";
   const base = fs.readFileSync(path.join(repoRoot, "harness/prompts", promptName), "utf8");
-  const status = designProgress(repoRoot);
+  const status = progress;
   return `${base}
 
 Session: ${session.sessionId}
@@ -201,6 +202,6 @@ Design status:
 ${JSON.stringify(status, null, 2)}
 
 Return one design turn using harness/schemas/design-turn.schema.json.
-Ask exactly one question. Propose one target document per turn. Do not install dependencies or invent performance/security evidence.
-Do not start task:start or ai:research.`;
+Conversation-first: explore and refine design before changing canonical files. Select one target document only for an explicit publish/checkpoint turn. Do not install dependencies or invent performance/security evidence.
+Do not start task:start or task-level implementation while project design is incomplete.`;
 }

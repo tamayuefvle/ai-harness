@@ -1,4 +1,4 @@
-# Implementation plan
+# Design and implementation contract
 
 ## Existing implementation inspected
 
@@ -9,7 +9,7 @@
 
 A `create` decision requires evidence that reuse, extension, or replacement cannot satisfy the accepted scope.
 
-## Proposed design
+## Detailed design
 
 ## Change boundary
 
@@ -36,7 +36,7 @@ A `create` decision requires evidence that reuse, extension, or replacement cann
 
 ## Test approach
 
-Use Red → Green → Refactor inside implementation where behavior is testable. Keep the v8/v9 external state machine unchanged.
+Use Red → Green → Refactor inside implementation where behavior is testable. Do not change the approved v15 phase/gate contract during implementation; return to DESIGNING when a design decision changes.
 
 ## Risks
 

@@ -1,14 +1,53 @@
 {
-  "schemaVersion": "1.0.0",
+  "schemaVersion": "2.0.0",
+  "projectGates": {
+    "planning": {
+      "phase": "PLANNING",
+      "requiredDocuments": [
+        "docs/product/problem.md",
+        "docs/product/users.md",
+        "docs/product/outcomes.md",
+        "docs/product/requirements.md"
+      ],
+      "checker": "product"
+    },
+    "stack": {
+      "phase": "DESIGNING",
+      "requiredDocuments": [
+        "docs/architecture/technology-options.md",
+        "docs/architecture/technology-decision.md"
+      ],
+      "checker": "stack"
+    },
+    "architecture": {
+      "phase": "DESIGNING",
+      "requiredDocuments": [
+        "docs/architecture/baseline.md",
+        "docs/architecture/security-baseline.md",
+        "docs/architecture/quality-strategy.md"
+      ],
+      "checker": "architecture"
+    },
+    "design": {
+      "phase": "DESIGNING",
+      "requiredDocuments": [
+        "docs/architecture/technology-options.md",
+        "docs/architecture/technology-decision.md",
+        "docs/architecture/baseline.md",
+        "docs/architecture/security-baseline.md",
+        "docs/architecture/quality-strategy.md",
+        "harness/generated/profile-resolution.json"
+      ],
+      "checker": "design"
+    }
+  },
   "lifecycles": {
     "project": {
-      "initialState": "DISCOVERY",
+      "initialState": "PLANNING",
       "activeStates": [
         "MIGRATION_PENDING",
-        "DISCOVERY",
-        "PRODUCT_APPROVED",
-        "STACK_APPROVED",
-        "ARCHITECTURE_APPROVED",
+        "PLANNING",
+        "DESIGNING",
         "ACTIVE"
       ],
       "terminalStates": [
@@ -17,20 +56,26 @@
       "transitions": [
         {
           "from": "MIGRATION_PENDING",
+          "to": "PLANNING",
+          "approval": "none",
+          "requiredDocuments": []
+        },
+        {
+          "from": "MIGRATION_PENDING",
           "to": "ACTIVE",
           "approval": "human",
           "requiredDocuments": [
             "docs/product/vision.md",
             "docs/product/scope.md",
-            "docs/product/technology-decision.md",
+            "docs/architecture/technology-decision.md",
             "docs/architecture/ADR-0001-stack.md",
             "docs/architecture/baseline.md"
           ]
         },
         {
-          "from": "DISCOVERY",
-          "to": "PRODUCT_APPROVED",
-          "approval": "human",
+          "from": "PLANNING",
+          "to": "DESIGNING",
+          "approval": "gate:planning",
           "requiredDocuments": [
             "docs/product/problem.md",
             "docs/product/users.md",
@@ -39,29 +84,21 @@
           ]
         },
         {
-          "from": "PRODUCT_APPROVED",
-          "to": "STACK_APPROVED",
+          "from": "DESIGNING",
+          "to": "PLANNING",
           "approval": "human",
-          "requiredDocuments": [
-            "docs/product/technology-options.md",
-            "docs/product/technology-decision.md"
-          ]
+          "requiredDocuments": []
         },
         {
-          "from": "STACK_APPROVED",
-          "to": "ARCHITECTURE_APPROVED",
-          "approval": "human",
+          "from": "DESIGNING",
+          "to": "ACTIVE",
+          "approval": "gate:design",
           "requiredDocuments": [
+            "docs/architecture/technology-options.md",
+            "docs/architecture/technology-decision.md",
             "docs/architecture/baseline.md",
             "docs/architecture/security-baseline.md",
-            "docs/architecture/quality-strategy.md"
-          ]
-        },
-        {
-          "from": "ARCHITECTURE_APPROVED",
-          "to": "ACTIVE",
-          "approval": "human",
-          "requiredDocuments": [
+            "docs/architecture/quality-strategy.md",
             "harness/generated/profile-resolution.json"
           ]
         },
@@ -76,14 +113,12 @@
       ]
     },
     "task": {
-      "initialState": "IDEA",
+      "initialState": "DESIGNING",
       "activeStates": [
-        "IDEA",
-        "SPEC_READY",
-        "PLAN_READY",
-        "IMPLEMENTING",
+        "DESIGNING",
+        "DEVELOPING",
         "VERIFYING",
-        "REVIEW_READY",
+        "REVIEWING",
         "DEPLOY_READY"
       ],
       "terminalStates": [
@@ -91,45 +126,32 @@
       ],
       "transitions": [
         {
-          "from": "IDEA",
-          "to": "SPEC_READY",
-          "approval": "human",
+          "from": "DESIGNING",
+          "to": "DEVELOPING",
+          "approval": "gate:design",
           "requiredDocuments": [
             "docs/specs/{{TASK_ID}}/brief.md",
-            "docs/specs/{{TASK_ID}}/acceptance.md"
-          ]
-        },
-        {
-          "from": "SPEC_READY",
-          "to": "PLAN_READY",
-          "approval": "human",
-          "requiredDocuments": [
-            "docs/specs/{{TASK_ID}}/plan.md",
+            "docs/specs/{{TASK_ID}}/acceptance.md",
+            "docs/specs/{{TASK_ID}}/design.md",
             "docs/specs/{{TASK_ID}}/test-plan.md"
           ]
         },
         {
-          "from": "PLAN_READY",
-          "to": "IMPLEMENTING",
-          "approval": "none",
-          "requiredDocuments": []
-        },
-        {
-          "from": "IMPLEMENTING",
+          "from": "DEVELOPING",
           "to": "VERIFYING",
           "approval": "none",
           "requiredDocuments": []
         },
         {
           "from": "VERIFYING",
-          "to": "REVIEW_READY",
+          "to": "REVIEWING",
           "approval": "none",
           "requiredDocuments": []
         },
         {
-          "from": "REVIEW_READY",
+          "from": "REVIEWING",
           "to": "DEPLOY_READY",
-          "approval": "human",
+          "approval": "gate:release",
           "requiredDocuments": []
         },
         {

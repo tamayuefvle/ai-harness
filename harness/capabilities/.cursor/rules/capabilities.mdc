@@ -32,4 +32,4 @@ Technical documentation requests use the `documentation` capability. The normati
 
 ## GitHub
 
-Use `git` and `gh` over HTTPS. Read-only context uses the normalized gateway. Feature-branch push and PR creation require a clean worktree, approved plan, recorded implementation evidence, a structured proposal, and explicit human approval. Final release requires verification and independent review. Merge, force push, protected-branch push, secrets, variables, environments and workflow dispatch are outside automated authority.
+Use `git` and `gh` over HTTPS. Read-only context uses the normalized gateway. Feature-branch push and PR creation require a clean worktree, an approved Design Baseline, recorded implementation evidence, a structured proposal, and explicit human approval. Final release requires verification and independent review. Merge, force push, protected-branch push, secrets, variables, environments and workflow dispatch are outside automated authority.

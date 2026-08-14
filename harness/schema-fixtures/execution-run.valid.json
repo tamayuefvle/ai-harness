@@ -5,10 +5,10 @@
   "lifecycleRef": {
     "kind": "task",
     "id": "DEV-001-example",
-    "state": "IMPLEMENTING"
+    "state": "DEVELOPING"
   },
   "state": "PAUSED",
-  "approvedPlanDigest": "0000000000000000000000000000000000000000000000000000000000000000",
+  "approvedDesignDigest": "0000000000000000000000000000000000000000000000000000000000000000",
   "invariantManifestDigest": "1111111111111111111111111111111111111111111111111111111111111111",
   "pendingOperation": null,
   "completedOperationIds": [],

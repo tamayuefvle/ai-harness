@@ -30,20 +30,20 @@ export function createHandoff(root,input){
   const active=activeTask(root); if(!active.id||active.id==="none") throw new Error("No active task.");
   if(input.taskId&&input.taskId!==active.id) throw new Error("Fallback handoff task must match the active task.");
   const gate=readJson(path.join(root,"docs/specs",active.id,"gate.json"));
-  if(gate.planApproval?.status!=="approved"||!/^[a-f0-9]{64}$/.test(gate.planApproval?.contractHash??"")) throw new Error("Fallback requires an approved plan digest.");
+  if(gate.designApproval?.status!=="approved"||!/^[a-f0-9]{64}$/.test(gate.designApproval?.contractHash??"")) throw new Error("Fallback requires an approved design digest.");
   if(!/^AC-[0-9]{3,}$/.test(input.acceptanceId??"")) throw new Error("Fallback requires an explicit acceptanceId.");
   for(const field of ["failedGoal","strategyId","strategySummary","failureClass","failureSignature","cursorDiagnosis"]) if(typeof input[field]!=="string"||!input[field].trim()) throw new Error(`Fallback requires ${field}.`);
   if(!(input.evidenceRefs??[]).length) throw new Error("Fallback requires failure evidence before delegation.");
   for(const ref of input.evidenceRefs) assertEvidence(root,ref);
   if(!(input.prohibitedRepeats??[]).length) throw new Error("Fallback must record at least one prohibited repeat.");
   const suffix=crypto.randomBytes(4).toString("hex"); const now=new Date().toISOString();
-  return {schemaVersion:"1.0.0",handoffId:`FBH-${active.id}-${input.acceptanceId}-${suffix}`,taskId:active.id,acceptanceId:input.acceptanceId,sourceExecutor:"cursor",targetExecutor:"codex-cli",failedGoal:input.failedGoal,strategyId:input.strategyId,strategySummary:input.strategySummary,failureClass:input.failureClass,failureSignature:input.failureSignature,commandsExecuted:input.commandsExecuted??[],changedArtifactRefs:input.changedArtifactRefs??[],evidenceRefs:input.evidenceRefs,cursorDiagnosis:input.cursorDiagnosis,prohibitedRepeats:input.prohibitedRepeats,approvedPlanDigest:gate.planApproval.contractHash,head:gitHead(root),workspaceDigest:gitWorkspaceDigest(root),createdAt:now};
+  return {schemaVersion:"1.0.0",handoffId:`FBH-${active.id}-${input.acceptanceId}-${suffix}`,taskId:active.id,acceptanceId:input.acceptanceId,sourceExecutor:"cursor",targetExecutor:"codex-cli",failedGoal:input.failedGoal,strategyId:input.strategyId,strategySummary:input.strategySummary,failureClass:input.failureClass,failureSignature:input.failureSignature,commandsExecuted:input.commandsExecuted??[],changedArtifactRefs:input.changedArtifactRefs??[],evidenceRefs:input.evidenceRefs,cursorDiagnosis:input.cursorDiagnosis,prohibitedRepeats:input.prohibitedRepeats,approvedDesignDigest:gate.designApproval.contractHash,head:gitHead(root),workspaceDigest:gitWorkspaceDigest(root),createdAt:now};
 }
 export function validateHandoffCurrent(root,handoffPath){
   const h=readJson(handoffPath); const active=activeTask(root);
   if(h.taskId!==active.id) throw new Error("Fallback handoff is not bound to the active task.");
   const gate=readJson(path.join(root,"docs/specs",h.taskId,"gate.json"));
-  if(h.approvedPlanDigest!==gate.planApproval?.contractHash) throw new Error("Fallback handoff plan digest is stale.");
+  if(h.approvedDesignDigest!==gate.designApproval?.contractHash) throw new Error("Fallback handoff design digest is stale.");
   if(h.head!==gitHead(root)) throw new Error("Fallback handoff HEAD is stale.");
   if(h.workspaceDigest!==gitWorkspaceDigest(root)) throw new Error("Fallback handoff workspace digest is stale.");
   return h;

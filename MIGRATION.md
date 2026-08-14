@@ -1,25 +1,82 @@
+# Migration to v15.0.0
+
+## From v14.9.4
+
+v15 is a lifecycle-contract migration, not a cosmetic rename. Preserve product code, filled product/design documents, completed task evidence, and release/incident records. Do not overwrite an existing application `package.json` or lockfile when applying the harness overlay.
+
+### What changes
+
+- project working states become `PLANNING`, `DESIGNING`, and `ACTIVE`; former approval-named states become independent `phaseGates` records;
+- task working states become `DESIGNING`, `DEVELOPING`, `VERIFYING`, `REVIEWING`, and `DEPLOY_READY`;
+- task `specApproval` / `planApproval` become `scopeApproval` / `designApproval`;
+- new task design source is `design.md`; an existing approved `plan.md` remains a supported legacy design document;
+- implementation evidence is bound to `design_baseline_hash`;
+- technology option/decision documents move from `docs/product/` to `docs/architecture/`;
+- canonical phase Skills become `planning`, `design`, `development`, and `executor-fallback`; obsolete generated Skills are pruned by generation.
+
+### Safe migration sequence
+
+1. Back up the repository/branch and ensure the worktree has no unrelated changes. Do not use destructive Git cleanup.
+2. Overlay v15 canonical files. For an application repository, merge package fragments instead of replacing application package metadata.
+3. Run the project-state migration:
+
+```bash
+npm run project:migrate-v15
+```
+
+The command writes `harness/project.v14.backup.json` before changing persistent project state. It maps v14 states conservatively, moves legacy technology documents only when safe, and reconstructs phase-gate approvals only when historical human evidence supports them. It does not fabricate approvals.
+
+4. For each active legacy task whose `gate.json` is schema v1.x, run:
+
+```bash
+npm run task:migrate-gates -- --approved-by human:<name> --reason "v15 gate migration" --base-sha <40-char-commit-sha>
+```
+
+The gate migration first validates the current scope/design, requires a fresh human migration approval bound to the supplied commit, and creates backups of both the legacy gate and `_active.md`. Evidence that cannot be trusted under the v2 contract is reset rather than silently accepted.
+
+5. Regenerate projections and run verification:
+
+```bash
+npm run harness:generate
+npm run harness:check
+npm run verify:harness
+```
+
+6. Review `harness/project.json`, `docs/specs/_active.md`, active task `gate.json`, profile resolution, and any migration backups before resuming work.
+
+### State mapping
+
+| v14 project state | v15 result |
+|---|---|
+| `MIGRATION_PENDING` | `MIGRATION_PENDING` |
+| `DISCOVERY` | `PLANNING` |
+| `PRODUCT_APPROVED`, `STACK_APPROVED`, `ARCHITECTURE_APPROVED` | normally `DESIGNING` when reconstructable approval evidence exists; otherwise fail-safe `PLANNING` |
+| `ACTIVE` | `ACTIVE`; old delivery remains usable, with reconstructed gates only where evidence exists |
+| `RETIRED` | `RETIRED` |
+
+| v14 task state | v15 semantic destination |
+|---|---|
+| `IDEA`, `SPEC_READY`, `PLAN_READY` | `DESIGNING` |
+| `IMPLEMENTING`, `VERIFYING`, `REVIEW_READY`, `DEPLOY_READY` | `DEVELOPING` |
+| `DONE` | do not migrate as an active task; archive/complete it under v14 first |
+
+The conservative restart at `DEVELOPING` is intentional: v14 implementation/verification/review evidence is not accepted as v15 evidence because it is not bound to the v15 `design_baseline_hash`. The migration command resets downstream evidence, updates `_active.md` and the gate together, and requires the task to rebuild implementation evidence before advancing. Do not alter only `_active.md` to simulate this mapping.
+
+### Rollback
+
+Before resumed v15 work creates new approvals, restore the v14.9.4 harness overlay plus `harness/project.v14.backup.json`, any `gate.v*.backup.json`, and `docs/specs/_active.v14.backup.md` created for active tasks, then regenerate the v14.9.4 projections. Once a task has been re-approved and developed against a v15 Design Baseline, rollback requires reverting those v15 task changes/evidence as a unit; never mix a v15 gate with a v14 task-state contract.
+
+---
+
 # Migration to v14.9.4
 
 ## From v14.9.3
 
-Compatible overlay. Overlay v14.9.4, then run:
+Compatible overlay. Overlay v14.9.4 without overwriting filled product documents, merge fragments if needed, then run `npm run harness:generate` and `npm run verify:harness`.
 
-```bash
-npm run harness:generate
-npm run verify:harness
-```
+Before delegated Codex `ai:*` commands, run `npm run codex:preflight`. In addition to effective project config, v14.9.4 requires the current repository project hook to be discovered, enabled, and trusted. If trust is pending, review the exact hook definition interactively with `/hooks`; do not write user trust configuration or bypass hook trust automatically.
 
-If you use Codex delegated `ai:*` commands, also run:
-
-```bash
-npm run codex:preflight
-```
-
-If hook trust is pending, open Codex `/hooks` and have a human review the current project hook definition. Do not write user trust files or bypass hook trust.
-
-Cursor `preToolUse` is now fail-closed. A hook crash, timeout, or invalid response blocks the action; that is expected.
-
-Planning seeds now live under `harness/templates/planning`. Existing filled `docs/product/*` and `docs/architecture/*` documents are mutable project state and are not overwritten.
+Cursor security-critical `preToolUse` is now fail-closed. A hook crash, timeout, or invalid response is therefore expected to block the action until the hook is healthy. Planning seed templates now live under `harness/templates/planning`; existing filled `docs/product/*` and architecture documents remain project state and must not be overwritten during migration.
 
 ---
 

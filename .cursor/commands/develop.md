@@ -18,7 +18,7 @@ Codex 発火方針:
 安全条件:
 
 - researcher と reviewer は read-only。
-- implementer は PLAN_READY 以降、feature branch、明示 AC の条件を満たす場合だけ。
+- implementer は `DEVELOPING` で、承認済み Design Baseline、feature branch、明示 AC の条件を満たす場合だけ。
 - 同じ Codex セッションを実装とレビューへ使わない。
 - production、dependency、secret、破壊的 Git 操作は自動実行しない。
 - Codex report を Cursor が diff と検証結果で確認する。

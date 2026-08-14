@@ -1,28 +1,30 @@
 {
   "$schema": "../../../harness/schemas/lifecycle-gate.schema.json",
-  "schemaVersion": "1.1.0",
+  "schemaVersion": "2.0.0",
   "taskId": "PF-000-template",
-  "specApproval": {
+  "scopeApproval": {
     "status": "pending",
     "approvedBy": null,
     "approvedAt": null,
     "reason": null,
     "contractHash": null
   },
-  "planApproval": {
+  "designApproval": {
     "status": "pending",
     "approvedBy": null,
     "approvedAt": null,
     "reason": null,
     "contractHash": null,
-    "baselineSha": null
+    "baselineSha": null,
+    "designDocument": null
   },
   "implementation": {
     "status": "pending",
     "reportPath": null,
     "reportSha256": null,
     "changeFingerprint": null,
-    "recordedAt": null
+    "recordedAt": null,
+    "designBaselineHash": null
   },
   "verification": {
     "status": "pending",

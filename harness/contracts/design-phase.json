@@ -1,15 +1,22 @@
 {
-  "schemaVersion": "1.0.0",
+  "schemaVersion": "2.0.0",
   "tiers": {
     "lite": {
       "label": "MVP design",
       "stack": {
         "documents": [
-          "docs/product/technology-options.md",
-          "docs/product/technology-decision.md"
+          "docs/architecture/technology-options.md",
+          "docs/architecture/technology-decision.md"
         ],
-        "optionsSections": ["## Candidates", "## Recommendation"],
-        "decisionSections": ["## Decision", "## Selected profiles", "## Rationale"],
+        "optionsSections": [
+          "## Candidates",
+          "## Recommendation"
+        ],
+        "decisionSections": [
+          "## Decision",
+          "## Selected profiles",
+          "## Rationale"
+        ],
         "minCandidates": 1,
         "minSelectedProfiles": 1,
         "requireRejectedOptions": false,
@@ -36,11 +43,18 @@
       "label": "Full design",
       "stack": {
         "documents": [
-          "docs/product/technology-options.md",
-          "docs/product/technology-decision.md"
+          "docs/architecture/technology-options.md",
+          "docs/architecture/technology-decision.md"
         ],
-        "optionsSections": ["## Candidates", "## Recommendation"],
-        "decisionSections": ["## Decision", "## Selected profiles", "## Rationale"],
+        "optionsSections": [
+          "## Candidates",
+          "## Recommendation"
+        ],
+        "decisionSections": [
+          "## Decision",
+          "## Selected profiles",
+          "## Rationale"
+        ],
         "minCandidates": 1,
         "minSelectedProfiles": 1,
         "requireRejectedOptions": true,

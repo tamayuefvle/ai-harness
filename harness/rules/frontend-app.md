@@ -7,7 +7,7 @@
 ## Before editing
 
 - active specと対象ACを確認する。
-- 対象パスに対応する provider-specific instruction（Codex: 最寄りの `CODEX.md`、Cursor: scoped `.mdc`）を読む。
+- 対象パスに対応する provider-specific instruction（Codex の最寄り `CODEX.md` / Cursor の scoped `.mdc`）を読む。
 - 既存route、layout、component、data sourceを調査する。
 - architecture判断が必要なら実装前にADRへ分岐する。
 

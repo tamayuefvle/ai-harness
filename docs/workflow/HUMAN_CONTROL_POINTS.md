@@ -17,7 +17,7 @@ Before asking for approval, present a decision packet containing the smallest us
 - rollback/recovery path and blast radius;
 - the exact operation the approval will authorize.
 
-Approval is **specific and non-transferable**. A trust decision does not authorize a dependency install; plan approval does not authorize production deployment; commit approval does not authorize push; release approval does not authorize unrelated infrastructure or security-policy changes. If the material scope, target, permission, dependency, or risk evidence changes after approval, stop and obtain a new approval for the changed decision.
+Approval is **specific and non-transferable**. A trust decision does not authorize a dependency install; design approval does not authorize production deployment; commit approval does not authorize push; release approval does not authorize unrelated infrastructure or security-policy changes. If the material scope, target, permission, dependency, or risk evidence changes after approval, stop and obtain a new approval for the changed decision.
 
 Do not request secrets as evidence. Record actor identity as `human:<name>` where the lifecycle contract requires it, together with a reason and the repository evidence path.
 
@@ -33,7 +33,7 @@ The execution kernel may pause a run at `AWAITING_APPROVAL`, but the Task/Projec
 
 | ID | Trigger | Human decision | Agent behavior before approval | Resume condition |
 |---|---|---|---|---|
-| HCP-01 | Existing lifecycle gates: spec, plan, project `ACTIVE`, rebaseline, release/production, incident mitigation | Approve the bounded decision represented by the canonical lifecycle gate | Prepare evidence; do not synthesize a human actor or advance the gate | Canonical gate records the explicit human decision |
+| HCP-01 | Existing lifecycle gates: scope, design, project `ACTIVE`, rebaseline, release/production, incident mitigation | Approve the bounded decision represented by the canonical lifecycle gate | Prepare evidence; do not synthesize a human actor or advance the gate | Canonical gate records the explicit human decision |
 | HCP-02 | Adding/enabling an MCP or capability provider, adding an external-write/production operation, expanding OAuth/auth scopes, or changing tool permissions | Accept the new authority and blast radius | Keep the provider disabled/read-only where possible; inspect config and primary docs; do not self-authorize | Explicit approval identifies provider, operations/scopes, target, and reason |
 | HCP-03 | New production dependency, or an update that introduces a material supply-chain risk signal (new source/registry, install lifecycle script, license-policy exception, known high/critical vulnerability exception, unexpected transitive expansion) | Accept the dependency/risk or choose an alternative | Present package/version/source/purpose and available dependency-review/audit evidence; do not use force/audit-fix bypasses | Explicit approval covers the dependency decision or the risk exception |
 | HCP-04 | Security-relevant configuration or permission change: authentication/authorization, CI/workflow permissions, branch/ruleset/Environment protections, network exposure, secret lifecycle, production infrastructure | Accept the security-boundary change | Keep current boundary; produce diff, threat/impact analysis, least-privilege alternative, and rollback | Explicit approval names the affected control and intended new state |
@@ -49,7 +49,7 @@ Cursorのbounded strategy失敗後はCodexがread-onlyで独立診断し、別�
 
 ## Friction controls
 
-Do **not** add a new approval prompt when an existing explicit approval already names the exact operation, target, and risk covered by one of the control points above. Do not make humans re-approve deterministic evidence collection, read-only diagnostics, retries of idempotent read operations, or edits already bounded by an approved plan unless new risk information appears.
+Do **not** add a new approval prompt when an existing explicit approval already names the exact operation, target, and risk covered by one of the control points above. Do not make humans re-approve deterministic evidence collection, read-only diagnostics, retries of idempotent read operations, or edits already bounded by an approved Design Baseline unless new risk information appears.
 
 Use automation to produce evidence first, then ask the human to decide only what cannot be safely or legitimately delegated.
 

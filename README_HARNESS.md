@@ -1,117 +1,121 @@
-# AI Development Harness v14.9.4
+# AI Development Harness v15.0.0
 
-## Standalone user harness
+## Purpose
 
-v14.9 adds `deployment/aws` as a selectable hosting profile. It does not create AWS resources or deploy; humans operate AWS. See `docs/operations/aws-deployment.md`.
-
-v14.8 ships a **private harness npm substrate** (`package.json` + `package-lock.json`) so post-root CI can enter `ready` and run `verify:harness`. This is not a product application runtime and does not select a product stack. Overlaying onto an existing application must merge the package fragments and must not overwrite that application's package metadata.
-
-Product overlays keep every fragment script and harness `devDependency`; once they own application package metadata, they must change `package.json.name` away from `ai-harness` so `verify:harness` applies the fragment-merge contract.
-
-v14.7 added an optional CodeRabbit advisory PR review layer with repository-owned `.coderabbit.yaml`.
-
-The package ships in `MIGRATION_PENDING`. For a **new product**, run `npm run project:discover` and follow `docs/workflow/PRODUCT_DISCOVERY.md`. For **legacy migration**, follow `MIGRATION.md`. Set `projectId`, choose profiles, resolve, review baselines, approve, then advance to `ACTIVE`.
-
-### Safety boundary
-
-Profiles describe checks and capabilities; they do not authorize dependency installation, cloud-resource creation, production deployment, or secret access. Release commands record external evidence only.
-
----
-
-# Hierarchical AI Engineering Harness
-
-Cursor と Codex CLI を、同じ仕様、同じ役割分担、同じ品質ゲートで動かすための階層型スターターです。
-
-## Core concept
-
-ルート `AGENTS.md` は shared global policy です。Codex の directory specialization は generated `CODEX.md`、Cursor は scoped `.cursor/rules/*.mdc` を使います。
+v15 reorganizes the harness around clear responsibility boundaries without removing the accumulated safety, verification, fallback, review, GitHub, React Doctor, release, or incident controls.
 
 ```text
-AGENTS.md                # User root policy: authority, chain, stop conditions
-├─ docs/CODEX.md         # Codex directory specialization
-├─ src/CODEX.md          # Optional: Next.js under src/ (profile-selected)
-├─ scripts/CODEX.md
-├─ harness/CODEX.md
-└─ .cursor/rules/*.mdc   # Cursor scoped specialization
+Planning       Why / What
+   ↓ human planning approval
+Design         How / exactly what to build
+   ↓ human design approval
+Development    Implement → verify → independent review
+   ↓ human release approval
+Release / Ops  Existing preview / production / monitoring / incident flow
 ```
 
-Optional scaffold directories remain bundled but apply only when matching profiles are selected. You may delete unused paths.
+The key separation is documented in `docs/workflow/PHASE_MODEL.md`:
 
-## One source, two agent systems
+- **Phase** = what kind of work is happening;
+- **Gate** = what is approved or verified;
+- **Artifact** = the canonical evidence/design;
+- **Agent** = which role and permissions are allowed.
 
-規約の正本:
+## Start a new product
+
+The distribution ships in `MIGRATION_PENDING`.
+
+```bash
+npm ci
+npm run project:plan -- --tier full --id my-product
+```
+
+Then follow:
+
+1. `docs/workflow/PLANNING.md`
+2. `docs/workflow/DESIGN.md`
+3. `docs/workflow/LIFECYCLE_GATES.md`
+4. existing release/operations docs under `docs/operations/`
+
+`project:discover` / `ai:discover` remain compatibility aliases for v14 automation, but new workflows use `project:plan` / `ai:plan`.
+
+For an existing v14.9.4 repository, use `MIGRATION.md` and `npm run project:migrate-v15`; do not manually rename a task's legacy `plan.md` if its existing approval/evidence depends on that artifact.
+
+## Canonical instruction model
+
+The rule source of truth is:
 
 ```text
 harness/rules/*.md
 harness/rules/manifest.json
+harness/skills/*/SKILL.md
 ```
 
-ここから次を同時生成します。
+Generation produces provider projections:
 
-- shared root `AGENTS.md`
-- directory-specific `CODEX.md`
-- scoped `.cursor/rules/*.mdc`
+```text
+AGENTS.md
+**/CODEX.md
+**/.cursor/rules/*.mdc
+.cursor/skills/*/SKILL.md
+```
 
-生成先を直接編集すると同期検査が失敗します。
-
-## Generate and inspect
+Generated projections must not be edited directly. `harness:generate` also removes retired marker-owned generated Cursor Skills, preventing obsolete phase instructions from surviving an upgrade.
 
 ```bash
 npm run harness:generate
 npm run harness:check
 npm run harness:route -- path/to/target
-npm run execution:check
 ```
 
-## Install into an existing repository
+## Development contract
 
-1. このフォルダの内容を Git root へコピーする。**既存アプリケーションの `package.json` / lockfile は上書きしない。** 配布物の `package.json` と `package-lock.json` はハーネス基板であり、製品メタデータではない。
-2. `package.scripts.fragment.json` と `package.devDependencies.fragment.json` を既存 `package.json` へマージし、既存 lockfile を `npm install` で更新する。
-3. 次を実行する。
-
-```bash
-npm run harness:generate
-npm run harness:check
-npm run harness:install
-```
-
-4. `harness/project.json` の `projectId` と `proposedProfiles` を設定し、`npm run profile:resolve` を実行する。
-
-Git root に `package.json` がない新規配置では、先に `NEW_REPOSITORY_SETUP.md` を使います。この配布物を clone して新規リポジトリにする場合は、同梱のハーネス基板を使い `npm ci` します。`bootstrap --write` は既存 `package.json` を上書きしないため使いません。bootstrap は製品 stack の選択や lifecycle 承認は行いません。
-
-## Recommended profile bundle (example)
-
-Web/React/Next 向けの推奨例（bootstrap には含めません）:
-
-`runtime/node`, `package-manager/npm`, `language/typescript`, `framework/react`, `framework/nextjs-app-router`, `test/vitest-rtl`, `test/playwright`, `quality/react-doctor`, `ci/github-actions`, `deployment/vercel`, `observability/web-basic`
-
-AWS に出す場合は `deployment/vercel` の代わりに `deployment/aws` を選ぶ。手順は `docs/operations/aws-deployment.md`。Vercel と AWS の両方は、二重ホスティングを明示したときだけ同時選択する。
-
-## Natural-language Cursor entrypoint
+A delivery task starts in `DESIGNING`. New tasks use:
 
 ```text
-/develop <日本語の依頼>
+docs/specs/<TASK>/brief.md
+docs/specs/<TASK>/acceptance.md
+docs/specs/<TASK>/design.md
+docs/specs/<TASK>/test-plan.md
+docs/specs/<TASK>/gate.json
 ```
 
-`.cursor/rules/01-user-task-dispatcher.mdc` が意図を工程へ変換します。詳細は `docs/workflow/CURSOR_CHAT_GUIDE.md`。
+After human scope confirmation and design approval, the task may enter `DEVELOPING`. The approval stores a Design Baseline contract hash and Git baseline SHA. Implementation evidence must carry the same `design_baseline_hash`; development cannot silently invent missing design decisions.
 
-## Three-stage Codex delegation
+If implementation discovers a design gap, return to task Design, re-approve, and create a new baseline instead of expanding implementation scope.
 
-1. `researcher`: conditional read-only research before design
-2. `implementer`: conditional one-AC workspace-write implementation
-3. `reviewer`: independent read-only review after verification
+## Cursor and Codex
 
-各 `ai:*` launcher は最初に `codex:preflight` を実行します。preflight は repo-local config が effective であることと、`hooks/list` によって project hook が discovered / enabled / trusted であることを確認します。project/hook trust は人間判断であり、診断は read-only で自動設定しません。repo-local MCP transport は完全定義のまま Chrome DevTools を disabled-by-default にします。
+Cursor is the interactive orchestrator. Detailed phase procedure is loaded from generated Skills (`planning`, `design`, `development`) while cross-cutting safety policy stays always-on.
 
-GitHub CodeRabbit App は任意の early defect-discovery layer です。repository 設定は `.coderabbit.yaml` を正本とし、Codex reviewer や canonical verification を置換しません。運用は `docs/workflow/GITHUB_INTEGRATION.md`、data handling と権限境界は `SECURITY.md` を参照してください。
+Codex remains a bounded specialist:
 
-GitHub の production Environment は `harness/integrations/github.json` が正本です。`npm run github:production-environment-check` で API-visible な設定を read-only 検査し、administrator bypass は UI で確認します。release gate 自体は deploy しません。
+1. **researcher** — read-only investigation during Design when useful;
+2. **implementer** — workspace-write only in `DEVELOPING` against an approved Design Baseline;
+3. **reviewer** — separate read-only independent review after verification.
 
-## Canonical verification pipeline
+Each delegated `ai:*` launcher runs Codex preflight. Project/hook trust remains a human decision; the harness does not auto-write user trust state.
+
+## Verification
+
+Canonical commands include:
 
 ```bash
+npm run harness:check
+npm run execution:check
+npm run security:check
 npm run verify:ci
 npm run verify:all
 ```
 
-See `docs/workflow/EXECUTION_SAFETY.md`, `docs/workflow/VERIFICATION_PIPELINE.md`, `docs/workflow/LIFECYCLE_GATES.md`, and `PACKAGE_MANIFEST.json` for package categories and constraints.
+Profile-dependent checks activate only when their profiles are selected/resolved. CodeRabbit remains optional advisory PR review and does not replace canonical deterministic verification, independent review, or human release approval.
+
+## NPM substrate / overlay rule
+
+This distribution includes a private harness `package.json` and `package-lock.json` so the harness checkout can run its own verification. When overlaying onto an existing application, **do not overwrite application package metadata**. Merge `package.scripts.fragment.json` and `package.devDependencies.fragment.json`, then refresh that application's lockfile normally.
+
+## Safety boundary
+
+Profiles describe checks/capabilities; they do not authorize dependency installation, cloud-resource creation, secret access, production deployment, destructive Git operations, or protection-rule bypass. Release commands record/verify evidence according to their contract and never turn a conversational request into autonomous production authority.
+
+See `SECURITY.md`, `NEW_REPOSITORY_SETUP.md`, `docs/workflow/AI_OPERATING_MODEL.md`, `docs/workflow/EXECUTION_SAFETY.md`, and `PACKAGE_MANIFEST.json`.
