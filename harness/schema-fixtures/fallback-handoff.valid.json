@@ -21,7 +21,7 @@
   "prohibitedRepeats": [
     "repeat the same install/build strategy without new evidence"
   ],
-  "approvedPlanDigest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "approvedDesignDigest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
   "head": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
   "createdAt": "2026-08-09T07:00:00Z",
   "workspaceDigest": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"

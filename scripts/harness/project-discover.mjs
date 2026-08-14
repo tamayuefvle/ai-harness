@@ -6,7 +6,7 @@ import { appendHistory, canonicalRoot, parseOptions, readJson, safeId, transitio
 function normalizeTier(value) {
   if (!value) return "full";
   if (value === "lite" || value === "full") return value;
-  throw new Error("discovery tier must be lite or full");
+  throw new Error("planning tier must be lite or full");
 }
 
 export function runProjectDiscover(repoRoot = canonicalRoot, options = {}) {
@@ -18,21 +18,23 @@ export function runProjectDiscover(repoRoot = canonicalRoot, options = {}) {
   if (options.id) {
     project.projectId = safeId(options.id, /^[a-z0-9][a-z0-9-]{2,63}$/, "project id");
   }
-  if (project.state === "DISCOVERY") {
-    if (options.tier) project.discoveryTier = normalizeTier(options.tier);
+  if (project.state === "PLANNING") {
+    if (options.tier) project.planningTier = normalizeTier(options.tier);
+    project.discoveryTier = project.planningTier;
     writeJsonAtomic(file, project);
-    return { state: project.state, projectId: project.projectId, discoveryTier: project.discoveryTier, changed: false };
+    return { state: project.state, projectId: project.projectId, planningTier: project.planningTier ?? project.discoveryTier, changed: false };
   }
   if (project.state !== "MIGRATION_PENDING") {
-    throw new Error(`project:discover applies only from MIGRATION_PENDING (current: ${project.state}).`);
+    throw new Error(`project:plan applies only from MIGRATION_PENDING (current: ${project.state}).`);
   }
-  transitionFor(repoRoot, "project", "MIGRATION_PENDING", "DISCOVERY");
-  appendHistory(project, "MIGRATION_PENDING", "DISCOVERY", options.actor ?? "system", options.reason ?? "greenfield product discovery");
-  project.state = "DISCOVERY";
-  project.discoveryTier = normalizeTier(options.tier);
+  transitionFor(repoRoot, "project", "MIGRATION_PENDING", "PLANNING");
+  appendHistory(project, "MIGRATION_PENDING", "PLANNING", options.actor ?? "system", options.reason ?? "greenfield planning");
+  project.state = "PLANNING";
+  project.planningTier = normalizeTier(options.tier);
+    project.discoveryTier = project.planningTier;
   project.pendingApproval = null;
   writeJsonAtomic(file, project);
-  return { state: project.state, projectId: project.projectId, discoveryTier: project.discoveryTier ?? "full", changed: true };
+  return { state: project.state, projectId: project.projectId, planningTier: project.planningTier ?? project.discoveryTier ?? "full", changed: true };
 }
 
 function main() {

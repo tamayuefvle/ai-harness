@@ -1,6 +1,7 @@
 {
+  "mode": "explore",
   "phase": "problem",
-  "targetDocument": "docs/product/problem.md",
+  "targetDocument": null,
   "suggestedQuestion": "Who experiences the problem most acutely today?",
   "rationale": "Problem context must identify the primary affected user before outcomes.",
   "openQuestions": [

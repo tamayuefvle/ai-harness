@@ -11,7 +11,7 @@ RUNNING -> PAUSED / AWAITING_APPROVAL / RECOVERING
         -> SUCCEEDED / FAILED / ABORTED
 ```
 
-A runtime pause never changes a task from `IMPLEMENTING`, `VERIFYING`, etc. Resuming a run reloads canonical persisted state and revalidates the approved plan/invariants instead of relying on chat memory.
+A runtime pause never changes a task from `DEVELOPING`, `VERIFYING`, `REVIEWING`, etc. Resuming a run reloads canonical persisted state and revalidates the approved Design Baseline and invariants instead of relying on chat memory.
 
 ## Canonical contracts
 

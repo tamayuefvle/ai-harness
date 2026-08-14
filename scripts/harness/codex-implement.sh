@@ -21,8 +21,8 @@ if [[ -z "$ACTIVE_SPEC" || "$ACTIVE_SPEC" == "none" ]]; then
   echo "No active task." >&2
   exit 1
 fi
-if [[ "$STATUS" != "PLAN_READY" && "$STATUS" != "IMPLEMENTING" ]]; then
-  echo "Codex implementation requires PLAN_READY or IMPLEMENTING; current: $STATUS" >&2
+if [[ "$STATUS" != "DEVELOPING" ]]; then
+  echo "Codex implementation requires DEVELOPING; current: $STATUS" >&2
   exit 1
 fi
 if [[ "$BRANCH" == "main" || "$BRANCH" == "master" || -z "$BRANCH" ]]; then

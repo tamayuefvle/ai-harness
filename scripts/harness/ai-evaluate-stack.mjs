@@ -17,10 +17,11 @@ import {
 export function runEvaluateStackDryRun(repoRoot) {
   const session = createDesignSession(repoRoot);
   applyDesignTurn(session, {
+    mode: "publish",
     phase: session.phase === "architecture" ? "architecture" : "stack-options",
     targetDocument: session.phase === "architecture"
       ? "docs/architecture/baseline.md"
-      : "docs/product/technology-options.md",
+      : "docs/architecture/technology-options.md",
     suggestedQuestion: session.phase === "architecture"
       ? "What does this system own versus defer?"
       : "Which approved outcomes constrain the runtime choice?",

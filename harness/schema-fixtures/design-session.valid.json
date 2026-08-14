@@ -1,5 +1,5 @@
 {
-  "schemaVersion": "1.0.0",
+  "schemaVersion": "2.0.0",
   "sessionId": "DSN-20260813-a1b2c3",
   "projectId": "example-product",
   "designTier": "full",
@@ -12,13 +12,17 @@
       "role": "agent",
       "summary": "Asked which runtime constraints are non-negotiable",
       "question": "Which approved outcomes constrain the runtime choice?",
-      "targetDocument": "docs/product/technology-options.md"
+      "targetDocument": "docs/architecture/technology-options.md"
     }
   ],
-  "openQuestions": ["Is a separate API process required in the first release?"],
+  "openQuestions": [
+    "Is a separate API process required in the first release?"
+  ],
   "checkSnapshot": {
     "kind": "stack",
     "ok": false,
-    "errors": ["docs/product/technology-options.md: template banner remains; replace with project-specific content"]
+    "errors": [
+      "docs/architecture/technology-options.md: template banner remains; replace with project-specific content"
+    ]
   }
 }

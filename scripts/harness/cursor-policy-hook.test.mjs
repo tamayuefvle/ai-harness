@@ -93,7 +93,8 @@ test("Cursor policy hook still allows canonical harness rule source edits", () =
   assert.deepEqual(invoke({ tool_name: "Write", tool_input: { path: "harness/rules/product.md", contents: "x" } }, { omitRole: true }), {});
 });
 
-test("Cursor policy hook denies when the policy loader fails because the project hook is fail-closed", () => {
+
+test("Cursor policy hook denies defensively when its canonical policy cannot be loaded", () => {
   const result = spawnSync(process.execPath, [hook], {
     cwd: repoRoot,
     input: JSON.stringify({ tool_name: "Write", tool_input: { path: "src/a.ts", contents: "x" } }),
@@ -102,7 +103,7 @@ test("Cursor policy hook denies when the policy loader fails because the project
     timeout: 5000,
   });
   assert.equal(result.status, 0, result.stderr);
-  const body = JSON.parse(result.stdout.trim());
-  assert.equal(body.permission, "deny");
-  assert.match(body.reason, /configured fail-closed/);
+  const decision = JSON.parse(result.stdout.trim());
+  assert.equal(decision.permission, "deny");
+  assert.match(decision.reason, /configured fail-closed/);
 });

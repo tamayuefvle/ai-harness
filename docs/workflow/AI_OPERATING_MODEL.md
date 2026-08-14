@@ -1,133 +1,81 @@
 # Cursor × Codex CLI operating model
 
-## v14 provider projection and Cursor transport
-
-Shared policy is generated only to root `AGENTS.md`. Directory-specific nested `AGENTS.md` is not generated. Directory specialization is generated to `CODEX.md` for Codex and scoped `.cursor/rules/*.mdc` for Cursor, avoiding duplicate Cursor context. The source remains `harness/rules/*` plus its manifest.
-
-Cursor IDE and Cursor CLI are transports of one logical Cursor executor and share one bounded-strategy budget. `npm run cursor:preflight` checks the optional CLI and committed policy projections. An interactive Cursor IDE session has no `HARNESS_CURSOR_ROLE` and may write approved repository paths; during `DISCOVERY`, Cursor Agent mode writes the facilitated result to `docs/product/*`. Cursor Plan mode is a separate Cursor product read-only mode and cannot be used when the agent must write files. An explicit CLI read-only/reviewer role cannot write, while CLI implementer execution is confined to a linked worktree under the Git common directory, uses no auto-apply, and leaves the diff for human/agent inspection. Cursor Hooks are deterministic policy gates for generated-instruction and dangerous-operation denials and are configured fail-closed. Complementary layers remain sandbox, approval controls, worktree isolation, authorization, and human control points.
-
 ## Instruction architecture
 
-ルート `AGENTS.md` は shared global policy です。詳細ルールを保持せず、依頼と対象パスを分類して provider-specific instruction へ分岐します。directory-specific nested `AGENTS.md` は生成しません。
+Shared policy is generated to root `AGENTS.md`. Directory specialization is generated from `harness/rules/*` to `CODEX.md` for Codex and scoped `.cursor/rules/*.mdc` for Cursor. Phase-specific Cursor Skills are generated from canonical `harness/skills/*`.
 
-Codex は次を読みます。
+Generated projections are never the source of truth and must not be edited directly.
 
-```text
-root AGENTS.md
-+
-project_doc_fallback_filenames=["CODEX.md"]
-+
-nearest CODEX.md
-```
+## v15 phase context
 
-Cursor は次を使います。
+The always-on instruction layer carries only cross-cutting policy: authority, security, approvals, dangerous-operation restrictions, canonical/generated ownership, and routing boundaries. Detailed procedures are loaded through phase Skills:
 
-```text
-root AGENTS.md
-+
-target glob に一致する scoped .cursor/rules/*.mdc
-```
+- `planning`
+- `design`
+- `development`
+- `executor-fallback`
 
-Codex / Cursor の projection はいずれも `harness/rules/*` から生成します。
-
-## Example routes
-
-### Specs
-
-```text
-docs/specs/PF-001/plan.md
-├─ AGENTS.md
-├─ docs/CODEX.md
-└─ docs/specs/CODEX.md
-Cursor:
-docs/.cursor/rules/00-docs-router.mdc
-+
-docs/specs/.cursor/rules/spec-gates.mdc
-```
-
-### Application
-
-```text
-src/components/ProjectCard.tsx
-├─ AGENTS.md
-└─ src/CODEX.md
-```
-
-Cursor:
-
-```text
-src/.cursor/rules/application.mdc
-```
-
-profile-selected 時。
-
-### E2E
-
-```text
-e2e/portfolio.spec.ts
-├─ AGENTS.md
-└─ e2e/CODEX.md
-```
-
-Cursor:
-
-```text
-e2e/.cursor/rules/e2e.mdc
-```
-
-経路確認:
-
-```bash
-npm run harness:route -- src/components/ProjectCard.tsx
-```
+This keeps planning and design conversations from inheriting implementation procedure unless the lifecycle actually requires it.
 
 ## Responsibilities
 
-### Cursor
+### Human + Cursor: Planning
 
-- 人間との企画対話（`DISCOVERY` では Agent mode と `.cursor/skills/product-discovery` を使い、`docs/product/*` を更新）
-- active file周辺のUI実装
-- ブラウザを見ながらの微調整
-- 学習内容と変更理由の説明
+- brainstorm and challenge ideas;
+- clarify users, problem, outcomes, scope, requirements, assumptions;
+- converse freely before publishing canonical checkpoints;
+- request read-only research when useful;
+- never select implementation details merely to make planning “complete”.
 
-### Codex CLI
+### Human + Cursor: Design
 
-- リポジトリ全体の調査
-- `DISCOVERY` 中の read-only product facilitation（`npm run ai:discover`）
-- `PRODUCT_APPROVED` / `STACK_APPROVED` 中の read-only stack/architecture facilitation（`npm run ai:evaluate-stack`）
-- spec / planに基づく複数ファイル変更
-- test作成とfailure解析
-- read-onlyの独立diff review
-- 定型的な検証とレポート
+Project Design owns stack, architecture, security/quality baselines, profiles, and project design approval. Task Design owns scope, acceptance, exact behavior, data/API/UX boundaries, test strategy, allowed paths, risks, rollback, and implementation sequence.
 
-同じbranch / worktreeを同時編集しません。
+Design may propose adjacent features or refinements. A proposal that changes product scope is escalated to product authority; it is not silently converted into implementation work.
 
-## Recommended task flow
+### Cursor / Codex implementer: Development
 
-1. ルート司令塔で依頼を分類する。
-2. 対象経路の provider-specific role を読む。
-3. `npm run task:new -- PF-001-slug "Title"` でactive specを作る。
-4. product / specs / architectureの必要経路で設計を固める。
-5. 独立branch / worktreeで実装し、implementation reportへ`test_discipline`証拠を記録する。
-6. tests / e2e roleに従って検証する。
-7. `npm run github:context` で必要なGitHub証拠を正規化し、`npm run verify:ci` を通す。
-8. GitHub context reportを渡して`npm run ai:review`をread-onlyで実行する。
-9. operations / GitHub roleのgateを通してPreview、本番承認へ進む。
+- starts only from a fresh approved Design Baseline;
+- performs bounded implementation and tests;
+- carries `design_baseline_hash` into implementation evidence;
+- does not resolve missing design decisions by inventing behavior;
+- returns the task to Design when a design gap blocks correct implementation.
 
-## Handoff
+### Deterministic verifier
 
-toolを切り替えるときはchat履歴に依存せず、repositoryへ次を残します。
+- replays schema, lifecycle, repository, profile, CI/GitHub, React Doctor or other configured checks;
+- records actual evidence;
+- never reports an unexecuted check as passed.
 
-- active spec
-- current branch
-- `.harness/reports/<TASK>/github-context.json`（GitHub状態がmaterialな場合）
-- instruction route
-- completed AC
-- changed files
-- failing commandと主要log
-- unresolved decision
-- next concrete action
+### Independent reviewer
 
-## Terminal completion
+- is separate from the implementation context;
+- is normally read-only;
+- checks approved-design compliance, over/under-change, evidence, security, regressions, migration, rollback, and release readiness.
 
-`DONE` is not an active status. Completion is an operation from `DEPLOY_READY` that writes a marker and clears the active task.
+## Codex delegation
+
+Use `docs/workflow/CODEX_TRIGGER_POLICY.md`. Research and review are read-only. Implementer is workspace-write with bounded scope. Preflight must confirm effective repo-local configuration and trusted hooks before delegated `ai:*` commands.
+
+## Cursor IDE / CLI transport
+
+Cursor IDE and CLI are transports of one logical Cursor executor and share the harness authorization/fallback model. CLI implementer work remains isolated and does not gain production, secret, dependency, or destructive Git authority from being a different transport.
+
+## Example instruction route
+
+For `docs/specs/PF-001/design.md`:
+
+```text
+AGENTS.md
+├─ docs/CODEX.md
+└─ docs/specs/CODEX.md
+   or equivalent scoped Cursor rules + design Skill
+```
+
+For a product file during `PLANNING`, the planning Skill provides the conversational workflow; for source code during `DEVELOPING`, the development Skill and application/profile rules apply.
+
+Inspect routing with:
+
+```bash
+npm run harness:route -- path/to/file
+```

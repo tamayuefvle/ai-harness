@@ -1,6 +1,6 @@
 ---
 active_spec: none
-status: IDEA
+status: DESIGNING
 updated_at: 2026-08-07
 ---
 

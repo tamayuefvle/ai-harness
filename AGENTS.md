@@ -24,7 +24,7 @@
 作業開始時に、次の順序で判断します。
 
 1. 依頼の成果物と変更対象を特定する。
-2. 対象パスの router rule に従い、該当ドメインの provider-specific instruction へ進む（詳細 routing は各 router rule を参照）。
+2. 対象パスの router rule に従い、該当ドメインの provider-specific instruction へ進む。
 3. root `AGENTS.md` と、対象パスまでの provider-specific instruction（Codex は `CODEX.md`、Cursor は scoped `.mdc`）を読む。
 4. 複数領域にまたがる場合は、各経路の指示をすべて適用する。
 5. 規約が衝突した場合は、対象に最も近い下位指示を採用し、衝突を報告する。
@@ -94,9 +94,16 @@ npm run harness:route -- path/to/target
 
 <!-- GENERATED FILE. DO NOT EDIT DIRECTLY. -->
 <!-- Source: harness/rules/lifecycle.md; consumer: shared-agents; run npm run harness:generate -->
-# Full lifecycle controller
+# Phase / gate lifecycle controller
 
-`harness/lifecycle/manifest.json` is the canonical state-transition source. Project, task, release, and incident lifecycles are separate and coordinated. Do not duplicate state lists in prompts or documentation when they can be generated or referenced. Full lifecycle mode blocks new delivery tasks until project state `ACTIVE`; delivery-only mode exists solely for controlled migration compatibility.
+`harness/lifecycle/manifest.json` is the canonical transition source. Keep four concepts separate:
+
+- **Phase/state**: what work is happening now.
+- **Gate**: what a human approved or deterministic verification fixed as evidence.
+- **Artifact**: the canonical source of truth for a decision or design.
+- **Agent**: what a role may read/write during the current phase.
+
+Project phases are `MIGRATION_PENDING → PLANNING → DESIGNING → ACTIVE`, with terminal `RETIRED`; planning/stack/architecture/design approvals are project gates rather than pseudo-states. Task phases are `DESIGNING → DEVELOPING → VERIFYING → REVIEWING → DEPLOY_READY`, with terminal `DONE`. Release and incident lifecycles remain separate. Full lifecycle mode blocks delivery until project `ACTIVE`; delivery-only mode is controlled migration compatibility.
 
 <!-- GENERATED FILE. DO NOT EDIT DIRECTLY. -->
 <!-- Source: harness/rules/execution-safety.md; consumer: shared-agents; run npm run harness:generate -->

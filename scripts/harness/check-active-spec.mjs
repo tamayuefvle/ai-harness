@@ -39,8 +39,9 @@ if (activeSpec === "none") {
 }
 
 const specDir = path.join(repoRoot, "docs/specs", activeSpec);
-const required = ["brief.md", "acceptance.md", "plan.md", "test-plan.md", "review.md", "delegation.md"];
+const required = ["brief.md", "acceptance.md", "test-plan.md", "review.md", "delegation.md"];
 const missing = required.filter((file) => !fs.existsSync(path.join(specDir, file)));
+if (!fs.existsSync(path.join(specDir, "design.md")) && !fs.existsSync(path.join(specDir, "plan.md"))) missing.push("design.md (or legacy plan.md)");
 if (missing.length > 0) {
   console.error(`Active spec ${activeSpec} is incomplete: ${missing.join(", ")}`);
   process.exit(1);

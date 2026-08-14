@@ -1,4 +1,4 @@
-# Security policy — AI Development Harness v14.9.4
+# Security policy — AI Development Harness v15.0.0
 
 - Default deny for production writes, destructive operations, secret access, dependency installation, and external resource creation.
 - Human approval uses `human:<name>` records and must be reinforced by external controls such as protected branches and GitHub Environments. Local JSON alone is not a security boundary.
@@ -10,14 +10,14 @@
 - Executor fallback is bounded to Cursor, a fresh read-only Codex diagnosis, at most one materially different Codex implementation, then Human. Automatic Cursor/Codex loops are prohibited.
 - Prohibited operations include `git reset --hard`, destructive `git clean`, force push, direct protected-branch push, `rm -rf`, unnecessary `sudo`, remote-script-to-shell pipelines, and unapproved production deployment.
 - `harness/policies/command-guardrails.json` is the canonical owner of command/tool denials. Runtime validation, security scanning, Codex rules, Cursor permissions, and hooks consume or are generated from it.
-- Cursor CLI is optional. Security-critical `preToolUse` hooks are configured `failClosed: true`. Complementary layers are CLI permissions, IDE approvals, sandbox, harness-managed worktree isolation, hook policy, authorization, and human control points. Hooks deny writes for explicit CLI read-only and reviewer roles; CLI implementer writes require a harness-managed Git-common-dir worktree and are never auto-applied. An interactive Cursor IDE session with no `HARNESS_CURSOR_ROLE` may write approved repository paths. Cursor Plan mode is a separate Cursor product read-only mode. Generated instruction projections and dangerous commands remain denied for IDE and CLI sessions. `Shell(*)` and all MCP tools remain denied by the CLI project policy.
+- Cursor CLI is optional. Hooks deny writes for explicit CLI read-only and reviewer roles; CLI implementer writes require a harness-managed Git-common-dir worktree and are never auto-applied. An interactive Cursor IDE session with no `HARNESS_CURSOR_ROLE` may write approved repository paths. Cursor Plan mode is a separate Cursor product read-only mode. Generated instruction projections and dangerous commands remain denied for IDE and CLI sessions. `Shell(*)` and all MCP tools remain denied by the CLI project policy. The security-critical project `preToolUse` hook is generated with `failClosed: true`; CLI permissions, IDE approvals, sandbox/worktree isolation, and hook policy remain layered controls rather than a single hard boundary.
 - Report vulnerabilities privately to the repository owner; do not include secrets or exploit production systems.
 
 ## Local diagnostics
 
 `npm run security:check` scans only harness-owned paths listed in `FILE_INVENTORY.txt`; it does not traverse arbitrary application files or `.env`. It validates inventory path safety and symlinks, high-confidence secret patterns, prohibited executable patterns, and the non-deploying release gate.
 
-`npm run harness:doctor` diagnoses the committed runtime policy. Before every delegated `ai:*` command, `npm run codex:preflight` must confirm that the repository-local Codex configuration is effective, Chrome DevTools MCP is disabled by default, and the project `.codex/hooks.json` hook is discovered, enabled, and trusted. Project and hook trust are human decisions: diagnostics are read-only, never write trust into user configuration, and never bypass hook trust.
+`npm run harness:doctor` diagnoses the committed runtime policy. Before every delegated `ai:*` command, `npm run codex:preflight` must confirm that the repository-local Codex configuration is effective, Chrome DevTools MCP is disabled by default, and the current repository `.codex/hooks.json` definition is discovered, enabled, and trusted according to Codex hook status. Project and hook trust are human decisions: diagnostics query status read-only and never write trust into user configuration or bypass hook trust.
 
 ## GitHub production Environment
 

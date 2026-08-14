@@ -52,7 +52,7 @@ const today = localDate();
 const active = [
   "---",
   `active_spec: ${taskId}`,
-  "status: IDEA",
+  "status: DESIGNING",
   `updated_at: ${today}`,
   "---",
   "",

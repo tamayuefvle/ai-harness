@@ -9,6 +9,7 @@ function report(overrides = {}) {
   return {
     task_id: "PF-001-example",
     acceptance_id: "AC-001",
+    design_baseline_hash: "d".repeat(64),
     status: "implemented",
     summary: "Implemented",
     files_changed: [{ path: "src/example.ts", change: "modified" }],

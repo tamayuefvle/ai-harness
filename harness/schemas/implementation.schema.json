@@ -132,11 +132,16 @@
         "not_applicable_reason"
       ],
       "additionalProperties": false
+    },
+    "design_baseline_hash": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
     }
   },
   "required": [
     "task_id",
     "acceptance_id",
+    "design_baseline_hash",
     "status",
     "summary",
     "files_changed",

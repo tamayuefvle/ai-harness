@@ -8,7 +8,7 @@
     "lifecycleRef",
     "state",
     "actorRole",
-    "approvedPlanDigest",
+    "approvedDesignDigest",
     "invariantManifestDigest",
     "pendingOperation",
     "completedOperationIds",
@@ -69,7 +69,7 @@
         "ABORTED"
       ]
     },
-    "approvedPlanDigest": {
+    "approvedDesignDigest": {
       "type": "string",
       "pattern": "^[a-f0-9]{64}$"
     },

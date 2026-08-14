@@ -11,17 +11,15 @@ export const PLANNING_DOC_PATHS = [
   "docs/product/outcomes.md",
   "docs/product/requirements.md",
   "docs/product/idea-backlog.md",
-  "docs/product/technology-options.md",
-  "docs/product/technology-decision.md",
+  "docs/architecture/technology-options.md",
+  "docs/architecture/technology-decision.md",
   "docs/architecture/baseline.md",
   "docs/architecture/security-baseline.md",
   "docs/architecture/quality-strategy.md",
 ];
 
 function canonicalTemplatePath(relativePath) {
-  if (!PLANNING_DOC_PATHS.includes(relativePath)) {
-    throw new Error(`No planning doc template for ${relativePath}`);
-  }
+  if (!PLANNING_DOC_PATHS.includes(relativePath)) throw new Error(`No planning doc template for ${relativePath}`);
   return path.join(planningTemplateRoot, relativePath.replace(/^docs\//, ""));
 }
 

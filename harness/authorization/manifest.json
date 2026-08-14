@@ -20,7 +20,7 @@
       "selfAssertable": false
     },
     "approved-path-match": {
-      "evidenceSource": "approved plan/foundation path contract plus repository command policy",
+      "evidenceSource": "approved design/foundation path contract plus repository command policy",
       "selfAssertable": false
     },
     "operation-approval-required": {

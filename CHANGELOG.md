@@ -1,12 +1,24 @@
 # Changelog
 
+## v15.0.0 - 2026-08-14
+
+- Reorganized the project lifecycle into `PLANNING → DESIGNING → ACTIVE` while preserving planning, stack, architecture, and project-design approvals as independent hashed phase gates.
+- Reorganized delivery tasks into `DESIGNING → DEVELOPING → VERIFYING → REVIEWING → DEPLOY_READY → DONE`; task scope/design approval is now separate from phase state.
+- Added a Design Baseline contract: new tasks use `design.md`, `designApproval` records the approved contract and Git baseline, and implementation evidence must match `design_baseline_hash`; legacy `plan.md` remains readable for migrated tasks.
+- Made Planning and Design conversation-first and split phase-specific Cursor Skills into `planning`, `design`, and `development` while retaining cross-cutting always-on safety rules and `executor-fallback`.
+- Moved technology option/decision documents from product planning into `docs/architecture/`.
+- Added v14.9.4 → v15 project/gate migration with conservative state mapping, fresh human validation of active task scope/design, versioned gate/active-state backups, and no fabricated downstream evidence.
+- Updated execution/fallback/Codex routing from approved-plan terminology to approved Design Baseline semantics.
+- Made Skill generation prune retired marker-owned Cursor Skills so stale v14 phase instructions cannot survive regeneration.
+- Added an explicit human `DESIGNING → PLANNING` project rework path that invalidates downstream project gates when product scope changes during Design.
+- Kept release, incident, GitHub, CodeRabbit, MCP, React Doctor, authorization, dangerous-operation, human-control, and production safety boundaries intact.
+
 ## v14.9.4 - 2026-08-14
 
-- Removed retired nested `AGENTS.md` routing references from canonical rules and regenerated provider-specific projections.
-- Added a deterministic stale nested-AGENTS check against canonical rule sources.
-- Extended `codex:preflight` with a read-only `hooks/list` check that project hooks are discovered, enabled, and trusted.
-- Configured Cursor security-critical `preToolUse` hooks as `failClosed: true`.
-- Moved planning seed documents to canonical copies under `harness/templates/planning/*`.
+- Removed retired nested `AGENTS.md` routing references from canonical rules and generated provider projections; instruction checks now reject stale nested-AGENTS references in canonical rule sources.
+- Extended `codex:preflight` to query Codex `hooks/list` read-only and require the current project hook to be discovered, enabled, and trusted before delegated `ai:*` use.
+- Generated Cursor security-critical `preToolUse` hooks with `failClosed: true` and added regression coverage for hook-policy failure.
+- Moved planning seed content to canonical `harness/templates/planning/*` files so fixture isolation no longer requires duplicating full planning documents in JavaScript.
 
 ## v14.9.3 - 2026-08-14
 

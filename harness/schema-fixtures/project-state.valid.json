@@ -1,34 +1,49 @@
 {
-  "schemaVersion": "1.0.0",
-  "projectId": "example-project",
+  "schemaVersion": "2.0.0",
+  "projectId": "demo-app",
   "lifecycleMode": "full",
   "state": "MIGRATION_PENDING",
+  "planningTier": "full",
+  "designTier": "full",
+  "phaseGates": {
+    "planning": {
+      "status": "pending",
+      "approvedBy": null,
+      "approvedAt": null,
+      "reason": null,
+      "contractHash": null
+    },
+    "stack": {
+      "status": "pending",
+      "approvedBy": null,
+      "approvedAt": null,
+      "reason": null,
+      "contractHash": null
+    },
+    "architecture": {
+      "status": "pending",
+      "approvedBy": null,
+      "approvedAt": null,
+      "reason": null,
+      "contractHash": null
+    },
+    "design": {
+      "status": "pending",
+      "approvedBy": null,
+      "approvedAt": null,
+      "reason": null,
+      "contractHash": null
+    }
+  },
   "pendingApproval": null,
-  "decisionRefs": [
-    "docs/product/vision.md",
-    "docs/product/scope.md",
-    "docs/product/technology-decision.md",
-    "docs/architecture/ADR-0001-stack.md",
-    "docs/architecture/baseline.md"
-  ],
+  "decisionRefs": [],
   "activeProfiles": [],
-  "profileResolutionPath": null,
+  "profileResolutionPath": "harness/generated/profile-resolution.json",
   "migration": {
-    "fromVersion": "10.1.1",
-    "proposedProfiles": [
-      "runtime/node",
-      "package-manager/npm",
-      "language/typescript",
-      "framework/react",
-      "framework/nextjs-app-router",
-      "test/vitest-rtl",
-      "test/playwright",
-      "quality/react-doctor",
-      "ci/github-actions",
-      "deployment/vercel",
-      "observability/web-basic"
-    ],
-    "notes": "Review generated product, architecture, security, quality, and operations baselines; resolve profiles; then approve MIGRATION_PENDING -> ACTIVE."
+    "fromVersion": "14.9.4",
+    "fromState": "MIGRATION_PENDING",
+    "proposedProfiles": [],
+    "notes": "Set projectId, choose planning/design tiers, then enter PLANNING or migrate an existing approved delivery baseline."
   },
   "history": []
 }

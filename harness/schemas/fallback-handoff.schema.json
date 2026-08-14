@@ -19,7 +19,7 @@
     "evidenceRefs",
     "cursorDiagnosis",
     "prohibitedRepeats",
-    "approvedPlanDigest",
+    "approvedDesignDigest",
     "head",
     "workspaceDigest",
     "createdAt"
@@ -95,7 +95,7 @@
         "type": "string"
       }
     },
-    "approvedPlanDigest": {
+    "approvedDesignDigest": {
       "type": "string",
       "pattern": "^[a-f0-9]{64}$"
     },

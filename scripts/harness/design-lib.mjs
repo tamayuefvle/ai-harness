@@ -2,7 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { hasPlaceholderLine, parseOutcomeIds, readProject } from "./product-lib.mjs";
-import { writeJsonAtomic } from "./full-lifecycle-lib.mjs";
+import { manifest, sha256Files, writeJsonAtomic } from "./full-lifecycle-lib.mjs";
 
 const harnessRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
 const contractPath = path.join(harnessRoot, "harness/contracts/design-phase.json");
@@ -119,52 +119,52 @@ export function validateStackDocuments(repoRoot, options = {}) {
     }
   }
 
-  const optionsDoc = files["docs/product/technology-options.md"];
+  const optionsDoc = files["docs/architecture/technology-options.md"];
   if (optionsDoc) {
     for (const heading of stack.optionsSections) {
       const body = sectionBody(optionsDoc, heading);
       if (!body.trim() || hasPlaceholderLine(body) || meaningfulChars(body) < 20) {
-        errors.push(`docs/product/technology-options.md: section ${heading} is incomplete`);
+        errors.push(`docs/architecture/technology-options.md: section ${heading} is incomplete`);
       }
     }
     const candidates = parseCandidateRows(optionsDoc);
     if (candidates.length < stack.minCandidates) {
-      errors.push(`docs/product/technology-options.md: Candidates needs at least ${stack.minCandidates} real option row(s)`);
+      errors.push(`docs/architecture/technology-options.md: Candidates needs at least ${stack.minCandidates} real option row(s)`);
     }
   }
 
   let selected = [];
-  const decision = files["docs/product/technology-decision.md"];
+  const decision = files["docs/architecture/technology-decision.md"];
   if (decision) {
     for (const heading of stack.decisionSections) {
       const body = sectionBody(decision, heading);
       if (heading === "## Selected profiles") {
         if (!body.trim() || hasPlaceholderLine(body)) {
-          errors.push(`docs/product/technology-decision.md: section ${heading} is incomplete`);
+          errors.push(`docs/architecture/technology-decision.md: section ${heading} is incomplete`);
         }
         continue;
       }
       if (!body.trim() || hasPlaceholderLine(body) || meaningfulChars(body) < 15) {
-        errors.push(`docs/product/technology-decision.md: section ${heading} is incomplete`);
+        errors.push(`docs/architecture/technology-decision.md: section ${heading} is incomplete`);
       }
     }
     const decisionBody = sectionBody(decision, "## Decision");
     if (/pending/i.test(decisionBody)) {
-      errors.push("docs/product/technology-decision.md: Decision must not remain pending");
+      errors.push("docs/architecture/technology-decision.md: Decision must not remain pending");
     }
     selected = parseSelectedProfiles(decision, profilePattern);
     if (selected.length < stack.minSelectedProfiles) {
-      errors.push("docs/product/technology-decision.md: Selected profiles needs at least one registry profile id (category/name)");
+      errors.push("docs/architecture/technology-decision.md: Selected profiles needs at least one registry profile id (category/name)");
     } else {
       const registry = listRegistryProfileIds(repoRoot);
       for (const id of selected) {
         if (!registry.has(id)) {
-          errors.push(`docs/product/technology-decision.md: unknown profile id ${id}`);
+          errors.push(`docs/architecture/technology-decision.md: unknown profile id ${id}`);
         }
       }
     }
     if (stack.requireRejectedOptions && parseRejectedRows(decision).length < 1) {
-      errors.push("docs/product/technology-decision.md: Rejected options needs at least one real row");
+      errors.push("docs/architecture/technology-decision.md: Rejected options needs at least one real row");
     }
   }
 
@@ -173,7 +173,7 @@ export function validateStackDocuments(repoRoot, options = {}) {
     if (proposed.length) {
       for (const id of selected) {
         if (!proposed.includes(id)) {
-          errors.push(`docs/product/technology-decision.md: selected profile ${id} is not in project proposedProfiles`);
+          errors.push(`docs/architecture/technology-decision.md: selected profile ${id} is not in project proposedProfiles`);
         }
       }
     }
@@ -276,81 +276,77 @@ export function syncProposedProfiles(repoRoot, selected) {
 
 export function stackCheckApplicable(project) {
   if (!project) return false;
-  return ["PRODUCT_APPROVED", "STACK_APPROVED", "ARCHITECTURE_APPROVED", "ACTIVE"].includes(project.state);
+  return ["DESIGNING", "ACTIVE"].includes(project.state);
 }
 
 export function architectureCheckApplicable(project) {
   if (!project) return false;
-  return ["STACK_APPROVED", "ARCHITECTURE_APPROVED", "ACTIVE"].includes(project.state);
+  return ["DESIGNING", "ACTIVE"].includes(project.state);
+}
+
+function projectGateFresh(repoRoot, project, name) {
+  const definition = manifest(repoRoot).projectGates?.[name];
+  const record = project.phaseGates?.[name];
+  if (!definition || !record || record.status !== "approved") return false;
+  try { return record.contractHash === sha256Files(repoRoot, definition.requiredDocuments); }
+  catch { return false; }
 }
 
 export function designProgress(repoRoot) {
   const project = readProject(repoRoot);
-  if (!project) {
-    return { state: "missing", nextAction: "Run bootstrap or create harness/project.json", blockers: ["harness/project.json is missing"] };
-  }
+  if (!project) return { state: "missing", nextAction: "Run bootstrap or create harness/project.json", blockers: ["harness/project.json is missing"] };
 
   const state = project.state;
   const designTier = getDesignTier(project);
-  if (state === "PRODUCT_APPROVED") {
-    const check = validateStackDocuments(repoRoot);
-    const blockers = check.errors;
-    let nextAction = "Complete docs/product/technology-options.md and technology-decision.md";
-    if (check.ok) {
-      nextAction = `npm run stack:check && npm run project:gate -- --to STACK_APPROVED --actor human:<name> --reason "..."`;
-    } else if (blockers.some((error) => error.includes("technology-options"))) {
-      nextAction = "Complete docs/product/technology-options.md";
-    } else if (blockers.some((error) => error.includes("technology-decision"))) {
-      nextAction = "Complete docs/product/technology-decision.md";
-    }
-    return { state, projectId: project.projectId, phase: "stack", designTier, nextAction, blockers };
-  }
-
-  if (state === "STACK_APPROVED") {
-    const check = validateArchitectureDocuments(repoRoot);
-    const blockers = check.errors;
-    let nextAction = "Complete docs/architecture/baseline.md";
-    if (designTier === "full") {
-      nextAction = "Complete docs/architecture/baseline.md (and review security/quality baselines)";
-    }
-    if (check.ok) {
-      nextAction = `npm run architecture:check && npm run project:gate -- --to ARCHITECTURE_APPROVED --actor human:<name> --reason "..."`;
-    }
-    return { state, projectId: project.projectId, phase: "architecture", designTier, nextAction, blockers };
-  }
-
-  if (state === "ARCHITECTURE_APPROVED") {
-    const resolution = path.join(repoRoot, "harness/generated/profile-resolution.json");
-    let nextAction = "npm run profile:resolve";
-    const blockers = [];
-    if (fs.existsSync(resolution)) {
-      try {
-        const report = JSON.parse(fs.readFileSync(resolution, "utf8"));
-        if (report.status === "resolved") {
-          nextAction = `npm run project:gate -- --to ACTIVE --actor human:<name> --reason "..."`;
-        } else {
-          blockers.push("profile-resolution.json is not resolved");
-        }
-      } catch {
-        blockers.push("profile-resolution.json is unreadable");
-      }
-    } else {
-      blockers.push("harness/generated/profile-resolution.json is missing");
-    }
-    return { state, projectId: project.projectId, phase: "activation", designTier, nextAction, blockers };
-  }
-
-  if (state === "DISCOVERY" || state === "MIGRATION_PENDING") {
+  if (state === "MIGRATION_PENDING" || state === "PLANNING") {
     return {
       state,
       projectId: project.projectId,
       phase: "pre-design",
       designTier,
-      nextAction: state === "DISCOVERY"
-        ? "Finish product discovery first (npm run product:status)"
-        : "npm run project:discover or complete migration path",
-      blockers: ["Design phase starts after PRODUCT_APPROVED"],
+      nextAction: state === "PLANNING" ? "Finish planning first (npm run product:status)" : "npm run project:plan or complete the migration path",
+      blockers: ["Project design starts after the planning gate and transition to DESIGNING."],
     };
+  }
+
+  if (state === "DESIGNING") {
+    if (!projectGateFresh(repoRoot, project, "planning")) {
+      return {
+        state, projectId: project.projectId, phase: "planning-rework", designTier,
+        nextAction: `npm run project:gate -- --to PLANNING --actor human:<name> --reason "planning baseline changed" && npm run project:advance -- --to PLANNING`,
+        blockers: ["The approved Planning baseline is missing or stale. Return to PLANNING and obtain a fresh planning approval before continuing project design."],
+      };
+    }
+    const stack = validateStackDocuments(repoRoot);
+    if (!projectGateFresh(repoRoot, project, "stack")) {
+      let nextAction = "Complete docs/architecture/technology-options.md and technology-decision.md";
+      if (stack.ok) nextAction = `npm run stack:check && npm run project:gate -- --gate stack --actor human:<name> --reason "..."`;
+      else if (stack.errors.some((error) => error.includes("technology-options"))) nextAction = "Complete docs/architecture/technology-options.md";
+      else if (stack.errors.some((error) => error.includes("technology-decision"))) nextAction = "Complete docs/architecture/technology-decision.md";
+      return { state, projectId: project.projectId, phase: "stack", designTier, nextAction, blockers: stack.errors };
+    }
+
+    const architecture = validateArchitectureDocuments(repoRoot);
+    if (!projectGateFresh(repoRoot, project, "architecture")) {
+      let nextAction = designTier === "full" ? "Complete architecture, security, and quality baselines" : "Complete docs/architecture/baseline.md";
+      if (architecture.ok) nextAction = `npm run architecture:check && npm run project:gate -- --gate architecture --actor human:<name> --reason "..."`;
+      return { state, projectId: project.projectId, phase: "architecture", designTier, nextAction, blockers: architecture.errors };
+    }
+
+    const resolutionPath = project.profileResolutionPath ? path.join(repoRoot, project.profileResolutionPath) : null;
+    let resolution = null;
+    if (resolutionPath && fs.existsSync(resolutionPath)) {
+      try { resolution = JSON.parse(fs.readFileSync(resolutionPath, "utf8")); } catch { /* reported below */ }
+    }
+    if (resolution?.status !== "resolved") {
+      return { state, projectId: project.projectId, phase: "profile-resolution", designTier, nextAction: "npm run profile:resolve", blockers: ["Profile resolution must be resolved before final design approval."] };
+    }
+
+    if (!projectGateFresh(repoRoot, project, "design")) {
+      return { state, projectId: project.projectId, phase: "design-review", designTier, nextAction: `npm run project:gate -- --gate design --actor human:<name> --reason "..."`, blockers: [] };
+    }
+
+    return { state, projectId: project.projectId, phase: "design-approved", designTier, nextAction: "npm run project:advance -- --to ACTIVE", blockers: [] };
   }
 
   return {
@@ -358,7 +354,7 @@ export function designProgress(repoRoot) {
     projectId: project.projectId,
     phase: "post-design",
     designTier,
-    nextAction: "Design baselines are approved; use task lifecycle for delivery design (ai:research)",
+    nextAction: "Project design is active; new delivery work starts in task DESIGNING.",
     blockers: [],
   };
 }

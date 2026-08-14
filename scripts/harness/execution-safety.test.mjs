@@ -47,18 +47,18 @@ function fixture() {
   fs.mkdirSync(path.join(dir,"docs/specs/DEV-001-example"),{recursive:true});
   fs.writeFileSync(path.join(dir,"harness/invariants/manifest.json"),JSON.stringify({schemaVersion:"1.0.0",invariants:[]}));
   fs.writeFileSync(path.join(dir,"harness/execution/manifest.json"),JSON.stringify(contracts.execution));
-  fs.writeFileSync(path.join(dir,"docs/specs/_active.md"),"---\nactive_spec: DEV-001-example\nstatus: IMPLEMENTING\n---\n");
-  fs.writeFileSync(path.join(dir,"docs/specs/DEV-001-example/gate.json"),JSON.stringify({planApproval:{status:"approved",contractHash:"a".repeat(64)}}));
+  fs.writeFileSync(path.join(dir,"docs/specs/_active.md"),"---\nactive_spec: DEV-001-example\nstatus: DEVELOPING\n---\n");
+  fs.writeFileSync(path.join(dir,"docs/specs/DEV-001-example/gate.json"),JSON.stringify({designApproval:{status:"approved",contractHash:"a".repeat(64)}}));
   const created="2026-08-09T06:00:00Z";
-  const run={schemaVersion:"1.0.0",runId:"RUN-20260809T060000Z-deadbeef",lifecycleRef:{kind:"task",id:"DEV-001-example",state:"IMPLEMENTING"},state:"PAUSED",actorRole:"implementer",approvedPlanDigest:"a".repeat(64),invariantManifestDigest:sha256File(path.join(dir,"harness/invariants/manifest.json")),pendingOperation:null,completedOperationIds:[],artifactRefs:[],evidenceRefs:[],approvalRefs:[],resumeCursor:"AC-001",idempotencyKey:null,stateVersion:2,integrityHash:"",stopReason:"STOP-INPUT",createdAt:created,updatedAt:created};
+  const run={schemaVersion:"1.0.0",runId:"RUN-20260809T060000Z-deadbeef",lifecycleRef:{kind:"task",id:"DEV-001-example",state:"DEVELOPING"},state:"PAUSED",actorRole:"implementer",approvedDesignDigest:"a".repeat(64),invariantManifestDigest:sha256File(path.join(dir,"harness/invariants/manifest.json")),pendingOperation:null,completedOperationIds:[],artifactRefs:[],evidenceRefs:[],approvalRefs:[],resumeCursor:"AC-001",idempotencyKey:null,stateVersion:2,integrityHash:"",stopReason:"STOP-INPUT",createdAt:created,updatedAt:created};
   run.integrityHash=computeRunIntegrity(run); return {dir,run};
 }
 
 test("resume uses persisted canonical state, not chat memory, and rejects stale plan", () => {
   const {dir,run}=fixture();
   assert.equal(validateResume(dir,run),true);
-  const gate=JSON.parse(fs.readFileSync(path.join(dir,"docs/specs/DEV-001-example/gate.json"),"utf8")); gate.planApproval.contractHash="b".repeat(64); fs.writeFileSync(path.join(dir,"docs/specs/DEV-001-example/gate.json"),JSON.stringify(gate));
-  assert.throws(()=>validateResume(dir,run),/Approved plan digest is stale/);
+  const gate=JSON.parse(fs.readFileSync(path.join(dir,"docs/specs/DEV-001-example/gate.json"),"utf8")); gate.designApproval.contractHash="b".repeat(64); fs.writeFileSync(path.join(dir,"docs/specs/DEV-001-example/gate.json"),JSON.stringify(gate));
+  assert.throws(()=>validateResume(dir,run),/Approved design digest is stale/);
 });
 
 test("STOP-INVARIANT cannot resume in place", () => {
@@ -92,8 +92,8 @@ function runFixture() {
   }
   fs.mkdirSync(path.join(dir,"harness"),{recursive:true});
   fs.writeFileSync(path.join(dir,"harness/project.json"),JSON.stringify({schemaVersion:"1.0.0",lifecycleMode:"full",state:"ACTIVE"}));
-  fs.writeFileSync(path.join(dir,"docs/specs/_active.md"),"---\nactive_spec: DEV-001-example\nstatus: IMPLEMENTING\n---\n");
-  fs.writeFileSync(path.join(dir,"docs/specs/DEV-001-example/gate.json"),JSON.stringify({planApproval:{status:"approved",contractHash:"a".repeat(64)}}));
+  fs.writeFileSync(path.join(dir,"docs/specs/_active.md"),"---\nactive_spec: DEV-001-example\nstatus: DEVELOPING\n---\n");
+  fs.writeFileSync(path.join(dir,"docs/specs/DEV-001-example/gate.json"),JSON.stringify({designApproval:{status:"approved",contractHash:"a".repeat(64)}}));
   fs.writeFileSync(path.join(dir,"docs/specs/DEV-001-example/plan.md"),"# Plan\n\n### Allowed paths\n- `src`\n- tests/example.test.ts\n");
   return dir;
 }
@@ -101,7 +101,7 @@ function runFixture() {
 test("execution run persists stop/approval/resume/completion without changing lifecycle state", () => {
   const dir=runFixture();
   const {file,run}=startRun(dir,{task:"DEV-001-example",role:"implementer"});
-  assert.equal(run.lifecycleRef.state,"IMPLEMENTING");
+  assert.equal(run.lifecycleRef.state,"DEVELOPING");
   pauseRun(file,{reason:"STOP-APPROVAL",resumeCursor:"external:push",operationId:"OP-GITHUB-PUSH",capabilityId:"github",providerId:"gh-cli-https",operation:"push-approved-branch",target:"github:o/r:feature",argumentDigest:"c".repeat(64),risk:"external-write",idempotencyKey:"push-1"},dir);
   const decision=recordDecision(file,{decision:"approved",actor:"human:owner",reason:"Reviewed exact push."},dir);
   const resumed=resumeRun(file,{approvalFile:decision.file},dir);
@@ -112,7 +112,7 @@ test("execution run persists stop/approval/resume/completion without changing li
   const finished=finishRun(file,{result:"succeeded"},dir);
   assert.equal(finished.state,"SUCCEEDED");
   assert.deepEqual(finished.completedOperationIds,["OP-GITHUB-PUSH"]);
-  assert.equal(parseActiveTask(dir).status,"IMPLEMENTING");
+  assert.equal(parseActiveTask(dir).status,"DEVELOPING");
   const events=fs.readFileSync(file.replace(/\.json$/, ".events.jsonl"),"utf8").trim().split(/\n/).map(JSON.parse);
   assert.deepEqual(events.map((event)=>event.type),["run-started","run-paused","approval-recorded","run-resumed","operation-authorized","operation-completed","run-finished"]);
 });
@@ -212,16 +212,16 @@ test("full lifecycle blocks execution runs while project is not ACTIVE", () => {
   assert.throws(()=>startRun(dir,{task:"DEV-001-example",role:"implementer"}),/blocks delivery tasks while project state is MIGRATION_PENDING/);
 });
 
-test("path-scoped authorization rejects targets outside approved plan scope", () => {
+test("path-scoped authorization rejects targets outside approved design scope", () => {
   const dir=runFixture();
   const {file}=startRun(dir,{task:"DEV-001-example",role:"implementer"});
   pauseRun(file,{reason:"STOP-APPROVAL",operationId:"OP-WRITE",capabilityId:"repository",providerId:"workspace-tools",operation:"write-approved-paths",target:"secrets/token.txt",argumentDigest:"c".repeat(64),risk:"local-write"},dir);
   const decision=recordDecision(file,{decision:"approved",actor:"human:owner",reason:"Approve write."},dir);
   resumeRun(file,{approvalFile:decision.file},dir);
-  assert.throws(()=>authorizeRunOperation(file,{role:"implementer",approvalFile:decision.file},dir),/outside approved plan scope/);
+  assert.throws(()=>authorizeRunOperation(file,{role:"implementer",approvalFile:decision.file},dir),/outside approved design scope/);
 });
 
-test("path-scoped authorization allows targets inside approved plan scope", () => {
+test("path-scoped authorization allows targets inside approved design scope", () => {
   const dir=runFixture();
   const {file}=startRun(dir,{task:"DEV-001-example",role:"implementer"});
   pauseRun(file,{reason:"STOP-APPROVAL",operationId:"OP-WRITE",capabilityId:"repository",providerId:"workspace-tools",operation:"write-approved-paths",target:"src/app.ts",argumentDigest:"c".repeat(64),risk:"local-write"},dir);

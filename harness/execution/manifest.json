@@ -90,7 +90,7 @@
       "runId",
       "lifecycleRef",
       "state",
-      "approvedPlanDigest",
+      "approvedDesignDigest",
       "invariantManifestDigest",
       "pendingOperation",
       "completedOperationIds",

@@ -4,7 +4,7 @@
 
 ## Decision
 
-_Status: pending — fill after docs/product/technology-options.md review._
+_Status: pending — fill after docs/architecture/technology-options.md review._
 
 ## Selected profiles
 

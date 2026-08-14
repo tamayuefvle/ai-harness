@@ -55,4 +55,4 @@
 - React Doctor（React変更時。導入観察期間はadvisory、信号確認後にerror blocking）
 - Playwright E2E
 
-production gateは `docs/operations/CODEX.md` と `docs/operations/.cursor/rules/operations.mdc` へ従います。
+production gateは `docs/operations/CODEX.md`（Codex）または `docs/operations/.cursor/rules/operations.mdc`（Cursor）の operation policy に従います。

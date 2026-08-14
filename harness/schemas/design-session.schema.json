@@ -14,42 +14,105 @@
     "openQuestions"
   ],
   "properties": {
-    "schemaVersion": { "const": "1.0.0" },
+    "schemaVersion": {
+      "const": "2.0.0"
+    },
     "sessionId": {
       "type": "string",
       "pattern": "^DSN-[0-9]{8}-[a-z0-9]{6}$"
     },
-    "projectId": { "type": "string", "minLength": 1 },
-    "designTier": { "enum": ["lite", "full"] },
-    "phase": {
-      "enum": ["stack-options", "stack-decision", "architecture", "review"]
+    "projectId": {
+      "type": "string",
+      "minLength": 1
     },
-    "startedAt": { "type": "string", "format": "date-time" },
-    "updatedAt": { "type": "string", "format": "date-time" },
+    "designTier": {
+      "enum": [
+        "lite",
+        "full"
+      ]
+    },
+    "phase": {
+      "enum": [
+        "stack-options",
+        "stack-decision",
+        "architecture",
+        "review"
+      ]
+    },
+    "startedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "updatedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
     "turns": {
       "type": "array",
       "items": {
         "type": "object",
-        "required": ["at", "role", "summary"],
+        "required": [
+          "at",
+          "role",
+          "summary"
+        ],
         "properties": {
-          "at": { "type": "string", "format": "date-time" },
-          "role": { "enum": ["agent", "human"] },
-          "summary": { "type": "string", "minLength": 1 },
-          "question": { "type": "string" },
-          "answer": { "type": "string" },
-          "targetDocument": { "type": "string" }
+          "at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "role": {
+            "enum": [
+              "agent",
+              "human"
+            ]
+          },
+          "summary": {
+            "type": "string",
+            "minLength": 1
+          },
+          "question": {
+            "type": "string"
+          },
+          "answer": {
+            "type": "string"
+          },
+          "targetDocument": {
+            "type": "string"
+          }
         },
         "additionalProperties": false
       }
     },
-    "openQuestions": { "type": "array", "items": { "type": "string" } },
+    "openQuestions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
     "checkSnapshot": {
       "type": "object",
-      "required": ["kind", "ok", "errors"],
+      "required": [
+        "kind",
+        "ok",
+        "errors"
+      ],
       "properties": {
-        "kind": { "enum": ["stack", "architecture"] },
-        "ok": { "type": "boolean" },
-        "errors": { "type": "array", "items": { "type": "string" } }
+        "kind": {
+          "enum": [
+            "stack",
+            "architecture"
+          ]
+        },
+        "ok": {
+          "type": "boolean"
+        },
+        "errors": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
       },
       "additionalProperties": false
     }

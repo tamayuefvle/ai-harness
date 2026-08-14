@@ -13,8 +13,8 @@ if [[ -z "$ACTIVE_SPEC" || "$ACTIVE_SPEC" == "none" ]]; then
   echo "No active task." >&2
   exit 1
 fi
-if [[ "$STATUS" != "SPEC_READY" && "$STATUS" != "PLAN_READY" ]]; then
-  echo "Codex research requires SPEC_READY or PLAN_READY; current: $STATUS" >&2
+if [[ "$STATUS" != "DESIGNING" ]]; then
+  echo "Codex design research requires DESIGNING; current: $STATUS" >&2
   exit 1
 fi
 

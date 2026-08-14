@@ -1,42 +1,87 @@
 # Full lifecycle operating model
 
-## Hierarchy
+## Lifecycle hierarchy
 
-1. Project lifecycle controls product, technology, and architecture baselines.
-2. Task lifecycle retains the v10.1.1 specification-to-delivery gates.
-3. Release and incident lifecycles track external outcomes without granting autonomous production authority.
-4. Operational signals are assessed before becoming tasks or project-decision changes.
+v15 organizes work into four user-facing concerns while retaining independent safety gates and evidence:
 
-## Bootstrap and migration
+1. **Planning** — Why / What.
+2. **Design** — How / Exactly what to build.
+3. **Development** — implement, test, verify, independently review the approved design.
+4. **Release / Operations** — existing preview, production approval, deployment evidence, monitoring, incident, and rollback flows.
 
-The package starts at `MIGRATION_PENDING`.
+`docs/workflow/PHASE_MODEL.md` is the canonical conceptual map. The executable graph is `harness/lifecycle/manifest.json`.
 
-**Greenfield product path**
+## Greenfield project
 
-1. `npm run project:discover` → product docs → `PRODUCT_APPROVED`
-2. `npm run design:status` → stack docs → optional `ai:evaluate-stack` → `STACK_APPROVED`
-3. Architecture baselines → optional `ai:evaluate-stack` → `ARCHITECTURE_APPROVED`
-4. `npm run profile:resolve` → `ACTIVE`
-
-**Legacy migration path**
-
-Run `npm run profile:resolve`, review generated resolution and migration documents, then gate to `ACTIVE` per `MIGRATION.md`. Until `ACTIVE`, new implementation tasks are blocked in full lifecycle mode.
-
-## Commands
-
-```bash
-npm run design:status
-npm run ai:evaluate-stack
-npm run stack:check
-npm run architecture:check
-npm run profile:resolve
-npm run project:gate -- --to ACTIVE --actor human:tama --reason "baselines reviewed"
-npm run project:advance -- --to ACTIVE
-npm run task:start -- "Feature title" "feature-slug"
-npm run release:start -- --id REL-2026-08-06-example --tasks PF-004-feature --commit <sha>
-npm run signal:record -- --id SIG-2026-08-06-example --type user-feedback --source redacted-reference --severity medium --summary "..."
+```text
+MIGRATION_PENDING
+  → PLANNING
+  → [planning approval]
+  → DESIGNING
+  → [stack approval]
+  → [architecture approval]
+  → [profile resolution]
+  → [project design approval]
+  → ACTIVE
 ```
 
-Commands record state and evidence only. They do not create cloud resources, install a stack, deploy production, or expose secrets.
+Commands:
 
-See `docs/workflow/PRODUCT_DISCOVERY.md` and `docs/workflow/STACK_ARCHITECTURE.md` for the staged greenfield path.
+```bash
+npm run project:plan -- --tier full --id my-product
+npm run product:check
+npm run project:gate -- --gate planning --actor human:<name> --reason "..."
+npm run project:advance -- --to DESIGNING
+
+npm run design:status
+npm run stack:check
+npm run project:gate -- --gate stack --actor human:<name> --reason "..."
+npm run architecture:check
+npm run project:gate -- --gate architecture --actor human:<name> --reason "..."
+npm run profile:resolve
+npm run project:gate -- --gate design --actor human:<name> --reason "..."
+npm run project:advance -- --to ACTIVE
+```
+
+The old `project:discover` / `ai:discover` names remain compatibility aliases; new documentation uses `project:plan` / `ai:plan`.
+
+## Delivery task
+
+```text
+DESIGNING
+  → [scope confirmation + design approval]
+DEVELOPING
+  → VERIFYING
+  → REVIEWING
+  → [release approval]
+DEPLOY_READY
+  → DONE
+```
+
+Start with:
+
+```bash
+npm run task:start -- "Feature title" "feature-slug"
+```
+
+Development is not authorized by conversational intent alone. It consumes the approved task Design Baseline and must preserve its contract hash in implementation evidence.
+
+## Release and incidents
+
+Release and incident lifecycles continue to record external outcomes without granting autonomous production authority. Examples:
+
+```bash
+npm run release:start -- --id REL-2026-08-14-example --tasks PF-004-feature --commit <sha>
+npm run signal:record -- --id SIG-2026-08-14-example --type user-feedback --source redacted-reference --severity medium --summary "..."
+```
+
+Commands record state/evidence only unless their individual contract explicitly says otherwise. They do not create cloud resources, expose secrets, or bypass production approval.
+
+## Detailed guides
+
+- Planning: `docs/workflow/PLANNING.md`
+- Design: `docs/workflow/DESIGN.md`
+- Task gates: `docs/workflow/LIFECYCLE_GATES.md`
+- Agent delegation: `docs/workflow/AI_OPERATING_MODEL.md`
+- Verification: `docs/workflow/VERIFICATION_PIPELINE.md`
+- Release/operations: `docs/operations/`

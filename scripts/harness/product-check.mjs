@@ -16,7 +16,7 @@ export function runProductCheck(repoRoot = canonicalRoot, options = {}) {
   }
   const result = validateDiscoverySet(repoRoot);
   if (result.ok) return { status: "passed", warnings: result.warnings };
-  const error = new Error("Product discovery contract violations");
+  const error = new Error("Product planning contract violations");
   error.details = result.errors;
   throw error;
 }
@@ -33,11 +33,11 @@ function main() {
       console.log(`[SKIP] product:check not applicable (${outcome.reason}).`);
       return;
     }
-    console.log("[PASS] Product discovery documents satisfy semantic contract.");
+    console.log("[PASS] Product planning documents satisfy semantic contract.");
     for (const warning of outcome.warnings ?? []) console.log(`[WARN] ${warning}`);
   } catch (error) {
     if (error.details) {
-      console.error("[FAIL] Product discovery contract violations:");
+      console.error("[FAIL] Product planning contract violations:");
       for (const detail of error.details) console.error(`- ${detail}`);
     } else {
       console.error(error.message);

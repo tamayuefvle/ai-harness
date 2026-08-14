@@ -3,6 +3,7 @@
   "$id": "https://portfolio-harness.local/schemas/discovery-turn.schema.json",
   "type": "object",
   "required": [
+    "mode",
     "phase",
     "targetDocument",
     "suggestedQuestion",
@@ -21,7 +22,10 @@
       ]
     },
     "targetDocument": {
-      "type": "string",
+      "type": [
+        "string",
+        "null"
+      ],
       "pattern": "^docs/product/.+\\.md$"
     },
     "suggestedQuestion": {
@@ -47,7 +51,33 @@
     },
     "requiresCitation": {
       "type": "boolean"
+    },
+    "mode": {
+      "enum": [
+        "explore",
+        "converge",
+        "publish"
+      ]
     }
   },
-  "additionalProperties": false
+  "additionalProperties": false,
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "mode": {
+            "const": "publish"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "targetDocument": {
+            "type": "string",
+            "pattern": "^docs/product/.+\\.md$"
+          }
+        }
+      }
+    }
+  ]
 }

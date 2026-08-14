@@ -62,7 +62,7 @@ const today = localDate();
 const active = [
   "---",
   `active_spec: ${taskId}`,
-  "status: IDEA",
+  "status: DESIGNING",
   `updated_at: ${today}`,
   "---",
   "",
@@ -75,5 +75,5 @@ console.log(JSON.stringify({
   created: taskId,
   title: title.trim(),
   specPath: `docs/specs/${taskId}`,
-  status: "IDEA",
+  status: "DESIGNING",
 }, null, 2));

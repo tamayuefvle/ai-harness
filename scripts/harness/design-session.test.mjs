@@ -14,12 +14,14 @@ import {
   saveDesignSession,
 } from "./design-session-lib.mjs";
 import { writePlanningDocs } from "./planning-doc-fixtures.mjs";
+import { sha256Files } from "./full-lifecycle-lib.mjs";
 
 const harnessRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
 
-function fixtureDesignProject(state = "PRODUCT_APPROVED") {
+function fixtureDesignProject(state = "DESIGNING", approvedGates = []) {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), "design-session-"));
   fs.mkdirSync(path.join(root, "harness/contracts"), { recursive: true });
+  fs.mkdirSync(path.join(root, "harness/lifecycle"), { recursive: true });
   fs.mkdirSync(path.join(root, "harness/profiles"), { recursive: true });
   fs.mkdirSync(path.join(root, "harness/prompts"), { recursive: true });
   fs.mkdirSync(path.join(root, "docs/product"), { recursive: true });
@@ -27,12 +29,13 @@ function fixtureDesignProject(state = "PRODUCT_APPROVED") {
   fs.writeFileSync(
     path.join(root, "harness/project.json"),
     `${JSON.stringify({
-      schemaVersion: "1.0.0",
+      schemaVersion: "2.0.0",
       projectId: "demo-app",
       lifecycleMode: "full",
       state,
-      discoveryTier: "full",
+      planningTier: "full",
       designTier: "full",
+      phaseGates: Object.fromEntries(["planning","stack","architecture","design"].map((name)=>[name,{status:"pending",approvedBy:null,approvedAt:null,reason:null,contractHash:null}])),
       pendingApproval: null,
       decisionRefs: [],
       activeProfiles: [],
@@ -41,6 +44,7 @@ function fixtureDesignProject(state = "PRODUCT_APPROVED") {
       history: [],
     }, null, 2)}\n`,
   );
+  fs.copyFileSync(path.join(harnessRoot, "harness/lifecycle/manifest.json"), path.join(root, "harness/lifecycle/manifest.json"));
   fs.copyFileSync(
     path.join(harnessRoot, "harness/contracts/design-phase.json"),
     path.join(root, "harness/contracts/design-phase.json"),
@@ -53,23 +57,38 @@ function fixtureDesignProject(state = "PRODUCT_APPROVED") {
     fs.copyFileSync(path.join(harnessRoot, "harness/prompts", file), path.join(root, "harness/prompts", file));
   }
   writePlanningDocs(root, [
-    "docs/product/technology-options.md",
-    "docs/product/technology-decision.md",
+    "docs/architecture/technology-options.md",
+    "docs/architecture/technology-decision.md",
     "docs/product/outcomes.md",
     "docs/architecture/baseline.md",
     "docs/architecture/security-baseline.md",
     "docs/architecture/quality-strategy.md",
   ]);
+  for (const [name, body] of [
+    ["problem.md", "# Problem\n\nApproved product problem.\n"],
+    ["users.md", "# Users\n\nApproved target users.\n"],
+    ["requirements.md", "# Requirements\n\n## Must\n\n- Approved requirement (OUT-001)\n"],
+  ]) fs.writeFileSync(path.join(root, "docs/product", name), body);
+  if (state === "DESIGNING" && !approvedGates.includes("planning")) approvedGates = ["planning", ...approvedGates];
+  if (approvedGates.length) {
+    const projectFile=path.join(root,"harness/project.json");
+    const project=JSON.parse(fs.readFileSync(projectFile,"utf8"));
+    const manifest=JSON.parse(fs.readFileSync(path.join(root,"harness/lifecycle/manifest.json"),"utf8"));
+    for (const name of approvedGates) {
+      project.phaseGates[name]={status:"approved",approvedBy:"human:test",approvedAt:"2026-08-14T00:00:00.000Z",reason:"test",contractHash:sha256Files(root,manifest.projectGates[name].requiredDocuments)};
+    }
+    fs.writeFileSync(projectFile,`${JSON.stringify(project,null,2)}\n`);
+  }
   return root;
 }
 
-test("createDesignSession rejects DISCOVERY", () => {
-  const root = fixtureDesignProject("DISCOVERY");
-  assert.throws(() => createDesignSession(root), /PRODUCT_APPROVED or STACK_APPROVED/);
+test("createDesignSession rejects PLANNING", () => {
+  const root = fixtureDesignProject("PLANNING");
+  assert.throws(() => createDesignSession(root), /project state DESIGNING/);
 });
 
-test("createDesignSession writes DSN artifact in PRODUCT_APPROVED", () => {
-  const root = fixtureDesignProject("PRODUCT_APPROVED");
+test("createDesignSession writes DSN artifact in DESIGNING", () => {
+  const root = fixtureDesignProject("DESIGNING");
   const session = createDesignSession(root);
   assert.match(session.sessionId, /^DSN-/);
   assert.equal(session.phase, "stack-options");
@@ -77,18 +96,18 @@ test("createDesignSession writes DSN artifact in PRODUCT_APPROVED", () => {
 });
 
 test("runEvaluateStackDryRun snapshots stack:check without a live Codex provider", () => {
-  const root = fixtureDesignProject("PRODUCT_APPROVED");
+  const root = fixtureDesignProject("DESIGNING");
   const result = runEvaluateStackDryRun(root);
   assert.match(result.sessionId, /^DSN-/);
   assert.equal(result.checkSnapshot.kind, "stack");
   assert.equal(result.checkSnapshot.ok, false);
   const session = loadDesignSession(root, result.sessionId);
   assert.equal(session.turns.length, 1);
-  assert.equal(session.turns[0].targetDocument, "docs/product/technology-options.md");
+  assert.equal(session.turns[0].targetDocument, "docs/architecture/technology-options.md");
 });
 
-test("runEvaluateStackDryRun uses architecture check in STACK_APPROVED", () => {
-  const root = fixtureDesignProject("STACK_APPROVED");
+test("runEvaluateStackDryRun uses architecture check after stack approval", () => {
+  const root = fixtureDesignProject("DESIGNING", ["stack"]);
   const result = runEvaluateStackDryRun(root);
   assert.equal(result.checkSnapshot.kind, "architecture");
   const session = loadDesignSession(root, result.sessionId);
@@ -96,17 +115,17 @@ test("runEvaluateStackDryRun uses architecture check in STACK_APPROVED", () => {
 });
 
 test("createDesignSession rejects traversal and non-DSN ids", () => {
-  const root = fixtureDesignProject("PRODUCT_APPROVED");
+  const root = fixtureDesignProject("DESIGNING");
   assert.throws(() => createDesignSession(root, { sessionId: "../../harness/project" }), /Invalid design session id/);
   assert.throws(() => createDesignSession(root, { sessionId: "DSN-bad" }), /Invalid design session id/);
   assert.throws(() => designSessionPath(root, "/tmp/escape"), /Invalid design session id/);
   assert.equal(fs.existsSync(path.join(root, "harness/project.json")), true);
   const project = JSON.parse(fs.readFileSync(path.join(root, "harness/project.json"), "utf8"));
-  assert.equal(project.state, "PRODUCT_APPROVED");
+  assert.equal(project.state, "DESIGNING");
 });
 
 test("applyDesignTurn rejects malformed turns", () => {
-  const root = fixtureDesignProject("PRODUCT_APPROVED");
+  const root = fixtureDesignProject("DESIGNING");
   const session = createDesignSession(root);
   assert.throws(
     () => applyDesignTurn(session, { phase: "stack-options", rationale: "x" }),
@@ -114,6 +133,7 @@ test("applyDesignTurn rejects malformed turns", () => {
   );
   assert.throws(
     () => applyDesignTurn(session, {
+      mode: "publish",
       phase: "stack-options",
       targetDocument: "docs/product/problem.md",
       suggestedQuestion: "What runtime?",
@@ -126,11 +146,12 @@ test("applyDesignTurn rejects malformed turns", () => {
 });
 
 test("createDesignSession refuses to overwrite an existing session", () => {
-  const root = fixtureDesignProject("PRODUCT_APPROVED");
+  const root = fixtureDesignProject("DESIGNING");
   const session = createDesignSession(root, { sessionId: "DSN-20260813-abc123" });
   applyDesignTurn(session, {
+    mode: "publish",
     phase: "stack-options",
-    targetDocument: "docs/product/technology-options.md",
+    targetDocument: "docs/architecture/technology-options.md",
     suggestedQuestion: "Which outcomes constrain runtime?",
     rationale: "Keep the first recorded turn.",
     openQuestions: [],
@@ -150,7 +171,7 @@ test("createDesignSession refuses to overwrite an existing session", () => {
 });
 
 test("finalizeDesignSession records a failed check without throwing", () => {
-  const root = fixtureDesignProject("PRODUCT_APPROVED");
+  const root = fixtureDesignProject("DESIGNING");
   const session = createDesignSession(root);
   const finalized = finalizeDesignSession(root, session.sessionId);
   assert.equal(finalized.checkSnapshot.ok, false);

@@ -1,9 +1,12 @@
 {
+  "mode": "explore",
   "phase": "stack-options",
-  "targetDocument": "docs/product/technology-options.md",
+  "targetDocument": null,
   "suggestedQuestion": "Which approved outcomes constrain the runtime choice?",
   "rationale": "Stack candidates must be compared against product outcomes before a decision.",
-  "openQuestions": ["Is a separate API process required in the first release?"],
+  "openQuestions": [
+    "Is a separate API process required in the first release?"
+  ],
   "fabricationRisk": "none",
   "requiresCitation": false
 }
